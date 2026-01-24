@@ -1,0 +1,17 @@
+﻿<header class="bg-white border-bottom sticky-top shadow-sm">
+    <div class="container py-3">
+
+        <div class="d-flex align-items-center justify-content-between">
+
+            @await Html.PartialAsync("~/Views/Shared/HomePageLayout/ComponentHeader/_Logo.cshtml")
+
+            <!-- MENU -->
+            <nav>
+                <ul class="navbar-nav flex-row align-items-center gap-2">
+                    @await Html.PartialAsync("~/Views/Shared/HomePageLayout/ComponentHeader/_Menu.cshtml")
+                    @await Html.PartialAsync("~/Views/Shared/HomePageLayout/ComponentHeader/_Login.cshtml")
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>

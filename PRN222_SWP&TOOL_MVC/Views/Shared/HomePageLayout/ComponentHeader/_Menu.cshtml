@@ -1,0 +1,56 @@
+﻿<!-- STUDENT -->
+<!--nav-item dropdown tạo menu xổ xuống khi nhấn vào -->
+<!--dropdown-toggle nhán vào đóng mở -->
+<!--nav-link giống vs thẻ link mà nó ko load lại trang -->
+
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle px-3" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Học sinh
+    </a>
+    <ul class="dropdown-menu border-0 shadow-sm">
+        <li>
+            <a class="dropdown-item" asp-controller="Student" asp-action="Index">
+                Dashboard
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item" asp-controller="Student" asp-action="Topic">
+                Đề tài
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item" asp-controller="Student" asp-action="QnA">
+                Hỏi đáp
+            </a>
+        </li>
+    </ul>
+</li>
+
+<!-- TEACHER -->
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle px-3" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        Giáo viên
+    </a>
+    <ul class="dropdown-menu border-0 shadow-sm">
+        <li>
+            <a class="dropdown-item" asp-controller="Teacher" asp-action="Index">
+                Dashboard
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item" asp-controller="Teacher" asp-action="TopicManage">
+                Quản lý đề tài
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item" asp-controller="Teacher" asp-action="Inbox">
+                Hộp thư Q&A
+            </a>
+        </li>
+        <li>
+            <a class="dropdown-item" asp-controller="Teacher" asp-action="AIReview">
+                AI hỗ trợ
+            </a>
+        </li>
+    </ul>
+</li>
