@@ -5,9 +5,32 @@
 
 
 <div class="container">
-
     @await Html.PartialAsync("~/Views/Teacher/ComponentTeacher/_Stats.cshtml")
     @await Html.PartialAsync("~/Views/Teacher/ComponentTeacher/_TopTabs.cshtml")
 
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const btn = document.getElementById("themeToggle");
+            const icon = document.getElementById("themeIcon");
 
+            if (!btn || !icon) return;
+
+            // Load trạng thái đã lưu
+            if (localStorage.getItem("theme") === "light") {
+                document.body.classList.add("light-mode");
+                icon.classList.replace("bi-moon", "bi-sun");
+            }
+
+            btn.addEventListener("click", () => {
+                document.body.classList.toggle("light-mode");
+
+                const isLight = document.body.classList.contains("light-mode");
+
+                icon.classList.toggle("bi-moon", !isLight);
+                icon.classList.toggle("bi-sun", isLight);
+
+                localStorage.setItem("theme", isLight ? "light" : "dark");
+            });
+        });
+    </script>
 </div>
