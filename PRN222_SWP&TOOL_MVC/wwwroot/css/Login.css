@@ -1,0 +1,42 @@
+﻿body {
+    background-color: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.login-box {
+    width: 360px;
+}
+
+.login-logo {
+    font-size: 2.1rem;
+    font-weight: 300;
+    margin-bottom: .9rem;
+    text-align: center;
+}
+
+.card {
+    border-top: 3px solid #d2d6de;
+    border-radius: 0;
+    box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);
+}
+
+.btn-facebook {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.btn-google {
+    background-color: #dc3545;
+    color: white;
+}
+
+.input-group-text {
+    background-color: transparent;
+    color: #777;
+}
+
+
