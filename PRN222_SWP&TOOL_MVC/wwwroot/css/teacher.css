@@ -1,0 +1,181 @@
+﻿/* ======================
+   BASE THEME (DARK DEFAULT)
+====================== */
+body {
+    background-color: #0f172a;
+    color: #e5e7eb;
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    transition: background-color .3s ease, color .3s ease;
+}
+
+/* ======================
+   HEADER
+====================== */
+.app-header {
+    background: linear-gradient(180deg, #0b1220, #020617);
+    box-shadow: inset 0 -1px 0 rgba(255,255,255,0.06);
+}
+
+
+/* ======================
+   STAT CARD
+====================== */
+.stat-card {
+    background: rgba(255,255,255,0.05);
+    border-radius: 16px;
+    padding: 18px 20px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    transition: all .25s ease;
+    color:white
+}
+
+
+/* ======================
+   STAT ICON
+====================== */
+.stat-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    font-size: 18px;
+    background: rgba(255,255,255,.12);
+}
+
+.icon-topic {
+    background: rgba(79,70,229,.15);
+    color: #818cf8;
+}
+
+.icon-group {
+    background: rgba(8,145,178,.15);
+    color: #22d3ee;
+}
+
+.icon-pending {
+    background: rgba(249,115,22,.15);
+    color: #fb923c;
+}
+
+.icon-answered {
+    background: rgba(22,163,74,.15);
+    color: #4ade80;
+}
+
+/* ======================
+   STAT VALUE
+====================== */
+.stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+    color: #ffffff;
+}
+
+/* ======================
+   PILL TABS
+====================== */
+.pill-tabs {
+    background: rgba(255,255,255,.05);
+    border-radius: 999px;
+    padding: 6px;
+    display: flex;
+    gap: 6px;
+    border: 1px solid rgba(255,255,255,.08);
+}
+
+    .pill-tabs .tab {
+        flex: 1;
+        text-align: center;
+        padding: 10px 0;
+        border-radius: 999px;
+        font-weight: 600;
+        cursor: pointer;
+        color: #cbd5f5;
+    }
+
+    .pill-tabs .active {
+        background: linear-gradient(135deg, #3b82f6, #6366f1);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(59,130,246,.35);
+    }
+
+/* ======================
+   QUESTION CARD
+====================== */
+.question-card {
+    background: rgba(255,255,255,.04);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,.08);
+    padding: 20px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+    .question-card.pending {
+        border-left: 6px solid #fb923c;
+    }
+
+/* ======================
+   STATUS BADGE
+====================== */
+.status-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 13px;
+    background: rgba(255,255,255,.08);
+    padding: 6px 10px;
+    border-radius: 999px;
+    color: #e5e7eb;
+}
+
+/* ======================
+   AI BOX
+====================== */
+.ai-box {
+    background: rgba(139,92,246,.12);
+    border: 1px solid rgba(139,92,246,.25);
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 16px;
+}
+
+/* ======================
+   LIGHT MODE
+====================== */
+body.light-mode {
+    background-color: #f8fafc;
+    color: #1f2937;
+}
+
+    body.light-mode .app-header {
+        background: #ffffff;
+        box-shadow: 0 1px 0 rgba(0,0,0,.06);
+    }
+
+    body.light-mode .stat-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 10px 24px rgba(0,0,0,.08);
+        color: black
+    }
+
+    body.light-mode .stat-value {
+        color: #0f172a;
+    }
+
+    body.light-mode .pill-tabs {
+        background: #f1f5f9;
+        border: none;
+    }
+
+        body.light-mode .pill-tabs .tab {
+            color: #334155;
+        }
+
+        body.light-mode .pill-tabs .active {
+            background: #ffffff;
+            color: #1e293b;
+        }
+
