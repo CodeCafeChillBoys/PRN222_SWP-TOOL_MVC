@@ -24,7 +24,7 @@
                 // Load trạng thái cũ
                 if (localStorage.getItem("theme") === "dark") {
                     document.body.classList.add("dark");
-                    icon.classList.replace("bi-moon", "bi-sun");
+                    icon.classList.replace("bi-sun","bi-moon");
                 }
 
                 btn.addEventListener("click", () => {
@@ -32,14 +32,12 @@
 
                     const isDark = document.body.classList.contains("dark");
 
-                    icon.classList.toggle("bi-moon", !isDark);
-                    icon.classList.toggle("bi-sun", isDark);
+                    icon.classList.toggle("bi-moon", isDark);
+                    icon.classList.toggle("bi-sun", !isDark);
 
                     localStorage.setItem("theme", isDark ? "dark" : "light");
                 });
             });
         </script>
-
-
     </div>
     </div>
