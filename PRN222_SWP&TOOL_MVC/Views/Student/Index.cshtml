@@ -1,0 +1,20 @@
+﻿@{
+    ViewData["Title"] = "Student";
+    Layout = "~/Views/Shared/StudentLayout/_StudentLayout.cshtml";
+}
+<div class="container-fluid bg-light min-vh-100">
+
+    <div class="container">
+        <div class="row g-3 mb-4">
+        @await Html.PartialAsync("~/Views/Student/ComponentStudent/_StatusCard.cshtml")
+        @await Html.PartialAsync("~/Views/Student/ComponentStudent/_Topic.cshtml")
+        @await Html.PartialAsync("~/Views/Student/ComponentStudent/_Question.cshtml")
+        </div>
+        @await Html.PartialAsync("~/Views/Student/ComponentStudent/_Tabs.cshtml")
+        <div class="tab-content">
+            @await Html.PartialAsync("~/Views/Student/ComponentStudent/_GroupTab.cshtml")
+            @await Html.PartialAsync("~/Views/Student/ComponentStudent/_TopicTab.cshtml")
+            @await Html.PartialAsync("~/Views/Student/ComponentStudent/_QATab.cshtml")
+        </div>
+    </div>
+    </div>
