@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Teacher";
+    Layout = "~/Views/Shared/TeacherLayout/_TeacherLayout.cshtml";
+}
+
+
+<div class="container">
+
+    @await Html.PartialAsync("~/Views/Teacher/ComponentTeacher/_Stats.cshtml")
+    @await Html.PartialAsync("~/Views/Teacher/ComponentTeacher/_TopTabs.cshtml")
+
+
+</div>
