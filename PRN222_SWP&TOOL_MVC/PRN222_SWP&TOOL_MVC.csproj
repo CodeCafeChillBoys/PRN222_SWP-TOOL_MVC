@@ -7,4 +7,16 @@
     <RootNamespace>PRN222_SWP_TOOL_MVC</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PRN222_SWP&amp;TOOL_MVC.Service\PRN222_SWP&amp;TOOL_MVC.Service.csproj" />
+  </ItemGroup>
+
 </Project>

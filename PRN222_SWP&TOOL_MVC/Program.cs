@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 namespace PRN222_SWP_TOOL_MVC
 {
     public class Program
@@ -8,6 +10,10 @@ namespace PRN222_SWP_TOOL_MVC
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            //DI DB 
+            builder.Services.AddDbContext<AppDbContext>(options =>
+             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             var app = builder.Build();
 
