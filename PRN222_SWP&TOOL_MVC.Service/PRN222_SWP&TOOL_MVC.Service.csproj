@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>PRN222_SWP_TOOL_MVC.Service</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="DTO\Response\**" />
+    <EmbeddedResource Remove="DTO\Response\**" />
+    <None Remove="DTO\Response\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PRN222_SWP&amp;TOOL_MVC.Repository\PRN222_SWP&amp;TOOL_MVC.Repository.csproj" />
+  </ItemGroup>
+
+</Project>
