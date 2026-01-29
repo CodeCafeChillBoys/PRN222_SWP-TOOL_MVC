@@ -1,4 +1,5 @@
-﻿using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IUserRepository;
+﻿using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IRoleRepository;
+using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IUserRepository;
 
 namespace PRN222_SWP_TOOL_MVC.Repository.UnitOfWorkRepo.IUnitOfWork
 {
@@ -6,5 +7,6 @@ namespace PRN222_SWP_TOOL_MVC.Repository.UnitOfWorkRepo.IUnitOfWork
     {
         Task SaveChangeAsync();
         IUserRepository userRepository { get; set; }
+        IRoleRepository roleRepository { get; set; }
     }
 }

@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.EntityFrameworkCore;
+using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IRoleRepository;
 using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IUserRepository;
+using PRN222_SWP_TOOL_MVC.Repository.Repositories.RoleRepository;
 using PRN222_SWP_TOOL_MVC.Repository.Repositories.UserRepository;
 using PRN222_SWP_TOOL_MVC.Repository.UnitOfWorkRepo.IUnitOfWork;
 using PRN222_SWP_TOOL_MVC.Repository.UnitOfWorkRepo.UnitOfWork;
@@ -40,6 +42,7 @@ namespace PRN222_SWP_TOOL_MVC
 
             // DI Repo
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IRoleRepository, RoleRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             //DI Service

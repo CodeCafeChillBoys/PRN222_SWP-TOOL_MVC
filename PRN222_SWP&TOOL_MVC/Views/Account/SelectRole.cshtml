@@ -1,0 +1,71 @@
+﻿@{
+    ViewData["Title"] = "Chọn vai trò";
+    Layout = "AuthenLayout/_AuthLayout";
+}
+
+<style>
+    body {
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/Image/FPT.png');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .card {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .role-card {
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: all 0.2s ease;
+    }
+
+        .role-card:hover {
+            border-color: #0d6efd;
+            transform: translateY(-3px);
+        }
+
+    input[type="radio"] {
+        display: none;
+    }
+
+        input[type="radio"]:checked + .role-card {
+            border-color: #0d6efd;
+            background-color: #eef4ff;
+        }
+</style>
+
+<div class="login-box" style="width: 420px;">
+    <div class="card">
+        <div class="card-body p-4 text-center">
+
+            <div class="mb-3" style="font-size: 28px;">🎓</div>
+
+            <h5 class="fw-bold mb-1">Chào mừng!</h5>
+            <p class="text-muted mb-4">
+                Vui lòng chọn vai trò để tiếp tục
+            </p>
+
+            <form asp-action="SelectRole" method="post">
+                <input type="hidden" name="email" value="@ViewBag.Email" />
+                <input type="hidden" name="name" value="@ViewBag.Name" />
+                <input type="hidden" name="ProviderUserId" value="@ViewBag.ProviderUserId" />
+
+                <select name="roleId" class="form-select">
+                    <option value="2">Student</option>
+                    <option value="3">Teacher</option>
+                </select>
+
+                <button type="submit" class="btn btn-primary">Confirm</button>
+            </form>
+
+        </div>
+    </div>
+</div>

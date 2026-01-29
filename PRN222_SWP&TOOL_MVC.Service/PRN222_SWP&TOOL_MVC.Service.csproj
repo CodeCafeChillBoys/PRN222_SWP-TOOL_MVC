@@ -8,7 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DTO\Response\" />
+    <Compile Remove="DTO\Response\**" />
+    <EmbeddedResource Remove="DTO\Response\**" />
+    <None Remove="DTO\Response\**" />
   </ItemGroup>
 
   <ItemGroup>
