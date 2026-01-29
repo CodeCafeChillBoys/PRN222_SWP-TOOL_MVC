@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PRN222_SWP_TOOL_MVC.Repository.Entities;
 using PRN222_SWP_TOOL_MVC.Service.DTO.Request;
@@ -9,6 +10,7 @@ using PRN222_SWP_TOOL_MVC.Service.IServices.IAuthentication;
 
 namespace PRN222_MVC.Controllers
 {
+    [AllowAnonymous]
     public class AccountController : Controller
     {
         private readonly IGoogleAuthService _googleAuthService;
@@ -21,13 +23,18 @@ namespace PRN222_MVC.Controllers
         [HttpGet]
         public IActionResult SelectRole()
         {
+
+            // Sử dụng TempData để tránh người dùng vào trái phép
             if (TempData["Email"] == null)
                 return RedirectToAction("Login");
 
+
+            // Lấy dữ liệu Google đã xác thực:
             ViewBag.Email = TempData["Email"];
             ViewBag.Name = TempData["Name"];
             ViewBag.ProviderUserId = TempData["ProviderUserId"];
 
+            // giữ cho gọi request tiếp theo
             TempData.Keep();
 
             return View();
@@ -58,15 +65,14 @@ namespace PRN222_MVC.Controllers
             }
 
             // Nếu không có trang chờ sẵn, điều hướng theo Role mặc định
-            return result.Data.RoleID switch
+            return result.Data.Role.RoleName switch
             {
-                2 => RedirectToAction("Index", "Student"),
-                3 => RedirectToAction("Index", "Teacher"),
-                1 => RedirectToAction("Index", "Admin"),
+                "Student" => RedirectToAction("Index", "Student"),
+                "Teacher" => RedirectToAction("Index", "Teacher"),
+                "Admin" => RedirectToAction("Index", "Admin"),
                 _ => RedirectToAction("Index", "Home")
             };
         }
-
 
         [HttpGet]
         public async Task<IActionResult> GoogleResponse(string returnUrl = null)
@@ -111,11 +117,11 @@ namespace PRN222_MVC.Controllers
             }
 
             // Fallback theo ROLE nếu không có returnUrl
-            return user.RoleID switch
+            return user.Role.RoleName switch
             {
-                2 => RedirectToAction("Index", "Student"),
-                3 => RedirectToAction("Index", "Teacher"),
-                1 => RedirectToAction("Index", "Admin"),
+                "Student" => RedirectToAction("Index", "Student"),
+                "Teacher" => RedirectToAction("Index", "Teacher"),
+                "Admin" => RedirectToAction("Index", "Admin"),
                 _ => RedirectToAction("Index", "Home")
             };
         }
@@ -148,7 +154,7 @@ namespace PRN222_MVC.Controllers
     {
         new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
         new Claim(ClaimTypes.Email, user.Email),
-        new Claim(ClaimTypes.Role, user.RoleID.ToString())
+        new Claim(ClaimTypes.Role, user.Role.RoleName)
     };
 
             var identity = new ClaimsIdentity(
@@ -159,6 +165,6 @@ namespace PRN222_MVC.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(identity));
         }
-
     }
+    x
 }
