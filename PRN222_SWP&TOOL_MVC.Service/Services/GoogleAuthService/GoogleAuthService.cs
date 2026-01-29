@@ -1,7 +1,6 @@
 ﻿using PRN222_SWP_TOOL_MVC.Repository.Entities;
 using PRN222_SWP_TOOL_MVC.Repository.UnitOfWorkRepo.IUnitOfWork;
 using PRN222_SWP_TOOL_MVC.Service.DTO.Request;
-using PRN222_SWP_TOOL_MVC.Service.Enum;
 using PRN222_SWP_TOOL_MVC.Service.IServices.IAuthentication;
 using PRN222_SWP_TOOL_MVC.Service.MessageHelper;
 
@@ -19,7 +18,7 @@ namespace PRN222_SWP_TOOL_MVC.Service.Services.GoogleAuthService
         public async Task<ReturnData<User>> CreateGoogleUserAsync(SelectRoleRequestDTO selectRoleRequestDTO)
         {
 
-            var result = new ReturnData<User>();    
+            var result = new ReturnData<User>();
 
             if (string.IsNullOrEmpty(selectRoleRequestDTO.email))
             {
@@ -56,9 +55,11 @@ namespace PRN222_SWP_TOOL_MVC.Service.Services.GoogleAuthService
             return result;
         }
 
-        public async Task<User> LoginWithGoogleAsync(LoginRequestDTO info)
+        public async Task<User?> LoginWithGoogleAsync(LoginRequestDTO info)
         {
-            return await _unitOfWork.userRepository.GetAsync(s => s.Email == info.Email && s.Provider == "GOOGLE");
+            return await _unitOfWork.userRepository.GetAsync(u =>
+                u.Email == info.Email &&
+                u.Provider == "Google");
         }
     }
 }

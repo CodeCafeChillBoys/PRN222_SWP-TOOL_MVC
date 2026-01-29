@@ -28,7 +28,7 @@ namespace PRN222_MVC.Controllers
             ViewBag.Name = TempData["Name"];
             ViewBag.ProviderUserId = TempData["ProviderUserId"];
 
-            TempData.Keep(); // ⚠️ rất quan trọng
+            TempData.Keep();
 
             return View();
         }
@@ -37,8 +37,8 @@ namespace PRN222_MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> SelectRole(SelectRoleRequestDTO dto)
         {
-            if (!ModelState.IsValid)
-                return View(dto);
+            if (!ModelState.IsValid) return View(dto);
+
             var result = await _googleAuthService.CreateGoogleUserAsync(dto);
 
             if (!result.Success)
@@ -48,23 +48,37 @@ namespace PRN222_MVC.Controllers
             }
 
             await SignInUser(result.Data);
-            return RedirectToAction("Index", "Home");
+
+            // Lấy lại ReturnUrl từ TempData sau khi tạo User thành công
+            string returnUrl = TempData["ReturnUrl"] as string;
+
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return LocalRedirect(returnUrl);
+            }
+
+            // Nếu không có trang chờ sẵn, điều hướng theo Role mặc định
+            return result.Data.RoleID switch
+            {
+                2 => RedirectToAction("Index", "Student"),
+                3 => RedirectToAction("Index", "Teacher"),
+                1 => RedirectToAction("Index", "Admin"),
+                _ => RedirectToAction("Index", "Home")
+            };
         }
 
 
         [HttpGet]
-        public async Task<IActionResult> GoogleResponse()
+        public async Task<IActionResult> GoogleResponse(string returnUrl = null)
         {
-            // 1️.Lấy identity sau khi Google xác thực
             var authResult = await HttpContext.AuthenticateAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme);
 
             if (!authResult.Succeeded)
-                return RedirectToAction("Login");
+                return RedirectToAction("Login", "Account");
 
             var principal = authResult.Principal;
 
-            // 2️.Lấy claims Google
             var dto = new LoginRequestDTO
             {
                 Email = principal.FindFirstValue(ClaimTypes.Email),
@@ -73,36 +87,50 @@ namespace PRN222_MVC.Controllers
             };
 
             if (string.IsNullOrWhiteSpace(dto.Email))
-                return RedirectToAction("Login");
+                return RedirectToAction("Login", "Account");
 
-            // 3️. Gọi service xử lý DB
             var user = await _googleAuthService.LoginWithGoogleAsync(dto);
 
-            // Chưa có User
-
+            //CHƯA CÓ USER → CHỌN ROLE
             if (user == null)
             {
                 TempData["Email"] = dto.Email;
                 TempData["Name"] = dto.FullName;
                 TempData["ProviderUserId"] = dto.ProviderUserId;
+                TempData["ReturnUrl"] = returnUrl; // Lưu vào TempData cho SelectRole dùng
 
-                return RedirectToAction("SelectRole");
+                return RedirectToAction("SelectRole", "Account");
             }
 
-            // ĐÃ CÓ USER
             await SignInUser(user);
 
-            // 5️. Login thành công
-            return RedirectToAction("Index", "Home");
+            // Kiểm tra nếu có returnUrl thì quay lại ngay trang đó
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return LocalRedirect(returnUrl);
+            }
+
+            // Fallback theo ROLE nếu không có returnUrl
+            return user.RoleID switch
+            {
+                2 => RedirectToAction("Index", "Student"),
+                3 => RedirectToAction("Index", "Teacher"),
+                1 => RedirectToAction("Index", "Admin"),
+                _ => RedirectToAction("Index", "Home")
+            };
         }
+
 
         // Redirect sang Google
         [HttpGet]
-        public IActionResult GoogleLogin()
+        public IActionResult GoogleLogin(string returnUrl = null)
         {
+            // Tạo RedirectUri bao gồm cả tham số returnUrl để GoogleResponse có thể nhận lại được
+            var redirectUrl = Url.Action("GoogleResponse", "Account", new { returnUrl });
+
             var properties = new AuthenticationProperties
             {
-                RedirectUri = Url.Action("GoogleResponse", "Account")
+                RedirectUri = redirectUrl
             };
 
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
@@ -120,11 +148,12 @@ namespace PRN222_MVC.Controllers
     {
         new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
         new Claim(ClaimTypes.Email, user.Email),
-          new Claim("RoleID", user.RoleID.ToString())
+        new Claim(ClaimTypes.Role, user.RoleID.ToString())
     };
 
             var identity = new ClaimsIdentity(
-                claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                claims,
+                CookieAuthenticationDefaults.AuthenticationScheme);
 
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,

@@ -1,5 +1,4 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IRoleRepository;
 using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IUserRepository;
@@ -25,20 +24,22 @@ namespace PRN222_SWP_TOOL_MVC
             builder.Services.AddDbContext<AppDbContext>(options =>
              options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            //  DI google
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+                // Chỉnh cái này thành Cookie để nó ưu tiên nhảy về LoginPath của bạn trước
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             })
-        .AddCookie()
-        .AddGoogle(options =>
-           {
-
-               options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-               options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-           });
-
+     .AddCookie(options =>
+     {
+         options.LoginPath = "/Account/Login";
+         options.AccessDeniedPath = "/Account/AccessDenied";
+     })
+     .AddGoogle(options =>
+     {
+         options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+         options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+     });
 
             // DI Repo
             builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -63,6 +64,7 @@ namespace PRN222_SWP_TOOL_MVC
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
