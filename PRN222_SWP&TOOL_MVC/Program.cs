@@ -1,3 +1,16 @@
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.EntityFrameworkCore;
+using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IRoleRepository;
+using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IUserRepository;
+using PRN222_SWP_TOOL_MVC.Repository.Repositories.RoleRepository;
+using PRN222_SWP_TOOL_MVC.Repository.Repositories.UserRepository;
+using PRN222_SWP_TOOL_MVC.Repository.UnitOfWorkRepo.IUnitOfWork;
+using PRN222_SWP_TOOL_MVC.Repository.UnitOfWorkRepo.UnitOfWork;
+using PRN222_SWP_TOOL_MVC.Service.IServices.IAuthentication;
+using PRN222_SWP_TOOL_MVC.Service.Services.GoogleAuthService;
+
 namespace PRN222_SWP_TOOL_MVC
 {
     public class Program
@@ -8,6 +21,49 @@ namespace PRN222_SWP_TOOL_MVC
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            //DI DB 
+            builder.Services.AddDbContext<AppDbContext>(options =>
+             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+            // DI Google
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                // Chỉnh cái này thành Cookie để nó ưu tiên nhảy về LoginPath của bạn trước
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+              .AddCookie(options =>
+               {
+                   options.LoginPath = "/Account/Login";
+                   options.AccessDeniedPath = "/Account/AccessDenied";
+               })
+              .AddGoogle(options =>
+               {
+                   options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+                   options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+               });
+
+
+            // DI Authen before page student teacher
+            builder.Services.AddControllersWithViews(options =>
+            {
+                // Tạo một chính sách yêu cầu người dùng phải đăng nhập
+                var policy = new AuthorizationPolicyBuilder()
+                                 .RequireAuthenticatedUser()
+                                 .Build();
+
+                // Thêm vào Filter toàn cục
+                options.Filters.Add(new AuthorizeFilter(policy));
+            });
+            // DI Repo
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            //DI Service
+            builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
 
             var app = builder.Build();
 
@@ -24,6 +80,7 @@ namespace PRN222_SWP_TOOL_MVC
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
