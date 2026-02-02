@@ -64,6 +64,7 @@ namespace PRN222_MVC.Controllers
                 return LocalRedirect(returnUrl);
             }
 
+            Console.WriteLine(result.Data.Role.RoleName);
             // Nếu không có trang chờ sẵn, điều hướng theo Role mặc định
             return result.Data.Role.RoleName switch
             {
@@ -116,6 +117,8 @@ namespace PRN222_MVC.Controllers
                 return LocalRedirect(returnUrl);
             }
 
+            Console.WriteLine(user.Role.RoleName);
+
             // Fallback theo ROLE nếu không có returnUrl
             return user.Role.RoleName switch
             {
@@ -166,5 +169,5 @@ namespace PRN222_MVC.Controllers
                 new ClaimsPrincipal(identity));
         }
     }
-    x
+
 }
