@@ -56,5 +56,15 @@ namespace PRN222_SWP_TOOL_MVC.Repository.Repositories.GenericRepository
             // Nếu không tìm thấy, nó sẽ trả về null
             return await _dbSet.FirstOrDefaultAsync(predicate);
         }
+
+        public async Task<T?> FindWitInclude(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = _dbSet;
+
+            foreach (var include in includes)
+                query = query.Include(include);
+
+            return await query.FirstOrDefaultAsync(predicate);
+        }
     }
 }

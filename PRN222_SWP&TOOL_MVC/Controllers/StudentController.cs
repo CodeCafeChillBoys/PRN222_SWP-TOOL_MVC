@@ -6,6 +6,6 @@ namespace PRN222_MVC.Controllers
     [Authorize(Roles = "Student")]
     public class StudentController : Controller
     {
-        public IActionResult Index() => View();  
+        public IActionResult Index() => View();
     }
 }

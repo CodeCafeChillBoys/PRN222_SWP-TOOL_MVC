@@ -57,9 +57,9 @@ namespace PRN222_SWP_TOOL_MVC.Service.Services.GoogleAuthService
 
         public async Task<User?> LoginWithGoogleAsync(LoginRequestDTO info)
         {
-            return await _unitOfWork.userRepository.GetAsync(u =>
+            return await _unitOfWork.userRepository.FindWitInclude(u =>
                 u.Email == info.Email &&
-                u.Provider == "Google");
+                u.Provider == "Google", u => u.Role);
         }
     }
 }
