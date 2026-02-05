@@ -5,7 +5,7 @@ using PRN222_SWP_TOOL_MVC.Models.GroupViewModels;
 using PRN222_SWP_TOOL_MVC.Service.IServices.IStudentGroup;
 using System.Security.Claims;
 
-[Authorize]
+[Authorize(Roles = "Student")]
 public class StudentController : Controller
 {
     private readonly IStudentGroupService _groupService;
