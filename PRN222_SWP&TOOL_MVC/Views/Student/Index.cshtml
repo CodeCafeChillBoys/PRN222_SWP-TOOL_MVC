@@ -1,4 +1,5 @@
-﻿@{
+﻿@model PRN222_SWP_TOOL_MVC.Models.StudentViewModels.StudentIndexViewModel
+@{
     ViewData["Title"] = "Student";
     Layout = "~/Views/Shared/StudentLayout/_StudentLayout.cshtml";
 }
@@ -9,7 +10,7 @@
         </div>
         @await Html.PartialAsync("~/Views/Student/ComponentStudent/_Tabs.cshtml")
         <div class="tab-content">
-            @await Html.PartialAsync("~/Views/Student/ComponentStudent/_GroupTab.cshtml")
+          @await Html.PartialAsync("~/Views/Student/ComponentStudent/_GroupTab.cshtml", Model.Group)
             @await Html.PartialAsync("~/Views/Student/ComponentStudent/_TopicTab.cshtml")
             @await Html.PartialAsync("~/Views/Student/ComponentStudent/_QATab.cshtml")
         </div>
