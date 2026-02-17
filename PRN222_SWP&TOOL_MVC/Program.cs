@@ -57,6 +57,8 @@ namespace PRN222_SWP_TOOL_MVC
                 // Thêm vào Filter toàn cục
                 options.Filters.Add(new AuthorizeFilter(policy));
             });
+
+
             // DI Repo
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
