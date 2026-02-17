@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace PRN222_SWP_TOOL_MVC.Repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260129110335_CreateTableSemester")]
+    partial class CreateTableSemester
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -20,56 +23,6 @@ namespace PRN222_SWP_TOOL_MVC.Repository.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("PRN222_SWP_TOOL_MVC.Repository.Entities.Class", b =>
-                {
-                    b.Property<int>("ClassID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ClassID"));
-
-                    b.Property<string>("ClassCode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ClassName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("SemesterID")
-                        .HasColumnType("integer");
-
-                    b.HasKey("ClassID");
-
-                    b.HasIndex("SemesterID");
-
-                    b.ToTable("Classes");
-                });
-
-            modelBuilder.Entity("PRN222_SWP_TOOL_MVC.Repository.Entities.GroupMember", b =>
-                {
-                    b.Property<int>("GroupID")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("StudentID")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("IsLeader")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("JoinedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("GroupID", "StudentID");
-
-                    b.HasIndex("StudentID");
-
-                    b.ToTable("GroupMembers");
-                });
 
             modelBuilder.Entity("PRN222_SWP_TOOL_MVC.Repository.Entities.Role", b =>
                 {
@@ -137,50 +90,6 @@ namespace PRN222_SWP_TOOL_MVC.Repository.Migrations
                     b.ToTable("Students");
                 });
 
-            modelBuilder.Entity("PRN222_SWP_TOOL_MVC.Repository.Entities.StudentGroup", b =>
-                {
-                    b.Property<int>("GroupID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("GroupID"));
-
-                    b.Property<int>("ClassID")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("CreatedByUserID")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("GroupName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("InviteCode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsLocked")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("MaxMember")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("GroupID");
-
-                    b.HasIndex("ClassID");
-
-                    b.HasIndex("CreatedByUserID");
-
-                    b.ToTable("StudentGroups");
-                });
-
             modelBuilder.Entity("PRN222_SWP_TOOL_MVC.Repository.Entities.Teacher", b =>
                 {
                     b.Property<int>("TeacherID")
@@ -233,36 +142,6 @@ namespace PRN222_SWP_TOOL_MVC.Repository.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("PRN222_SWP_TOOL_MVC.Repository.Entities.Class", b =>
-                {
-                    b.HasOne("PRN222_SWP_TOOL_MVC.Repository.Entities.Semester", "Semester")
-                        .WithMany()
-                        .HasForeignKey("SemesterID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Semester");
-                });
-
-            modelBuilder.Entity("PRN222_SWP_TOOL_MVC.Repository.Entities.GroupMember", b =>
-                {
-                    b.HasOne("PRN222_SWP_TOOL_MVC.Repository.Entities.StudentGroup", "Group")
-                        .WithMany("Members")
-                        .HasForeignKey("GroupID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PRN222_SWP_TOOL_MVC.Repository.Entities.Student", "Student")
-                        .WithMany()
-                        .HasForeignKey("StudentID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Group");
-
-                    b.Navigation("Student");
-                });
-
             modelBuilder.Entity("PRN222_SWP_TOOL_MVC.Repository.Entities.Student", b =>
                 {
                     b.HasOne("PRN222_SWP_TOOL_MVC.Repository.Entities.User", "User")
@@ -272,25 +151,6 @@ namespace PRN222_SWP_TOOL_MVC.Repository.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("PRN222_SWP_TOOL_MVC.Repository.Entities.StudentGroup", b =>
-                {
-                    b.HasOne("PRN222_SWP_TOOL_MVC.Repository.Entities.Class", "Class")
-                        .WithMany("Groups")
-                        .HasForeignKey("ClassID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PRN222_SWP_TOOL_MVC.Repository.Entities.User", "CreatedByUser")
-                        .WithMany()
-                        .HasForeignKey("CreatedByUserID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Class");
-
-                    b.Navigation("CreatedByUser");
                 });
 
             modelBuilder.Entity("PRN222_SWP_TOOL_MVC.Repository.Entities.Teacher", b =>
@@ -315,19 +175,9 @@ namespace PRN222_SWP_TOOL_MVC.Repository.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("PRN222_SWP_TOOL_MVC.Repository.Entities.Class", b =>
-                {
-                    b.Navigation("Groups");
-                });
-
             modelBuilder.Entity("PRN222_SWP_TOOL_MVC.Repository.Entities.Role", b =>
                 {
                     b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("PRN222_SWP_TOOL_MVC.Repository.Entities.StudentGroup", b =>
-                {
-                    b.Navigation("Members");
                 });
 
             modelBuilder.Entity("PRN222_SWP_TOOL_MVC.Repository.Entities.User", b =>
