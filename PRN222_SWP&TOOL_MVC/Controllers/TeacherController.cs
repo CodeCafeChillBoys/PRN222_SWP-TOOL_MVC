@@ -55,7 +55,5 @@ namespace PRN222_MVC.Controllers
             var model = await _teacherService.GetDashboardDataAsync(tab);
             return View(model);
         }
-
-
     }
 }

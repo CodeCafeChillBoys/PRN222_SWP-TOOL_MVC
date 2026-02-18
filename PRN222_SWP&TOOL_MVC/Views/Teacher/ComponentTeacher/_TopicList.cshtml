@@ -1,0 +1,51 @@
+﻿@model IEnumerable<PRN222_SWP_TOOL_MVC.Repository.Entities.Topic>
+
+
+<div class="topic-header">
+    <div class="topic-header-left">
+        <div class="topic-icon">
+            <i class="bi bi-journal-text"></i>
+        </div>
+        <div>
+            <h2>Quản lý Đề tài</h2>
+            <p>Tạo và quản lý các đề tài cho sinh viên</p>
+        </div>
+    </div>
+
+    <a asp-action="Create" class="btn-create">
+        <span>+</span> Thêm đề tài mới
+    </a>
+</div>
+
+@if (Model != null && Model.Any())
+{
+    @foreach (var topic in Model)
+    {
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header d-flex justify-content-between">
+                <strong>@topic.TopicName</strong>
+                <span>@(topic.TopicRegistrations?.Count ?? 0) / 5 nhóm</span>
+            </div>
+
+            <div class="card-body">
+                <p>@topic.Description</p>
+
+                <div class="d-flex gap-2">
+                    <a asp-action="Edit"        asp-route-id="@topic.TopicID"                class="btn btn-warning btn-sm">
+                        Chỉnh sửa
+                    </a>
+
+                    <a asp-action="Delete"               asp-route-id="@topic.TopicID"       class="btn btn-danger btn-sm">
+                        Xóa
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="alert alert-info mt-4">
+        Chưa có đề tài nào.
+    </div>
+}

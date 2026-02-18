@@ -8,12 +8,23 @@
 
 <div class="container-fluid">
     <!-- Filter Header Component -->
-    
-
     <div class="container">
-         @await Html.PartialAsync("~/Views/Teacher/ComponentTeacher/_SemesterFilter.cshtml")
+        @await Html.PartialAsync("~/Views/Teacher/ComponentTeacher/_SemesterFilter.cshtml")
         @await Html.PartialAsync("~/Views/Teacher/ComponentTeacher/_Stats.cshtml")
         @await Html.PartialAsync("~/Views/Teacher/ComponentTeacher/_TopTabs.cshtml")
+
+        <!-- CONTENT -->
+        @if (Model.CurrentTab == "qa")
+        {
+            @await Html.PartialAsync("~/Views/Teacher/ComponentTeacher/_QuestionList.cshtml", Model.Question)
+        }
+        else if (Model.CurrentTab == "topic")
+        {
+            @await Html.PartialAsync("~/Views/Teacher/ComponentTeacher/_TopicList.cshtml", Model.Topics)
+        }
+
+
+    </div>
        
     </div>
 
@@ -42,5 +53,4 @@
             }
         });
     </script>
-</div>
 </div>

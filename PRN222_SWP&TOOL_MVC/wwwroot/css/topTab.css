@@ -1,7 +1,7 @@
 ﻿/* ========== COMMON ========== */
 .main-tabs {
     padding: 8px;
-    border-radius: 50px;
+    border-radius: 24px;
     display: flex;
 }
 
@@ -10,7 +10,7 @@
     }
 
     .main-tabs .nav-link {
-        border-radius: 50px;
+        border-radius: 24px;
         padding: 14px 0;
         font-weight: 500;
         transition: 0.3s;
