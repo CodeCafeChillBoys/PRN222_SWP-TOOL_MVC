@@ -50,10 +50,38 @@ namespace PRN222_SWP_TOOL_MVC.Service.Services.GoogleAuthService
             await _unitOfWork.userRepository.AddAsync(user);
             await _unitOfWork.SaveChangeAsync();
 
+            await CreateRoleProfileAsync(user, role.RoleID);
             result.Success = true;
             result.Data = user;
             return result;
         }
+
+
+        private async Task CreateRoleProfileAsync(User user, int roleId)
+        {
+            switch (roleId)
+            {
+                case 2: // Student
+                    await _unitOfWork.studentRepository.AddAsync(new Student
+                    {
+                        StudentID = user.UserID,
+                        StudentCode = "SE" + user.UserID,
+                        Major = "Software Engineering"
+                    });
+                    break;
+
+                case 3: // Teacher
+                    await _unitOfWork.teacherRepository.AddAsync(new Teacher
+                    {
+                        TeacherID = user.UserID,
+                        Department = "Software Engineering"
+                    });
+                    break;
+            }
+
+            await _unitOfWork.SaveChangeAsync();
+        }
+
 
         public async Task<User?> LoginWithGoogleAsync(LoginRequestDTO info)
         {

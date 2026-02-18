@@ -1,0 +1,63 @@
+﻿/* ========== COMMON ========== */
+.main-tabs {
+    padding: 8px;
+    border-radius: 50px;
+    display: flex;
+}
+
+    .main-tabs .nav-item {
+        flex: 1;
+    }
+
+    .main-tabs .nav-link {
+        border-radius: 50px;
+        padding: 14px 0;
+        font-weight: 500;
+        transition: 0.3s;
+        text-align: center;
+    }
+
+/* reset bootstrap */
+.nav-pills .nav-link.active {
+    background-color: transparent;
+}
+
+/* ========== DARK MODE ========== */
+body.dark-mode .main-tabs {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+    body.dark-mode .main-tabs .nav-link {
+        color: rgba(255,255,255,0.7);
+    }
+
+        body.dark-mode .main-tabs .nav-link:hover {
+            color: #ffffff;
+        }
+
+/* ========== LIGHT MODE ========== */
+body:not(.dark-mode) .main-tabs {
+    background: #f1f5f9;
+}
+
+    body:not(.dark-mode) .main-tabs .nav-link {
+        color: #475569;
+    }
+
+        body:not(.dark-mode) .main-tabs .nav-link:hover {
+            color: #1e293b;
+        }
+
+/* ========== ACTIVE TAB COLORS ========== */
+
+/* QA active */
+.nav-pills .nav-link.active-qa {
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    color: #ffffff !important;
+}
+
+/* Topic active */
+.nav-pills .nav-link.active-topic {
+    background: linear-gradient(90deg, #7c3aed, #db2777);
+    color: #ffffff !important;
+}

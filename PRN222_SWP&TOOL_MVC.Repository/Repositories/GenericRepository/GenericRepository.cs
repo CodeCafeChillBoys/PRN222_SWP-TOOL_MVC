@@ -66,5 +66,20 @@ namespace PRN222_SWP_TOOL_MVC.Repository.Repositories.GenericRepository
 
             return await query.FirstOrDefaultAsync(predicate);
         }
+
+
+        public async Task<IEnumerable<T>> GetAllWithIncludeAsync(
+    params Expression<Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = _context.Set<T>();
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return await query.ToListAsync();
+        }
+
     }
 }
