@@ -19,8 +19,8 @@ namespace PRN222_SWP_TOOL_MVC.Service.Services.TeacherService
                           .GetAllWithIncludeAsync(q => q.Topic);
 
             var topics = await _unitOfWork.topicRepository
-                                .GetAllWithIncludeAsync(t => t.TopicRegistrations);
-
+                                .GetAllWithIncludeAsync(t => t.TopicRegistrations,
+                                  t => t.Semester);
 
             return new TeacherDashboardReuqestDTO
             {
