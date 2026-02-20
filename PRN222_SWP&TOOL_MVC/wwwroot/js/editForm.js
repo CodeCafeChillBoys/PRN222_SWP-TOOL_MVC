@@ -22,3 +22,13 @@ function openEditModal(id) {
             }
         });
 }
+
+function closeEditModal() {
+    document.getElementById("editModal").classList.remove("active");
+}
+window.addEventListener("click", function (e) {
+    const modal = document.getElementById("editModal");
+    if (e.target === modal) {
+        modal.classList.remove("active");
+    }
+});
