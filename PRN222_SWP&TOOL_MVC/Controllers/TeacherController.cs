@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PRN222_SWP_TOOL_MVC.Repository.Entities;
 using PRN222_SWP_TOOL_MVC.Service.IServices.ISemester;
 using PRN222_SWP_TOOL_MVC.Service.IServices.ITeacher;
 
@@ -54,6 +55,13 @@ namespace PRN222_MVC.Controllers
         {
             var model = await _teacherService.GetDashboardDataAsync(tab);
             return View(model);
+        }
+        public IActionResult CreateTopic()
+        {
+            return PartialView(
+                "~/Views/Teacher/ComponentTeacher/_CreateTopic.cshtml",
+                new Topic()
+            );
         }
     }
 }

@@ -13,6 +13,8 @@
      <link rel="stylesheet" href="~/css/topTab.css" />
      <link rel="stylesheet" href="~/css/topTabHeader.css" />
      <link rel="stylesheet" href="~/css/topTabTopicList.css" />
+     <link rel="stylesheet" href="~/css/createTopic.css" />
+    
 
     @RenderSection("Styles", false)
 
@@ -29,7 +31,7 @@
 
         main {
             flex: 1;
-        }x
+        }
     </style>
 
   
@@ -47,5 +49,6 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/js/loadFormTopic.js" asp-append-version="true"></script>
 </body>
 </html>

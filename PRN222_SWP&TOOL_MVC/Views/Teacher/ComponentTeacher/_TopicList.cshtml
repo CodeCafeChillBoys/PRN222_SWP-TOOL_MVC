@@ -2,6 +2,7 @@
 
 
 <div class="topic-header">
+
     <div class="topic-header-left">
         <div class="topic-icon">
             <i class="bi bi-journal-text"></i>
@@ -12,9 +13,32 @@
         </div>
     </div>
 
-    <a asp-action="Create" class="btn-create">
+    <button type="button" id="btnCreateTopic" class="btn-create">
         <span>+</span> Thêm đề tài mới
-    </a>
+    </button>
+
+</div>
+
+
+<!-- ===== MODAL ===== -->
+<div id="topicModal" class="modal-overlay">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+            <div>
+                <h3>Thêm đề tài mới</h3>
+                <p>Tạo đề tài mới cho sinh viên đăng ký</p>
+            </div>
+
+            <span class="close-btn" id="closeModal">&times;</span>
+        </div>
+
+        @await Html.PartialAsync(
+                 "ComponentTeacher/_CreateTopic",
+                 new PRN222_SWP_TOOL_MVC.Repository.Entities.Topic()
+                 )
+    </div>
 </div>
 
 @if (Model != null && Model.Any())
