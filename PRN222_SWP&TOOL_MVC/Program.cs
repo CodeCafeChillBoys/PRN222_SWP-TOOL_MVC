@@ -28,10 +28,12 @@ using PRN222_SWP_TOOL_MVC.Service.IServices.IAuthentication;
 using PRN222_SWP_TOOL_MVC.Service.IServices.ISemester;
 using PRN222_SWP_TOOL_MVC.Service.IServices.IStudentGroup;
 using PRN222_SWP_TOOL_MVC.Service.IServices.ITeacher;
+using PRN222_SWP_TOOL_MVC.Service.IServices.ITopic;
 using PRN222_SWP_TOOL_MVC.Service.Services.GoogleAuthService;
 using PRN222_SWP_TOOL_MVC.Service.Services.SemesterService;
 using PRN222_SWP_TOOL_MVC.Service.Services.StudentGroupService;
 using PRN222_SWP_TOOL_MVC.Service.Services.TeacherService;
+using PRN222_SWP_TOOL_MVC.Service.Services.TopicService;
 
 namespace PRN222_SWP_TOOL_MVC
 {
@@ -97,6 +99,7 @@ namespace PRN222_SWP_TOOL_MVC
             builder.Services.AddScoped<ISemesterService, SemesterService>();
             builder.Services.AddScoped<IStudentGroupService, StudentGroupService>();
             builder.Services.AddScoped<ITeacherService, TeacherService>();
+            builder.Services.AddScoped<ITopicService, TopicService>();
 
             var app = builder.Build();
 

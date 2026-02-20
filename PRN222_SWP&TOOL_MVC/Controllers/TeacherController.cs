@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PRN222_SWP_TOOL_MVC.Repository.Entities;
 using PRN222_SWP_TOOL_MVC.Service.IServices.ISemester;
 using PRN222_SWP_TOOL_MVC.Service.IServices.ITeacher;
+using PRN222_SWP_TOOL_MVC.Service.IServices.ITopic;
 
 namespace PRN222_MVC.Controllers
 {
@@ -11,11 +12,13 @@ namespace PRN222_MVC.Controllers
     {
         private readonly ISemesterService _semesterService;
         private readonly ITeacherService _teacherService;
+        private readonly ITopicService _topicService;
 
-        public TeacherController(ISemesterService semesterService, ITeacherService teacherService)
+        public TeacherController(ISemesterService semesterService, ITeacherService teacherService, ITopicService topicService)
         {
             _semesterService = semesterService;
             _teacherService = teacherService;
+            _topicService = topicService;
         }
 
         public async Task<IActionResult> Semester(int? semesterId, string? status)
@@ -62,6 +65,13 @@ namespace PRN222_MVC.Controllers
                 "~/Views/Teacher/ComponentTeacher/_CreateTopic.cshtml",
                 new Topic()
             );
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetTopic(int id)
+        {
+            var result = await _topicService.GetTopicDetailAsync(id);
+            return Json(result);
         }
     }
 }

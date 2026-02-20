@@ -1,8 +1,5 @@
 ﻿@model IEnumerable<PRN222_SWP_TOOL_MVC.Repository.Entities.Topic>
-
-
 <div class="topic-header">
-
     <div class="topic-header-left">
         <div class="topic-icon">
             <i class="bi bi-journal-text"></i>
@@ -12,30 +9,39 @@
             <p>Tạo và quản lý các đề tài cho sinh viên</p>
         </div>
     </div>
-
     <button type="button" id="btnCreateTopic" class="btn-create">
         <span>+</span> Thêm đề tài mới
     </button>
-
 </div>
-
 
 <!-- ===== MODAL ===== -->
 <div id="topicModal" class="modal-overlay">
-
     <div class="modal-box">
-
         <div class="modal-header">
             <div>
                 <h3>Thêm đề tài mới</h3>
                 <p>Tạo đề tài mới cho sinh viên đăng ký</p>
             </div>
-
             <span class="close-btn" id="closeModal">&times;</span>
+        </div>
+        @await Html.PartialAsync(
+                 "ComponentTeacher/_CreateTopic",
+                 new PRN222_SWP_TOOL_MVC.Repository.Entities.Topic()
+                 )
+    </div>
+</div>
+
+
+<!-- ===== EDIT MODAL ===== -->
+<div id="editModal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>Chỉnh sửa đề tài</h3>
+            <span onclick="closeEditModal()">&times;</span>
         </div>
 
         @await Html.PartialAsync(
-                 "ComponentTeacher/_CreateTopic",
+                 "ComponentTeacher/_EditTopic",
                  new PRN222_SWP_TOOL_MVC.Repository.Entities.Topic()
                  )
     </div>
@@ -52,7 +58,7 @@
                     <div class="topic-icon">📘</div>
                     <div>
                         <h2>@topic.TopicName</h2>
-    
+
 
                         <span class="semester">
                             @(topic.Semester?.SemesterName ?? "Chua co ky hoc")
@@ -84,15 +90,11 @@
 
             <!-- ACTION -->
             <div class="topic-actions">
-                <a asp-action="Edit"
-                   asp-route-id="@topic.TopicID"
-                   class="btn-edit">
+                <button type="button" class="btn-edit" onclick="openEditModal(@topic.TopicID)">
                     ✏ Chỉnh sửa
-                </a>
+                </button>
 
-                <a asp-action="Delete"
-                   asp-route-id="@topic.TopicID"
-                   class="btn-delete">
+                <a asp-action="Delete" asp-route-id="@topic.TopicID" class="btn-delete">
                     🗑 Xóa
                 </a>
             </div>

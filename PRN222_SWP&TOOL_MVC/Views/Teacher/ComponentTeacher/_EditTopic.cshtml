@@ -1,0 +1,27 @@
+﻿@model PRN222_SWP_TOOL_MVC.Repository.Entities.Topic
+
+<form id="editTopicForm">
+
+    <input type="hidden" id="editTopicId" />
+
+    <div>
+        <label>Tiêu đề *</label>
+        <input type="text" id="editTopicName">
+    </div>
+
+    <div>
+        <label>Mô tả *</label>
+        <textarea id="editDescription"></textarea>
+    </div>
+
+    <div>
+        <label>Yêu cầu</label>
+        <textarea id="editRequirement"></textarea>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" id="closeModal" class="btn-cancel" onclick="closeEditModal()">Hủy</button>
+        <button type="submit" class="btn-save">Cập nhật</button>
+    </div>
+
+</form>

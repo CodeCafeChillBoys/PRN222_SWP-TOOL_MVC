@@ -1,9 +1,7 @@
 ﻿document.addEventListener("DOMContentLoaded", function () {
-
     const modal = document.getElementById("topicModal");
     const openBtn = document.getElementById("btnCreateTopic");
     const closeBtn = document.getElementById("closeModal");
-
     if (!modal || !openBtn) return;
 
     // Mở modal
@@ -18,7 +16,6 @@
             modal.classList.remove("active");
         });
     }
-
     // Click ra ngoài để đóng
     modal.addEventListener("click", function (e) {
         if (e.target === modal) {
