@@ -1,4 +1,6 @@
-﻿using PRN222_SWP_TOOL_MVC.Repository.UnitOfWorkRepo.IUnitOfWork;
+﻿using PRN222_SWP_TOOL_MVC.Repository.Entities;
+using PRN222_SWP_TOOL_MVC.Repository.UnitOfWorkRepo.IUnitOfWork;
+using PRN222_SWP_TOOL_MVC.Service.DTO.Request;
 using PRN222_SWP_TOOL_MVC.Service.DTO.Response;
 using PRN222_SWP_TOOL_MVC.Service.IServices.ITopic;
 
@@ -11,6 +13,37 @@ namespace PRN222_SWP_TOOL_MVC.Service.Services.TopicService
         public TopicService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+        }
+
+        public async Task<TopicResponseDTO> CreateTopicAsync(
+      CreateTopicRequestDTO request,
+      int teacherId)
+        {
+            var topic = new Topic
+            {
+                TopicName = request.TopicName,
+                Description = request.Description,
+                Requirement = request.Requirement,
+                SemesterID = request.SemesterID,
+                TeacherID = teacherId,
+                MaxGroupCount = request.MaxGroupCount,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await _unitOfWork.topicRepository.AddAsync(topic);
+            await _unitOfWork.SaveChangeAsync();
+
+            return new TopicResponseDTO
+            {
+                TopicID = topic.TopicID,
+                TopicName = topic.TopicName,
+                Description = topic.Description,
+                Requirement = topic.Requirement,
+                SemesterID = topic.SemesterID,
+                TeacherID = topic.TeacherID,
+                MaxGroupCount = topic.MaxGroupCount,
+                CreatedAt = topic.CreatedAt
+            };
         }
 
         public async Task<TopicDetailResponseDTO> GetTopicDetailAsync(int id)

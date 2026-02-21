@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PRN222_SWP_TOOL_MVC.Repository.Entities;
+using PRN222_SWP_TOOL_MVC.Service.DTO.Request;
 using PRN222_SWP_TOOL_MVC.Service.IServices.ISemester;
 using PRN222_SWP_TOOL_MVC.Service.IServices.ITeacher;
 using PRN222_SWP_TOOL_MVC.Service.IServices.ITopic;
@@ -57,13 +59,21 @@ namespace PRN222_MVC.Controllers
         public async Task<IActionResult> Index(string tab = "qa")
         {
             var model = await _teacherService.GetDashboardDataAsync(tab);
+
             return View(model);
         }
-        public IActionResult CreateTopic()
+        public async Task<IActionResult> CreateTopic()
         {
+            var semesters = await _semesterService.GetAllAsync();
+
+            var model = new TeacherDashboardReuqestDTO
+            {
+                Semesters = semesters.ToList()
+            };
+
             return PartialView(
                 "~/Views/Teacher/ComponentTeacher/_CreateTopic.cshtml",
-                new Topic()
+                model
             );
         }
 
@@ -72,6 +82,43 @@ namespace PRN222_MVC.Controllers
         {
             var result = await _topicService.GetTopicDetailAsync(id);
             return Json(result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateTopicRequestDTO request)
+        {
+            try
+            {
+                if (!User.Identity.IsAuthenticated)
+                {
+                    return Json(new { success = false, message = "Chưa đăng nhập" });
+                }
+
+                var teacherIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+                if (teacherIdClaim == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy thông tin giáo viên" });
+                }
+
+                int teacherId = int.Parse(teacherIdClaim.Value);
+
+                var result = await _topicService.CreateTopicAsync(request, teacherId);
+
+                return Json(new
+                {
+                    success = true,
+                    data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = ex.InnerException?.Message ?? ex.Message
+                });
+            }
         }
     }
 }

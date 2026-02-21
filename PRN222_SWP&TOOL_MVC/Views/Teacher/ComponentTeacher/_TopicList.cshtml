@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PRN222_SWP_TOOL_MVC.Repository.Entities.Topic>
+﻿@model PRN222_SWP_TOOL_MVC.Service.DTO.Request.TeacherDashboardReuqestDTO
 <div class="topic-header">
     <div class="topic-header-left">
         <div class="topic-icon">
@@ -14,7 +14,7 @@
     </button>
 </div>
 
-<!-- ===== MODAL ===== -->
+<!-- ===== MODAL CREATE ===== -->
 <div id="topicModal" class="modal-overlay">
     <div class="modal-box">
         <div class="modal-header">
@@ -24,13 +24,13 @@
             </div>
             <span class="close-btn" id="closeModal">&times;</span>
         </div>
+
         @await Html.PartialAsync(
-                 "ComponentTeacher/_CreateTopic",
-                 new PRN222_SWP_TOOL_MVC.Repository.Entities.Topic()
-                 )
+             "ComponentTeacher/_CreateTopic",
+             Model.Semesters
+             )
     </div>
 </div>
-
 
 <!-- ===== EDIT MODAL ===== -->
 <div id="editModal" class="modal-overlay">
@@ -41,15 +41,15 @@
         </div>
 
         @await Html.PartialAsync(
-                 "ComponentTeacher/_EditTopic",
-                 new PRN222_SWP_TOOL_MVC.Repository.Entities.Topic()
-                 )
+             "ComponentTeacher/_EditTopic",
+             new PRN222_SWP_TOOL_MVC.Repository.Entities.Topic()
+             )
     </div>
 </div>
 
-@if (Model != null && Model.Any())
+@if (Model?.Topics != null && Model.Topics.Any())
 {
-    @foreach (var topic in Model)
+    @foreach (var topic in Model.Topics)
     {
         <div class="topic-wrapper">
             <!-- HEADER -->
@@ -58,8 +58,6 @@
                     <div class="topic-icon">📘</div>
                     <div>
                         <h2>@topic.TopicName</h2>
-
-
                         <span class="semester">
                             @(topic.Semester?.SemesterName ?? "Chua co ky hoc")
                         </span>

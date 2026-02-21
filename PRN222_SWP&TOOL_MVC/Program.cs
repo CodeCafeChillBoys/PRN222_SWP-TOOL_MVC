@@ -46,6 +46,10 @@ namespace PRN222_SWP_TOOL_MVC
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            // DI session
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession();
+
             //DI DB 
             builder.Services.AddDbContext<AppDbContext>(options =>
              options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -116,9 +120,12 @@ namespace PRN222_SWP_TOOL_MVC
 
             app.UseRouting();
 
+            app.UseSession();
+
+
             app.UseAuthentication();
             app.UseAuthorization();
-
+           
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");

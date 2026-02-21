@@ -4,7 +4,6 @@
 }
 
 function openEditModal(id) {
-
     fetch('/Teacher/GetTopic?id=' + id)
         .then(res => res.json())
         .then(data => {
@@ -22,7 +21,6 @@ function openEditModal(id) {
             }
         });
 }
-
 function closeEditModal() {
     document.getElementById("editModal").classList.remove("active");
 }
@@ -30,5 +28,14 @@ window.addEventListener("click", function (e) {
     const modal = document.getElementById("editModal");
     if (e.target === modal) {
         modal.classList.remove("active");
+    }
+});
+
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+        const modal = document.getElementById("editModal");
+        if (modal.classList.contains("active")) {
+            modal.classList.remove("active");
+        }
     }
 });
