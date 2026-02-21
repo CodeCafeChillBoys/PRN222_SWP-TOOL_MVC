@@ -8,5 +8,7 @@ namespace PRN222_SWP_TOOL_MVC.Service.IServices.ITopic
     {
         Task<TopicDetailResponseDTO> GetTopicDetailAsync(int id);
         public Task<TopicResponseDTO> CreateTopicAsync(CreateTopicRequestDTO request, int teacherId);
+
+        Task<bool> UpdateAsync(UpdateTopicRequestDTO dto);
     }
 }

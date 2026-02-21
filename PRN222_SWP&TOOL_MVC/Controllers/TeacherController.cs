@@ -120,5 +120,16 @@ namespace PRN222_MVC.Controllers
                 });
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateTopic(UpdateTopicRequestDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return Json(new { success = false });
+
+            var result = await _topicService.UpdateAsync(dto);
+
+            return Json(new { success = result });
+        }
     }
 }

@@ -39,3 +39,32 @@ document.addEventListener("keydown", function (e) {
         }
     }
 });
+
+
+document.getElementById("editTopicForm")
+    .addEventListener("submit", function (e) {
+
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        fetch('/Teacher/UpdateTopic', {
+            method: 'POST',
+            body: formData
+        })
+            .then(res => res.json())
+            .then(data => {
+
+                if (data.success) {
+                    alert("Cập nhật thành công!");
+                    closeEditModal();
+                    location.reload(); // reload lại danh sách
+                } else {
+                    alert("Cập nhật thất bại!");
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Có lỗi xảy ra!");
+            });
+    });

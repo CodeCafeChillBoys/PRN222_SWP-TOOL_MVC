@@ -66,5 +66,22 @@ namespace PRN222_SWP_TOOL_MVC.Service.Services.TopicService
                 Requirement = topic.Requirement
             };
         }
+
+        public async Task<bool> UpdateAsync(UpdateTopicRequestDTO dto)
+        {
+            var existingTopic = await _unitOfWork.topicRepository.GetByIdAsync(dto.TopicID);
+
+            if (existingTopic == null)
+                return false;
+
+            existingTopic.TopicName = dto.TopicName;
+            existingTopic.Description = dto.Description;
+            existingTopic.Requirement = dto.Requirement;
+
+            await _unitOfWork.topicRepository.UpdateAsync(existingTopic);
+            await _unitOfWork.SaveChangeAsync();
+
+            return true;
+        }
     }
 }
