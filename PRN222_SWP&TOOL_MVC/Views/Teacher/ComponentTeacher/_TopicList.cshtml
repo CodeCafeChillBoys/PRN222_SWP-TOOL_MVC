@@ -47,6 +47,28 @@
     </div>
 </div>
 
+<!-- ===== DELETE MODAL ===== -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal-box" style="max-width:400px">
+
+        <div class="modal-header">
+            <h3>Xác nhận xóa</h3>
+            <span class="close-btn" onclick="closeDeleteModal()">&times;</span>
+        </div>
+
+        <div class="modal-body">
+            <p>Bạn có chắc chắn muốn xóa đề tài này không?</p>
+            <input type="hidden" id="deleteTopicId" />
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn-cancel" onclick="closeDeleteModal()">Hủy</button>
+            <button class="btn-delete" onclick="confirmDelete()">Xóa</button>
+        </div>
+
+    </div>
+</div>
+
 @if (Model?.Topics != null && Model.Topics.Any())
 {
     @foreach (var topic in Model.Topics)
@@ -92,9 +114,11 @@
                     ✏ Chỉnh sửa
                 </button>
 
-                <a asp-action="Delete" asp-route-id="@topic.TopicID" class="btn-delete">
+                <button type="button"
+                        class="btn-delete"
+                        onclick="openDeleteModal(@topic.TopicID)">
                     🗑 Xóa
-                </a>
+                </button>
             </div>
         </div>
     }

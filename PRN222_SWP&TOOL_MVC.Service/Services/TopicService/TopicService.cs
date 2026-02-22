@@ -46,6 +46,19 @@ namespace PRN222_SWP_TOOL_MVC.Service.Services.TopicService
             };
         }
 
+        public async Task<bool> DeleteTopic(int id)
+        {
+            var topic = await _unitOfWork.topicRepository.GetByIdAsync(id);
+
+            if (topic == null)
+                return false;
+
+            await _unitOfWork.topicRepository.DeleteAsync(id);
+            await _unitOfWork.SaveChangeAsync();
+
+            return true;
+        }
+
         public async Task<TopicDetailResponseDTO> GetTopicDetailAsync(int id)
         {
             var topic = await _unitOfWork.topicRepository.GetByIdAsync(id);

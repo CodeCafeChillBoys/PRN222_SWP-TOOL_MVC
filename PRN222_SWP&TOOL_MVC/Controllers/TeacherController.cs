@@ -1,7 +1,6 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PRN222_SWP_TOOL_MVC.Repository.Entities;
 using PRN222_SWP_TOOL_MVC.Service.DTO.Request;
 using PRN222_SWP_TOOL_MVC.Service.IServices.ISemester;
 using PRN222_SWP_TOOL_MVC.Service.IServices.ITeacher;
@@ -129,6 +128,14 @@ namespace PRN222_MVC.Controllers
 
             var result = await _topicService.UpdateAsync(dto);
 
+            return Json(new { success = result });
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteTopic(int id)
+        {
+            var result = await _topicService.DeleteTopic(id);
             return Json(new { success = result });
         }
     }

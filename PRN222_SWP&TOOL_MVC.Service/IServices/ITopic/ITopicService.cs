@@ -1,5 +1,4 @@
-﻿using PRN222_SWP_TOOL_MVC.Repository.Entities;
-using PRN222_SWP_TOOL_MVC.Service.DTO.Request;
+﻿using PRN222_SWP_TOOL_MVC.Service.DTO.Request;
 using PRN222_SWP_TOOL_MVC.Service.DTO.Response;
 
 namespace PRN222_SWP_TOOL_MVC.Service.IServices.ITopic
@@ -10,5 +9,6 @@ namespace PRN222_SWP_TOOL_MVC.Service.IServices.ITopic
         public Task<TopicResponseDTO> CreateTopicAsync(CreateTopicRequestDTO request, int teacherId);
 
         Task<bool> UpdateAsync(UpdateTopicRequestDTO dto);
+        Task<bool> DeleteTopic(int id);
     }
 }

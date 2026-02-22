@@ -7,15 +7,12 @@ function openEditModal(id) {
     fetch('/Teacher/GetTopic?id=' + id)
         .then(res => res.json())
         .then(data => {
-
             if (data.success) {
-
                 setValue("editTopicId", data.topicID);
                 setValue("editTopicName", data.topicName);
                 setValue("editDescription", data.description);
                 setValue("editRequirement", data.requirement);
                 document.getElementById("editModal").classList.add("active");
-
             } else {
                 alert("Không tìm thấy đề tài!");
             }
@@ -43,11 +40,8 @@ document.addEventListener("keydown", function (e) {
 
 document.getElementById("editTopicForm")
     .addEventListener("submit", function (e) {
-
         e.preventDefault();
-
         const formData = new FormData(this);
-
         fetch('/Teacher/UpdateTopic', {
             method: 'POST',
             body: formData

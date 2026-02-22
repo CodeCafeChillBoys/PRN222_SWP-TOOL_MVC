@@ -24,9 +24,14 @@ namespace PRN222_SWP_TOOL_MVC.Repository.Repositories.GenericRepository
             return await _dbSet.CountAsync(predicate);
         }
 
-        public Task DeleteAsync(object id)
+        public async Task DeleteAsync(object id)
         {
-            throw new NotImplementedException();
+            var entity = await _dbSet.FindAsync(id);
+
+            if (entity == null)
+                throw new Exception("Entity not found");
+
+            _dbSet.Remove(entity);;
         }
 
         public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate)
