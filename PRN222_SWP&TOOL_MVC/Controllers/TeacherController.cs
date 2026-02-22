@@ -69,7 +69,6 @@ namespace PRN222_MVC.Controllers
             {
                 Semesters = semesters.ToList()
             };
-
             return PartialView(
                 "~/Views/Teacher/ComponentTeacher/_CreateTopic.cshtml",
                 model
