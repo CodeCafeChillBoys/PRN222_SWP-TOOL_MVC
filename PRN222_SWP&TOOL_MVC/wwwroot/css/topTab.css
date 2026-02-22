@@ -1,8 +1,9 @@
 ﻿/* ========== COMMON ========== */
 .main-tabs {
-    padding: 8px;
-    border-radius: 24px;
+    padding: 6px;
+    border-radius: 16px;
     display: flex;
+    gap: 6px;
 }
 
     .main-tabs .nav-item {
@@ -10,11 +11,12 @@
     }
 
     .main-tabs .nav-link {
-        border-radius: 24px;
-        padding: 14px 0;
+        border-radius: 12px;
         font-weight: 500;
-        transition: 0.3s;
+        transition: all 0.25s ease;
         text-align: center;
+        padding: 10px 0;
+        border: none;
     }
 
 /* reset bootstrap */
@@ -37,7 +39,7 @@ body.dark-mode .main-tabs {
 
 /* ========== LIGHT MODE ========== */
 body:not(.dark-mode) .main-tabs {
-    background: #f1f5f9;
+    background: #eef2f7;
 }
 
     body:not(.dark-mode) .main-tabs .nav-link {
@@ -52,12 +54,14 @@ body:not(.dark-mode) .main-tabs {
 
 /* QA active */
 .nav-pills .nav-link.active-qa {
-    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    background: linear-gradient(90deg, #3b82f6, #6366f1);
     color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
 }
 
 /* Topic active */
 .nav-pills .nav-link.active-topic {
     background: linear-gradient(90deg, #7c3aed, #db2777);
     color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
 }
