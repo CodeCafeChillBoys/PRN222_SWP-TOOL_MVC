@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PRN222_SWP_TOOL_MVC.Repository.Entities;
+using PRN222_SWP_TOOL_MVC.Repository.Entities.QnA;
+
 
 public class AppDbContext : DbContext
 {
@@ -8,68 +10,80 @@ public class AppDbContext : DbContext
     {
     }
 
-    public DbSet<Semester> Semesters => Set<Semester>();
+    // ── Existing ────────────────────────────────────────────
     public DbSet<User> Users { get; set; }
     public DbSet<Role> Roles { get; set; }
     public DbSet<Student> Students { get; set; }
     public DbSet<Teacher> Teachers { get; set; }
+
+    // ── Q&A Domain ──────────────────────────────────────────
+    public DbSet<Semester> Semesters { get; set; }
     public DbSet<Class> Classes { get; set; }
-    public DbSet<StudentGroup> StudentGroups { get; set; }
-    public DbSet<GroupMember> GroupMembers { get; set; }
-
-    public DbSet<Question> questions { get; set; }
     public DbSet<Topic> Topics { get; set; }
-
-    public DbSet<TopicRegistration> TopicRegisters { get; set; }
-
+    public DbSet<Group> Groups { get; set; }
+    public DbSet<GroupMember> GroupMembers { get; set; }
+    public DbSet<Question> Questions { get; set; }
+    public DbSet<QuestionMessage> QuestionMessages { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<Student>()
-    .HasOne(s => s.User)
-    .WithOne(u => u.Student)
-    .HasForeignKey<Student>(s => s.StudentID);
+        // ── Enum → string (Postgres stores as TEXT) ──────────
+        modelBuilder.Entity<Question>()
+            .Property(q => q.Status)
+            .HasConversion<string>();
 
+        modelBuilder.Entity<QuestionMessage>()
+            .Property(m => m.SenderRole)
+            .HasConversion<string>();
 
-        modelBuilder.Entity<StudentGroup>()
-      .HasKey(g => g.GroupID);
+        modelBuilder.Entity<GroupMember>()
+            .Property(m => m.RoleInGroup)
+            .HasConversion<string>();
 
-
-        // Class - Semester (many classes per semester)
-        modelBuilder.Entity<Class>()
-            .HasOne(c => c.Semester)
+        // ── Question: 2 FK tới User — phải tường minh ───────
+        modelBuilder.Entity<Question>()
+            .HasOne(q => q.CreatedBy)
             .WithMany()
-            .HasForeignKey(c => c.SemesterID);
-
-        // Group - Class (many groups per class)
-        modelBuilder.Entity<StudentGroup>()
-            .HasOne(g => g.Class)
-            .WithMany(c => c.Groups)
-            .HasForeignKey(g => g.ClassID);
-
-        // Group - CreatedByUser
-        modelBuilder.Entity<StudentGroup>()
-            .HasOne(g => g.CreatedByUser)
-            .WithMany()
-            .HasForeignKey(g => g.CreatedByUserID)
+            .HasForeignKey(q => q.CreatedByUserId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // GroupMember composite key
-        //GroupMember -> Group (many-to-one)
-        //Group->Members(one - to - many)
-        modelBuilder.Entity<GroupMember>()
-            .HasKey(gm => new { gm.GroupID, gm.StudentID });
-
-        modelBuilder.Entity<GroupMember>()
-            .HasOne(gm => gm.Group)
-            .WithMany(g => g.Members)
-            .HasForeignKey(gm => gm.GroupID);
-
-        modelBuilder.Entity<GroupMember>()
-            .HasOne(gm => gm.Student)
+        modelBuilder.Entity<Question>()
+            .HasOne(q => q.LastRepliedBy)
             .WithMany()
-            .HasForeignKey(gm => gm.StudentID);
+            .HasForeignKey(q => q.LastRepliedByUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // ── Topic → Teacher (User) ───────────────────────────
+        modelBuilder.Entity<Topic>()
+            .HasOne(t => t.Teacher)
+            .WithMany()
+            .HasForeignKey(t => t.TeacherId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // ── QuestionMessage → User ───────────────────────────
+        modelBuilder.Entity<QuestionMessage>()
+            .HasOne(m => m.Sender)
+            .WithMany()
+            .HasForeignKey(m => m.SenderUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // ── Indexes ──────────────────────────────────────────
+        // Nhóm xem danh sách câu hỏi của mình, sort theo thời gian
+        modelBuilder.Entity<Question>()
+            .HasIndex(q => new { q.GroupId, q.CreatedAt })
+            .HasDatabaseName("IX_Questions_GroupId_CreatedAt");
+
+        // Teacher xem câu hỏi theo topic, lọc status, sort lastReplyAt
+        modelBuilder.Entity<Question>()
+            .HasIndex(q => new { q.TopicId, q.Status, q.LastReplyAt })
+            .HasDatabaseName("IX_Questions_TopicId_Status_LastReplyAt");
+
+        // GroupMember: tìm nhanh userId trong group
+        modelBuilder.Entity<GroupMember>()
+            .HasIndex(m => new { m.GroupId, m.UserId })
+            .HasDatabaseName("IX_GroupMembers_GroupId_UserId")
+            .IsUnique();
     }
 }
