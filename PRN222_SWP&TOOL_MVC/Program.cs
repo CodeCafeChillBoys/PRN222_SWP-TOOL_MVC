@@ -36,6 +36,8 @@ using PRN222_SWP_TOOL_MVC.Service.Services.StudentGroupService;
 using PRN222_SWP_TOOL_MVC.Service.Services.StudentService;
 using PRN222_SWP_TOOL_MVC.Service.Services.TeacherService;
 using PRN222_SWP_TOOL_MVC.Service.Services.TopicService;
+using PRN222_SWP_TOOL_MVC.Service.IServices.IQnA;
+using PRN222_SWP_TOOL_MVC.Service.Services.QnAService;
 
 namespace PRN222_SWP_TOOL_MVC
 {
@@ -107,6 +109,7 @@ namespace PRN222_SWP_TOOL_MVC
             builder.Services.AddScoped<ITeacherService, TeacherService>();
             builder.Services.AddScoped<ITopicService, TopicService>();
             builder.Services.AddScoped<IStudentService, StudentService>();
+            builder.Services.AddScoped<IQnaService, QnaService>();
 
             var app = builder.Build();
 
@@ -129,9 +132,13 @@ namespace PRN222_SWP_TOOL_MVC
             app.UseAuthentication();
             app.UseAuthorization();
            
+            // MVC Routes
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            // API Routes (Q&A: StudentQnaController, TeacherQnaController)
+            app.MapControllers();
 
             app.Run();
         }
