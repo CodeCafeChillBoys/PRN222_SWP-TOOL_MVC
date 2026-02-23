@@ -1,0 +1,82 @@
+
+<div class="filter-header">
+    <h2>Bộ Lọc</h2>
+    <div class="filter-group">
+        <div class="filter-item">
+            <label for="semesterFilterHeader">Học Kỳ</label>
+            <select class="form-control" id="semesterFilterHeader">
+                <option value="">-- Tất cả Học kỳ --</option>
+                @if (ViewBag.AllSemesters != null)
+                {
+                    @foreach (var sem in ViewBag.AllSemesters)
+                    {
+                        @if (ViewBag.SelectedSemesterId == sem.SemesterID)
+                        {
+                            <option value="@sem.SemesterID" selected>@sem.SemesterName</option>
+                        }
+                        else
+                        {
+                            <option value="@sem.SemesterID">@sem.SemesterName</option>
+                        }
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="filter-item">
+            <label for="statusFilterHeader">Trạng Thái</label>
+            <select class="form-control" id="statusFilterHeader">
+                <option value="">-- Tất cả --</option>
+                @if (ViewBag.SelectedStatus == "pending")
+                {
+                    <option value="pending" selected>Chờ trả lời</option>
+                }
+                else
+                {
+                    <option value="pending">Chờ trả lời</option>
+                }
+                @if (ViewBag.SelectedStatus == "replied")
+                {
+                    <option value="replied" selected>Đã trả lời</option>
+                }
+                else
+                {
+                    <option value="replied">Đã trả lời</option>
+                }
+            </select>
+        </div>
+
+        <div class="filter-buttons">
+            <button type="button" class="btn-filter" id="filterBtnHeader">Lọc</button>
+            <button type="button" class="btn-clear" id="clearBtnHeader">Xóa Lọc</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const filterBtnHeader = document.getElementById("filterBtnHeader");
+        const clearBtnHeader = document.getElementById("clearBtnHeader");
+        const semesterFilterHeader = document.getElementById("semesterFilterHeader");
+        const statusFilterHeader = document.getElementById("statusFilterHeader");
+
+        if (filterBtnHeader) {
+            filterBtnHeader.addEventListener("click", function () {
+                const semesterId = semesterFilterHeader.value;
+                const status = statusFilterHeader.value;
+                
+                let url = `/Teacher/Index?`;
+                if (semesterId) url += `semesterId=${semesterId}&`;
+                if (status) url += `status=${status}&`;
+                
+                window.location.href = url.endsWith("&") ? url.slice(0, -1) : url;
+            });
+        }
+
+        if (clearBtnHeader) {
+            clearBtnHeader.addEventListener("click", function () {
+                window.location.href = `/Teacher/Index`;
+            });
+        }
+    });
+</script>

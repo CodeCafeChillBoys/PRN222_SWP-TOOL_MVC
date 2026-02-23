@@ -2,23 +2,42 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
+using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IClassRepository;
+using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IGroupMemberRepository;
+using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IGroupRepository;
+using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IQuestionRepository;
 using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IRoleRepository;
+using PRN222_SWP_TOOL_MVC.Repository.IRepositories.ISemesterRepository;
+using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IStudentRepository;
+using PRN222_SWP_TOOL_MVC.Repository.IRepositories.ITeacherRepository;
+using PRN222_SWP_TOOL_MVC.Repository.IRepositories.ITopRepositroy;
 using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IUserRepository;
+using PRN222_SWP_TOOL_MVC.Repository.Repositories.ClassRepository;
+using PRN222_SWP_TOOL_MVC.Repository.Repositories.GroupMemberRepository;
+using PRN222_SWP_TOOL_MVC.Repository.Repositories.GroupRepository;
+using PRN222_SWP_TOOL_MVC.Repository.Repositories.QuestionRepository;
 using PRN222_SWP_TOOL_MVC.Repository.Repositories.RoleRepository;
+using PRN222_SWP_TOOL_MVC.Repository.Repositories.SemesterRepository;
+using PRN222_SWP_TOOL_MVC.Repository.Repositories.StudentRepository;
+using PRN222_SWP_TOOL_MVC.Repository.Repositories.TeacherRepository;
+using PRN222_SWP_TOOL_MVC.Repository.Repositories.TopicRepository;
 using PRN222_SWP_TOOL_MVC.Repository.Repositories.UserRepository;
 using PRN222_SWP_TOOL_MVC.Repository.UnitOfWorkRepo.IUnitOfWork;
 using PRN222_SWP_TOOL_MVC.Repository.UnitOfWorkRepo.UnitOfWork;
 using PRN222_SWP_TOOL_MVC.Service.IServices.IAuthentication;
-using PRN222_SWP_TOOL_MVC.Service.Services.GoogleAuthService;
-
-//using PRN222_SWP_TOOL_MVC.Service.Services.SemesterService;
-//using PRN222_SWP_TOOL_MVC.Service.Services.StudentGroupService;
-//using PRN222_SWP_TOOL_MVC.Service.Services.StudentService;
-//using PRN222_SWP_TOOL_MVC.Service.Services.TeacherService;
-//using PRN222_SWP_TOOL_MVC.Service.Services.TopicService;
+using PRN222_SWP_TOOL_MVC.Service.IServices.ISemester;
+using PRN222_SWP_TOOL_MVC.Service.IServices.IStudent;
+using PRN222_SWP_TOOL_MVC.Service.IServices.IStudentGroup;
+using PRN222_SWP_TOOL_MVC.Service.IServices.ITeacher;
+using PRN222_SWP_TOOL_MVC.Service.IServices.ITopic;
 using PRN222_SWP_TOOL_MVC.Service.IServices.IQnA;
+using PRN222_SWP_TOOL_MVC.Service.Services.GoogleAuthService;
+using PRN222_SWP_TOOL_MVC.Service.Services.SemesterService;
+using PRN222_SWP_TOOL_MVC.Service.Services.StudentGroupService;
+using PRN222_SWP_TOOL_MVC.Service.Services.StudentService;
+using PRN222_SWP_TOOL_MVC.Service.Services.TeacherService;
+using PRN222_SWP_TOOL_MVC.Service.Services.TopicService;
 using PRN222_SWP_TOOL_MVC.Service.Services.QnAService;
-
 
 namespace PRN222_SWP_TOOL_MVC
 {
@@ -31,16 +50,18 @@ namespace PRN222_SWP_TOOL_MVC
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            //DI DB 
+            // DI session
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession();
+
+            // DI DB
             builder.Services.AddDbContext<AppDbContext>(options =>
              options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
-            // DI Google
+            // DI Google Auth
             builder.Services.AddAuthentication(options =>
             {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                // Chỉnh cái này thành Cookie để nó ưu tiên nhảy về LoginPath của bạn trước
                 options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             })
               .AddCookie(options =>
@@ -54,35 +75,36 @@ namespace PRN222_SWP_TOOL_MVC
                    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
                });
 
-
-            // DI Authen before page student teacher
+            // DI Authorization — yêu cầu đăng nhập toàn cục
             builder.Services.AddControllersWithViews(options =>
             {
-                // Tạo một chính sách yêu cầu người dùng phải đăng nhập
                 var policy = new AuthorizationPolicyBuilder()
                                  .RequireAuthenticatedUser()
                                  .Build();
-
-                // Thêm vào Filter toàn cục
                 options.Filters.Add(new AuthorizeFilter(policy));
             });
 
-
-            // DI Repo
+            // DI Repositories
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+            builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+            builder.Services.AddScoped<ITeacherRepository, TeacherRepository>();
+            builder.Services.AddScoped<ISemesterRepository, SemesterRepository>();
+            builder.Services.AddScoped<IClassRepository, ClassRepository>();
+            builder.Services.AddScoped<IGroupMemberRepository, GroupMemberRepository>();
+            builder.Services.AddScoped<IStudentGroupRepository, StudentGroupRepository>();
+            builder.Services.AddScoped<ITopicRepository, TopicRepository>();
+            builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            //DI Service
+            // DI Services
             builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
-
-            //builder.Services.AddScoped<ISemesterService, SemesterService>();
-            //builder.Services.AddScoped<IStudentGroupService, StudentGroupService>();
-            //builder.Services.AddScoped<ITeacherService, TeacherService>();
-            //builder.Services.AddScoped<ITopicService, TopicService>();
-            //builder.Services.AddScoped<IStudentService, StudentService>();
+            builder.Services.AddScoped<ISemesterService, SemesterService>();
+            builder.Services.AddScoped<IStudentGroupService, StudentGroupService>();
+            builder.Services.AddScoped<ITeacherService, TeacherService>();
+            builder.Services.AddScoped<ITopicService, TopicService>();
+            builder.Services.AddScoped<IStudentService, StudentService>();
             builder.Services.AddScoped<IQnaService, QnaService>();
-
 
             var app = builder.Build();
 
@@ -90,7 +112,6 @@ namespace PRN222_SWP_TOOL_MVC
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -98,10 +119,12 @@ namespace PRN222_SWP_TOOL_MVC
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseSession();
 
             app.UseAuthentication();
             app.UseAuthorization();
 
+            // MVC Routes
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");

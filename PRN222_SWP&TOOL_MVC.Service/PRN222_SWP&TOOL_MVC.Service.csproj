@@ -8,12 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="DTO\Response\**" />
-    <EmbeddedResource Remove="DTO\Response\**" />
-    <None Remove="DTO\Response\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\PRN222_SWP&amp;TOOL_MVC.Repository\PRN222_SWP&amp;TOOL_MVC.Repository.csproj" />
   </ItemGroup>
 

@@ -29,5 +29,8 @@ namespace PRN222_SWP_TOOL_MVC.Repository.IRepositories.IGenericRepository
         Task<T?> GetAsync(Expression<Func<T, bool>> predicate);
 
         public Task<T?> FindWitInclude(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes);
+
+
+        public Task<IEnumerable<T>> GetAllWithIncludeAsync(params Expression<Func<T, object>>[] includes);
     }
 }

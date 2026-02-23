@@ -1,0 +1,129 @@
+﻿.topic-wrapper {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    margin-top:25px
+}
+
+/* ===== HEADER ===== */
+
+.topic-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.topic-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.topic-icon {
+    font-size: 28px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    padding: 12px;
+    border-radius: 12px;
+    color: white;
+}
+
+.topic-title h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.semester {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+/* ===== BADGES ===== */
+
+.topic-badges {
+    display: flex;
+    gap: 10px;
+}
+
+.badge-group {
+    background: #e0f2fe;
+    color: #0369a1;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.badge-ai {
+    background: linear-gradient(135deg, #ec4899, #8b5cf6);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* ===== INFO BOX ===== */
+
+.info-box {
+    padding: 18px;
+    border-radius: 14px;
+    margin-bottom: 15px;
+}
+
+.description-box {
+    background: #f3f4f6;
+}
+
+.requirement-box {
+    background: #e0f2fe;
+}
+
+.info-box strong {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.info-box p {
+    margin: 0;
+    color: #374151;
+}
+
+/* ===== ACTION BUTTONS ===== */
+
+.topic-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 12px;
+}
+
+.btn-edit {
+    padding: 8px 16px;
+    border-radius: 10px;
+    background: #dbeafe;
+    color: #1d4ed8;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+    .btn-edit:hover {
+        background: #bfdbfe;
+    }
+
+.btn-delete {
+    padding: 8px 16px;
+    border-radius: 10px;
+    background: #fee2e2;
+    color: #b91c1c;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+    .btn-delete:hover {
+        background: #fecaca;
+    }

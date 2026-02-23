@@ -1,40 +1,41 @@
-﻿﻿<!-- TAB: QUẢN LÝ NHÓM -->
-<div id="tab-group" class="tab-content">
-    <div class="row g-4">
-        <div class="col-md-6">
-            <div class="card p-4 h-100">
-                <div class="d-flex align-items-center gap-2 mb-2">
-                    <i class="bi bi-people"></i>
-                    <strong>Tạo nhóm mới</strong>
-                </div>
-                <p class="text-muted">
-                    Tạo nhóm và mời các thành viên khác tham gia
-                </p>
-                <button class="btn btn-gradient w-100">
-                    Tạo nhóm
-                </button>
-            </div>
-        </div>
+﻿@model PRN222_SWP_TOOL_MVC.Service.Models.GroupDetailsViewModel
 
-        <div class="col-md-6">
-            <div class="card p-4 h-100">
-                <div class="d-flex align-items-center gap-2 mb-2">
-                    <i class="bi bi-person-plus"></i>
-                    <strong>Tham gia nhóm</strong>
-                </div>
-                <p class="text-muted">
-                    Nhập mã mời để tham gia nhóm hiện có
-                </p>
+<h2>Group Details</h2>
 
-                <label class="form-label">Mã mời</label>
-                <input type="text"
-                       class="form-control mb-3"
-                       placeholder="Nhập mã mời (VD: ABC123)">
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-warning">@ViewBag.Message</div>
+}
 
-                <button class="btn btn-secondary w-100">
-                    Tham gia
-                </button>
-            </div>
-        </div>
+@if (Model.GroupID == 0)
+{
+    <div class="card p-3 mb-3">
+        <h4>@Model.GroupName</h4>
+        <p>Bạn hiện chưa tham gia nhóm nào.</p>
+
+        <a class="btn btn-primary" asp-controller="Group" asp-action="Create" asp-route-classId="@Model.ClassID">
+            Create Group
+        </a>
     </div>
-</div>
+    return;
+}
+<h4>Members</h4>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>StudentID</th>
+            <th>FullName</th>
+            <th>Role</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var m in Model.Members)
+        {
+            <tr>
+                <td>@m.StudentID</td>
+                <td>@(string.IsNullOrWhiteSpace(m.FullName) ? "(no name)" : m.FullName)</td>
+                <td>@(m.IsLeader ? "Leader" : "Member")</td>
+            </tr>
+        }
+    </tbody>
+</table>

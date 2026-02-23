@@ -1,17 +1,34 @@
-﻿@{
+﻿@model PRN222_SWP_TOOL_MVC.Service.DTO.Request.StudentDashboardRequestDTO
+
+@{
     ViewData["Title"] = "Student";
     Layout = "~/Views/Shared/StudentLayout/_StudentLayout.cshtml";
 }
+
 <div class="container-fluid min-vh-100">
     <div class="container">
+
         <div class="row g-3 mb-4">
             @await Html.PartialAsync("~/Views/Student/ComponentStudent/_StatusCard.cshtml")
         </div>
+
         @await Html.PartialAsync("~/Views/Student/ComponentStudent/_Tabs.cshtml")
+
         <div class="tab-content">
-            @await Html.PartialAsync("~/Views/Student/ComponentStudent/_GroupTab.cshtml")
-            @await Html.PartialAsync("~/Views/Student/ComponentStudent/_TopicTab.cshtml")
-            @await Html.PartialAsync("~/Views/Student/ComponentStudent/_QATab.cshtml")
+
+            @if (Model?.CurrentTab == "group")
+            {
+                @await Html.PartialAsync("~/Views/Student/ComponentStudent/_GroupTab.cshtml", Model?.Group)
+            }
+            else if (Model?.CurrentTab == "topic")
+            {
+                @await Html.PartialAsync("~/Views/Student/ComponentStudent/_TopicTab.cshtml", Model?.Topics)
+            }
+            else if (Model?.CurrentTab == "qa")
+            {
+                @await Html.PartialAsync("~/Views/Student/ComponentStudent/_QATab.cshtml", Model?.Questions)
+            }
+
         </div>
 
         <script>
@@ -21,7 +38,6 @@
 
                 if (!btn || !icon) return;
 
-                // Load trạng thái cũ
                 if (localStorage.getItem("theme") === "dark") {
                     document.body.classList.add("dark");
                     icon.classList.replace("bi-sun","bi-moon");
@@ -39,5 +55,6 @@
                 });
             });
         </script>
+
     </div>
-    </div>
+</div>

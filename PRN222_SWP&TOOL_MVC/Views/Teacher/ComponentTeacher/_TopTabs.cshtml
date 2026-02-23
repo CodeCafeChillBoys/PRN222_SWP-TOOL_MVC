@@ -1,69 +1,23 @@
-﻿<div class="container py-4" >
+﻿<div class="teacher-tabs mt-4">
+    <ul class="nav nav-pills main-tabs mb-4">
+        <li class="nav-item flex-fill text-center">
+            <a class="nav-link @(Model.CurrentTab == "qa" ? "active active-qa" : "")"
+               asp-controller="Teacher"
+               asp-action="Index"
+               asp-route-tab="qa">
+                <i class="fa-regular fa-comment me-1"></i>
+                Hộp thư Q&A
+            </a>
+        </li>
 
-
-	<!-- TOP TABS -->
-	<div class="pill-tabs mb-3">
-		<div class="tab active">Hộp thư Q&A</div>
-		<div class="tab">Quản lý Đề tài</div>
-	</div>
-
-
-	<div class="pill-tabs mb-4">
-		<div class="tab active">Chờ trả lời (2)</div>
-		<div class="tab">Đã trả lời (1)</div>
-	</div>
-
-
-	<!-- QUESTION -->
-	<div class="question-card pending">
-
-
-		<span class="status-badge">⏳ Chờ trả lời</span>
-
-
-		<h5 class="fw-semibold">
-			Em có thể sử dụng framework nào để xây dựng ứng dụng?
-		</h5>
-
-
-		<div class="text-muted small mt-2">
-			Sinh viên: Nguyễn Văn An – Nhóm: GROUP001<br>
-			Đề tài: Ứng dụng AI trong Phát hiện Bệnh tật<br>
-			Gửi lúc: 2025-01-15 10:30
-		</div>
-
-
-		<!-- AI SUGGESTION -->
-		<div class="ai-box">
-			<div class="d-flex justify-content-between align-items-start">
-				<div>
-					<strong>✨ AI gợi ý câu trả lời:</strong>
-					<p class="mb-0 mt-2">
-						Bạn có thể sử dụng React hoặc Vue.js cho frontend,
-						kết hợp với Node.js/Express cho backend. Với AI,
-						nên dùng Python với Flask hoặc FastAPI.
-					</p>
-				</div>
-				<button class="btn btn-outline-dark btn-sm">✏️ Sử dụng</button>
-			</div>
-		</div>
-
-
-		<button class="btn btn-dark btn-dark-rounded mt-4">
-			Trả lời câu hỏi
-		</button>
-
-
-	</div>
-
-
-	<!-- QUESTION 2 -->
-	<div class="question-card pending">
-		<span class="status-badge">⏳ Chờ trả lời</span>
-		<h5 class="fw-semibold">
-			Dataset nên lấy từ nguồn nào cho dự án về phát hiện bệnh?
-		</h5>
-	</div>
-
-
+        <li class="nav-item flex-fill text-center">
+            <a class="nav-link @(Model.CurrentTab == "topic" ? "active active-topic" : "")"
+               asp-controller="Teacher"
+               asp-action="Index"
+               asp-route-tab="topic">
+                <i class="fa-regular fa-book me-1"></i>
+                Quản lý Đề tài
+            </a>
+        </li>
+    </ul>
 </div>

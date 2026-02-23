@@ -1,0 +1,67 @@
+﻿/* ========== COMMON ========== */
+.main-tabs {
+    padding: 6px;
+    border-radius: 16px;
+    display: flex;
+    gap: 6px;
+}
+
+    .main-tabs .nav-item {
+        flex: 1;
+    }
+
+    .main-tabs .nav-link {
+        border-radius: 12px;
+        font-weight: 500;
+        transition: all 0.25s ease;
+        text-align: center;
+        padding: 10px 0;
+        border: none;
+    }
+
+/* reset bootstrap */
+.nav-pills .nav-link.active {
+    background-color: transparent;
+}
+
+/* ========== DARK MODE ========== */
+body.dark-mode .main-tabs {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+    body.dark-mode .main-tabs .nav-link {
+        color: rgba(255,255,255,0.7);
+    }
+
+        body.dark-mode .main-tabs .nav-link:hover {
+            color: #ffffff;
+        }
+
+/* ========== LIGHT MODE ========== */
+body:not(.dark-mode) .main-tabs {
+    background: #eef2f7;
+}
+
+    body:not(.dark-mode) .main-tabs .nav-link {
+        color: #475569;
+    }
+
+        body:not(.dark-mode) .main-tabs .nav-link:hover {
+            color: #1e293b;
+        }
+
+/* ========== ACTIVE TAB COLORS ========== */
+
+/* QA active */
+.nav-pills .nav-link.active-qa {
+    background: linear-gradient(90deg, #3b82f6, #6366f1);
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+}
+
+/* Topic active */
+.nav-pills .nav-link.active-topic {
+    background: linear-gradient(90deg, #7c3aed, #db2777);
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
+}

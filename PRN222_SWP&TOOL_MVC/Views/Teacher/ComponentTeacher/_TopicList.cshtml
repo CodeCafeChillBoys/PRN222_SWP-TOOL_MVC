@@ -1,0 +1,131 @@
+﻿@model PRN222_SWP_TOOL_MVC.Service.DTO.Request.TeacherDashboardReuqestDTO
+<div class="topic-header">
+    <div class="topic-header-left">
+        <div class="topic-icon">
+            <i class="bi bi-journal-text"></i>
+        </div>
+        <div>
+            <h2>Quản lý Đề tài</h2>
+            <p>Tạo và quản lý các đề tài cho sinh viên</p>
+        </div>
+    </div>
+    <button type="button" id="btnCreateTopic" class="btn-create">
+        <span>+</span> Thêm đề tài mới
+    </button>
+</div>
+
+<!-- ===== MODAL CREATE ===== -->
+<div id="topicModal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <div>
+                <h3>Thêm đề tài mới</h3>
+                <p>Tạo đề tài mới cho sinh viên đăng ký</p>
+            </div>
+            <span class="close-btn" id="closeModal">&times;</span>
+        </div>
+
+        @await Html.PartialAsync(
+             "ComponentTeacher/_CreateTopic",
+             Model.Semesters
+             )
+    </div>
+</div>
+
+<!-- ===== EDIT MODAL ===== -->
+<div id="editModal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>Chỉnh sửa đề tài</h3>
+            <span onclick="closeEditModal()">&times;</span>
+        </div>
+
+        @await Html.PartialAsync(
+             "ComponentTeacher/_EditTopic",
+             new PRN222_SWP_TOOL_MVC.Repository.Entities.Topic()
+             )
+    </div>
+</div>
+
+<!-- ===== DELETE MODAL ===== -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal-box" style="max-width:400px">
+
+        <div class="modal-header">
+            <h3>Xác nhận xóa</h3>
+            <span class="close-btn" onclick="closeDeleteModal()">&times;</span>
+        </div>
+
+        <div class="modal-body">
+            <p>Bạn có chắc chắn muốn xóa đề tài này không?</p>
+            <input type="hidden" id="deleteTopicId" />
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn-cancel" onclick="closeDeleteModal()">Hủy</button>
+            <button class="btn-delete" onclick="confirmDelete()">Xóa</button>
+        </div>
+
+    </div>
+</div>
+
+@if (Model?.Topics != null && Model.Topics.Any())
+{
+    @foreach (var topic in Model.Topics)
+    {
+        <div class="topic-wrapper">
+            <!-- HEADER -->
+            <div class="topic-top">
+                <div class="topic-title">
+                    <div class="topic-icon">📘</div>
+                    <div>
+                        <h2>@topic.TopicName</h2>
+                        <span class="semester">
+                            @(topic.Semester?.SemesterName ?? "Chua co ky hoc")
+                        </span>
+                    </div>
+                </div>
+
+                <div class="topic-badges">
+                    <span class="badge-group">
+                        👥 @(topic.TopicRegistrations?.Count ?? 0)/5 nhóm
+                    </span>
+                    <span class="badge-ai">
+                        🤖 AI Ready
+                    </span>
+                </div>
+            </div>
+
+            <!-- DESCRIPTION -->
+            <div class="info-box description-box">
+                <strong>📌 Mô tả:</strong>
+                <p>@topic.Description</p>
+            </div>
+
+            <!-- REQUIREMENT -->
+            <div class="info-box requirement-box">
+                <strong>✅ Yêu cầu:</strong>
+                <p>@topic.Requirement</p>
+            </div>
+
+            <!-- ACTION -->
+            <div class="topic-actions">
+                <button type="button" class="btn-edit" onclick="openEditModal(@topic.TopicID)">
+                    ✏ Chỉnh sửa
+                </button>
+
+                <button type="button"
+                        class="btn-delete"
+                        onclick="openDeleteModal(@topic.TopicID)">
+                    🗑 Xóa
+                </button>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="empty-box">
+        Chưa có đề tài nào.
+    </div>
+}
