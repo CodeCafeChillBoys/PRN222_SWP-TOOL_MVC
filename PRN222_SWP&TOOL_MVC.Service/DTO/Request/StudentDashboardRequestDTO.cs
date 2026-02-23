@@ -10,5 +10,6 @@ namespace PRN222_SWP_TOOL_MVC.Service.DTO.Request
         public GroupDetailsViewModel Group { get; set; } = new();
         public List<Topic> Topics { get; set; }
         public List<Question> Questions { get; set; }
+        public int? SelectedTopicId { get; set; }
     }
 }

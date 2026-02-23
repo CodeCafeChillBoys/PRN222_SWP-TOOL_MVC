@@ -1,15 +1,16 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PRN222_SWP_TOOL_MVC.Service.DTO.Request;
 using PRN222_SWP_TOOL_MVC.Service.IServices.IStudent;
 using PRN222_SWP_TOOL_MVC.Service.IServices.IStudentGroup;
+using PRN222_SWP_TOOL_MVC.Service.IServices.ITopic;
 
 [Authorize(Roles = "Student")]
 public class StudentController : Controller
 {
     private readonly IStudentGroupService _groupService;
     private readonly IStudentService _studentService;
-
 
     public StudentController(IStudentGroupService groupService, IStudentService studentService)
     {
@@ -70,7 +71,50 @@ public class StudentController : Controller
     //}
     public async Task<IActionResult> Index(string tab = "group")
     {
-        var model = await _studentService.GetDashboardAsync(tab);
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+        var request = new StudentDashboardFilterRequestDTO
+        {
+            UserId = userId,
+            Tab = tab
+        };
+
+        var model = await _studentService.GetDashboardAsync(request);
+
         return View(model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> RegisterTopic([FromBody] RegisterTopicRequestDTO request)
+    {
+        if (request == null || request.TopicId <= 0)
+        {
+            return Json(new
+            {
+                success = false,
+                message = "Dữ liệu không hợp lệ."
+            });
+        }
+
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (string.IsNullOrEmpty(userIdClaim))
+        {
+            return Json(new
+            {
+                success = false,
+                message = "Không xác định được người dùng."
+            });
+        }
+
+        request.UserId = int.Parse(userIdClaim);
+
+        var result = await _studentService.RegisterTopic(request);
+
+        return Json(new
+        {
+            success = result.Success,
+            message = result.ResponseMessage
+        });
     }
 }

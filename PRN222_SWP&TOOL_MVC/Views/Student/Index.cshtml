@@ -22,7 +22,7 @@
             }
             else if (Model?.CurrentTab == "topic")
             {
-                @await Html.PartialAsync("~/Views/Student/ComponentStudent/_TopicTab.cshtml", Model?.Topics)
+                @await Html.PartialAsync("~/Views/Student/ComponentStudent/_TopicTab.cshtml", Model)
             }
             else if (Model?.CurrentTab == "qa")
             {

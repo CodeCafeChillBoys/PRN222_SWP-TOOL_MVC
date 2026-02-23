@@ -20,7 +20,6 @@ namespace PRN222_SWP_TOOL_MVC.Repository.Entities
 
         public string Status { get; set; }
        
-
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Optional: lưu người tạo (UserID)

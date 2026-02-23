@@ -7,6 +7,7 @@ using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IRoleRepository;
 using PRN222_SWP_TOOL_MVC.Repository.IRepositories.ISemesterRepository;
 using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IStudentRepository;
 using PRN222_SWP_TOOL_MVC.Repository.IRepositories.ITeacherRepository;
+using PRN222_SWP_TOOL_MVC.Repository.IRepositories.ITopicRegistrationsRepository;
 using PRN222_SWP_TOOL_MVC.Repository.IRepositories.ITopRepositroy;
 using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IUserRepository;
 
@@ -26,9 +27,12 @@ namespace PRN222_SWP_TOOL_MVC.Repository.UnitOfWorkRepo.UnitOfWork
         public ITeacherRepository teacherRepository { get; set; }
         public IQuestionRepository questionRepository { get; set; }
         public  ITopicRepository topicRepository { get; set; }
+        public ITopicRegistrationsRepository topicRegistrationsRepository { get; set; }
+
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository , IRoleRepository roleRepository, ISemesterRepository semesterRepository, 
                             IClassRepository classRepository, IStudentGroupRepository studentGroupRepository, IGroupMemberRepository groupMemberRepository, 
-                            IStudentRepository studentRepository, ITeacherRepository teacherRepository, IQuestionRepository questionRepository, ITopicRepository topicRepository)
+                            IStudentRepository studentRepository, ITeacherRepository teacherRepository, IQuestionRepository questionRepository, ITopicRepository topicRepository,
+                          ITopicRegistrationsRepository topicRegistrationsRepository)
         {
             this._dbContext = dbContext;
             this.userRepository = userRepository;
@@ -41,6 +45,7 @@ namespace PRN222_SWP_TOOL_MVC.Repository.UnitOfWorkRepo.UnitOfWork
             this.teacherRepository = teacherRepository;
             this.questionRepository = questionRepository;
             this.topicRepository = topicRepository;
+            this.topicRegistrationsRepository = topicRegistrationsRepository;
         }
 
         public void Dispose()

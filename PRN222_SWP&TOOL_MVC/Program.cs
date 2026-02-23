@@ -10,6 +10,7 @@ using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IRoleRepository;
 using PRN222_SWP_TOOL_MVC.Repository.IRepositories.ISemesterRepository;
 using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IStudentRepository;
 using PRN222_SWP_TOOL_MVC.Repository.IRepositories.ITeacherRepository;
+using PRN222_SWP_TOOL_MVC.Repository.IRepositories.ITopicRegistrationsRepository;
 using PRN222_SWP_TOOL_MVC.Repository.IRepositories.ITopRepositroy;
 using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IUserRepository;
 using PRN222_SWP_TOOL_MVC.Repository.Repositories.ClassRepository;
@@ -20,6 +21,7 @@ using PRN222_SWP_TOOL_MVC.Repository.Repositories.RoleRepository;
 using PRN222_SWP_TOOL_MVC.Repository.Repositories.SemesterRepository;
 using PRN222_SWP_TOOL_MVC.Repository.Repositories.StudentRepository;
 using PRN222_SWP_TOOL_MVC.Repository.Repositories.TeacherRepository;
+using PRN222_SWP_TOOL_MVC.Repository.Repositories.TopicRegistrationsRepository;
 using PRN222_SWP_TOOL_MVC.Repository.Repositories.TopicRepository;
 using PRN222_SWP_TOOL_MVC.Repository.Repositories.UserRepository;
 using PRN222_SWP_TOOL_MVC.Repository.UnitOfWorkRepo.IUnitOfWork;
@@ -100,6 +102,7 @@ namespace PRN222_SWP_TOOL_MVC
             builder.Services.AddScoped<IStudentGroupRepository, StudentGroupRepository>();
             builder.Services.AddScoped<ITopicRepository, TopicRepository>();
             builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
+            builder.Services.AddScoped<ITopicRegistrationsRepository, TopicRegistrationsRepository>();
             //DI Service
             builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
             builder.Services.AddScoped<ISemesterService, SemesterService>();

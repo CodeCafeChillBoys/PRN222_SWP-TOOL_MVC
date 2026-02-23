@@ -1,7 +1,17 @@
-﻿@foreach (var topic in Model)
+﻿@model PRN222_SWP_TOOL_MVC.Service.DTO.Request.StudentDashboardRequestDTO
+
+@foreach (var topic in Model.Topics)
 {
+    var isSelected = Model.SelectedTopicId.HasValue
+                     && Model.SelectedTopicId.Value == topic.TopicID;
+    var hasSelected = Model.SelectedTopicId.HasValue;
+    var currentCount = topic.TopicRegistrations?.Count ?? 0;
+    var maxGroup = topic.MaxGroupCount ?? 5;
+    var isFull = currentCount >= maxGroup;
+
     <div class="col-12 mb-4">
         <div class="topic-card">
+
             <div class="topic-header">
                 <div class="topic-title">
                     <div class="topic-icon">
@@ -18,14 +28,20 @@
                 </div>
 
                 <div class="topic-badges">
-                    <span class="badge selected-badge">
-                        <i class="fa-solid fa-check me-1"></i> Đã chọn
-                    </span>
+
+                    @* Badge Đã chọn *@
+                    @if (isSelected)
+                    {
+                        <span class="badge selected-badge">
+                            <i class="fa-solid fa-check me-1"></i> Đã chọn
+                        </span>
+                    }
 
                     <span class="badge group-count">
                         <i class="fa-solid fa-users me-1"></i>
-                        @(topic.TopicRegistrations?.Count ?? 0)/5 nhóm
+                        @currentCount/@maxGroup nhóm
                     </span>
+
                 </div>
             </div>
 
@@ -38,13 +54,37 @@
                 <p>@topic.Requirement</p>
             </div>
 
-            <button class="btn-select select-topic"
-                    data-id="@topic.TopicID">
-                <i class="fa-solid fa-paper-plane me-1"></i>
-                Chọn đề tài
-            </button>
+            @* ===== BUTTON LOGIC ===== *@
 
+            @if (hasSelected)
+            {
+                if (isSelected)
+                {
+                    <!-- Ẩn luôn nút nếu đã chọn -->
+                }
+                else
+                {
+                    <button class="btn-select disabled-btn" disabled>
+                        Không thể chọn
+                    </button>
+                }
+            }
+            else
+            {
+                if (isFull)
+                {
+                    <button class="btn-select disabled-btn" disabled>
+                        Đã đủ nhóm
+                    </button>
+                }
+                else
+                {
+                    <button class="btn-select select-topic"      data-id="@topic.TopicID">
+                        <i class="fa-solid fa-paper-plane me-1"></i>
+                        Chọn đề tài
+                    </button>
+                }
+            }
         </div>
-
     </div>
-}
+} 
