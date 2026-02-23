@@ -10,16 +10,15 @@ using PRN222_SWP_TOOL_MVC.Repository.UnitOfWorkRepo.IUnitOfWork;
 using PRN222_SWP_TOOL_MVC.Repository.UnitOfWorkRepo.UnitOfWork;
 using PRN222_SWP_TOOL_MVC.Service.IServices.IAuthentication;
 using PRN222_SWP_TOOL_MVC.Service.Services.GoogleAuthService;
-<<<<<<< HEAD
-=======
-using PRN222_SWP_TOOL_MVC.Service.Services.SemesterService;
-using PRN222_SWP_TOOL_MVC.Service.Services.StudentGroupService;
-using PRN222_SWP_TOOL_MVC.Service.Services.StudentService;
-using PRN222_SWP_TOOL_MVC.Service.Services.TeacherService;
-using PRN222_SWP_TOOL_MVC.Service.Services.TopicService;
+
+//using PRN222_SWP_TOOL_MVC.Service.Services.SemesterService;
+//using PRN222_SWP_TOOL_MVC.Service.Services.StudentGroupService;
+//using PRN222_SWP_TOOL_MVC.Service.Services.StudentService;
+//using PRN222_SWP_TOOL_MVC.Service.Services.TeacherService;
+//using PRN222_SWP_TOOL_MVC.Service.Services.TopicService;
 using PRN222_SWP_TOOL_MVC.Service.IServices.IQnA;
 using PRN222_SWP_TOOL_MVC.Service.Services.QnAService;
->>>>>>> 45af78c (fix class AppDBcontext)
+
 
 namespace PRN222_SWP_TOOL_MVC
 {
@@ -76,15 +75,14 @@ namespace PRN222_SWP_TOOL_MVC
 
             //DI Service
             builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
-<<<<<<< HEAD
-=======
-            builder.Services.AddScoped<ISemesterService, SemesterService>();
-            builder.Services.AddScoped<IStudentGroupService, StudentGroupService>();
-            builder.Services.AddScoped<ITeacherService, TeacherService>();
-            builder.Services.AddScoped<ITopicService, TopicService>();
-            builder.Services.AddScoped<IStudentService, StudentService>();
+
+            //builder.Services.AddScoped<ISemesterService, SemesterService>();
+            //builder.Services.AddScoped<IStudentGroupService, StudentGroupService>();
+            //builder.Services.AddScoped<ITeacherService, TeacherService>();
+            //builder.Services.AddScoped<ITopicService, TopicService>();
+            //builder.Services.AddScoped<IStudentService, StudentService>();
             builder.Services.AddScoped<IQnaService, QnaService>();
->>>>>>> 45af78c (fix class AppDBcontext)
+
 
             var app = builder.Build();
 
@@ -103,12 +101,7 @@ namespace PRN222_SWP_TOOL_MVC
 
             app.UseAuthentication();
             app.UseAuthorization();
-<<<<<<< HEAD
 
-=======
-           
-            // MVC Routes
->>>>>>> 45af78c (fix class AppDBcontext)
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
