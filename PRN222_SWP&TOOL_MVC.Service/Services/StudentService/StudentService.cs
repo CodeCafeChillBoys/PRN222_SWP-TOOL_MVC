@@ -1,4 +1,5 @@
-﻿using PRN222_SWP_TOOL_MVC.Repository.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using PRN222_SWP_TOOL_MVC.Repository.Entities;
 using PRN222_SWP_TOOL_MVC.Repository.UnitOfWorkRepo.IUnitOfWork;
 using PRN222_SWP_TOOL_MVC.Service.DTO.Request;
 using PRN222_SWP_TOOL_MVC.Service.IServices.IStudent;
@@ -8,7 +9,6 @@ namespace PRN222_SWP_TOOL_MVC.Service.Services.StudentService
 {
     public class StudentService : IStudentService
     {
-
         private readonly IUnitOfWork _unitOfWork;
 
         public StudentService(IUnitOfWork unitOfWork)
@@ -18,15 +18,22 @@ namespace PRN222_SWP_TOOL_MVC.Service.Services.StudentService
 
         public async Task<StudentDashboardRequestDTO> GetDashboardAsync(string tab)
         {
-            var groups = await _unitOfWork.studentGroupRepository.GetAllAsync();
-            var topics = await _unitOfWork.topicRepository.GetAllAsync();
-            var questions = await _unitOfWork.questionRepository.GetAllAsync();
+            // Lấy danh sách topic (không cần include phức tạp)
+            var topics = (await _unitOfWork.topicRepository.GetAllAsync()).ToList();
 
-            // TODO: Sau này filter theo StudentID
-            var group = groups.FirstOrDefault();
+            // Lấy danh sách questions (chỉ lấy basic, không include navigation)
+            var questions = (await _unitOfWork.questionRepository.GetAllAsync()).ToList();
 
-            var groupViewModel = group != null
-                ? new GroupDetailsViewModel
+            // Lấy nhóm đầu tiên — kèm Members để tránh NullReference
+            // Dùng GetAllWithIncludeAsync để eager-load Members
+            var groupsRaw = await _unitOfWork.studentGroupRepository
+                .GetAllWithIncludeAsync(g => g.Members);
+            var group = groupsRaw.FirstOrDefault();
+
+            GroupDetailsViewModel groupViewModel;
+            if (group != null)
+            {
+                groupViewModel = new GroupDetailsViewModel
                 {
                     GroupID = group.GroupID,
                     GroupName = group.GroupName,
@@ -35,26 +42,34 @@ namespace PRN222_SWP_TOOL_MVC.Service.Services.StudentService
                     ClassID = group.ClassID,
                     MaxMember = group.MaxMember,
                     InviteCode = group.InviteCode,
-
                     MemberCount = group.Members?.Count ?? 0,
-
                     Members = group.Members != null
                         ? group.Members.Select(m => new GroupMemberItemViewModel
                         {
                             StudentID = m.StudentID,
-                            FullName = m.Student?.User.FullName ?? "",
+                            // Student navigation không được load ở đây — dùng StudentID làm fallback
+                            FullName = m.Student?.User?.FullName ?? $"Student #{m.StudentID}",
                             IsLeader = m.IsLeader
                         }).ToList()
                         : new List<GroupMemberItemViewModel>()
-                }
-                : new GroupDetailsViewModel(); // GroupID = 0
+                };
+            }
+            else
+            {
+                groupViewModel = new GroupDetailsViewModel
+                {
+                    GroupID = 0,
+                    GroupName = "Chưa có nhóm",
+                    Members = new List<GroupMemberItemViewModel>()
+                };
+            }
 
             return new StudentDashboardRequestDTO
             {
-                CurrentTab = tab,
+                CurrentTab = tab ?? "group",
                 Group = groupViewModel,
-                Topics = topics?.ToList() ?? new List<Topic>(),
-                Questions = questions?.ToList() ?? new List<Question>()
+                Topics = topics,
+                Questions = questions
             };
         }
     }

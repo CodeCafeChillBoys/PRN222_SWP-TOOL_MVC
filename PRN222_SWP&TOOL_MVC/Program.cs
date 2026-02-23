@@ -108,6 +108,22 @@ namespace PRN222_SWP_TOOL_MVC
 
             var app = builder.Build();
 
+            // ── Seed Roles nếu chưa có ─────────────────────────────────────
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                db.Database.EnsureCreated();
+                if (!db.Roles.Any())
+                {
+                    db.Roles.AddRange(
+                        new PRN222_SWP_TOOL_MVC.Repository.Entities.Role { RoleID = 1, RoleCode = "ADMIN",   RoleName = "Admin",   Description = "Administrator" },
+                        new PRN222_SWP_TOOL_MVC.Repository.Entities.Role { RoleID = 2, RoleCode = "STUDENT", RoleName = "Student", Description = "Student role" },
+                        new PRN222_SWP_TOOL_MVC.Repository.Entities.Role { RoleID = 3, RoleCode = "TEACHER", RoleName = "Teacher", Description = "Teacher role" }
+                    );
+                    db.SaveChanges();
+                }
+            }
+
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {

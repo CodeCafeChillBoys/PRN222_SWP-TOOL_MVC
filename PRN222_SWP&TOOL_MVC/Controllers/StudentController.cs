@@ -70,7 +70,22 @@ public class StudentController : Controller
     //}
     public async Task<IActionResult> Index(string tab = "group")
     {
-        var model = await _studentService.GetDashboardAsync(tab);
-        return View(model);
+        try
+        {
+            var model = await _studentService.GetDashboardAsync(tab);
+            return View(model);
+        }
+        catch (Exception ex)
+        {
+            // Log lỗi để debug — không redirect loop
+            ViewBag.Error = $"Lỗi khi tải dashboard: {ex.Message}";
+            return View(new PRN222_SWP_TOOL_MVC.Service.DTO.Request.StudentDashboardRequestDTO
+            {
+                CurrentTab = tab ?? "group",
+                Group = new PRN222_SWP_TOOL_MVC.Service.Models.GroupDetailsViewModel { GroupID = 0, GroupName = "Error", Members = new() },
+                Topics = new(),
+                Questions = new()
+            });
+        }
     }
 }
