@@ -8,17 +8,13 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="~/css/teacher.css" />
-     <link rel="stylesheet" href="~/css/SemesterFilter.css" />
-     <link rel="stylesheet" href="~/css/topTab.css" />
-     <link rel="stylesheet" href="~/css/topTabHeader.css" />
-     <link rel="stylesheet" href="~/css/topTabTopicList.css" />
-     <link rel="stylesheet" href="~/css/createTopic.css" />
-    
-
+    <link rel="stylesheet" href="~/css/teacher.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/SemesterFilter.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/topTab.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/topTabHeader.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/topTabTopicList.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/createTopic.css" asp-append-version="true" />
     @RenderSection("Styles", false)
-
-
     <style>
         html, body {
             height: 100%;
@@ -33,8 +29,6 @@
             flex: 1;
         }
     </style>
-
-  
 </head>
 <body>
     @await Html.PartialAsync("TeacherLayout/_Header")
@@ -42,12 +36,9 @@
     <main class="container-fluid px-4 py-4">
         @RenderBody()
     </main>
-
-
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
     @await RenderSectionAsync("Scripts", required: false)
     <script src="~/js/Teacher/loadFormTopic.js" asp-append-version="true"></script>
     <script src="~/js/Teacher/editForm.js" asp-append-version="true"></script>

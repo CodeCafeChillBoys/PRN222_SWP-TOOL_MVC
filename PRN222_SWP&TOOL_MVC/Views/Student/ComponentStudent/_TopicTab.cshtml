@@ -1,5 +1,21 @@
 ﻿@model PRN222_SWP_TOOL_MVC.Service.DTO.Request.StudentDashboardRequestDTO
 
+@{
+    var selectedTopic = Model.Topics
+        ?.FirstOrDefault(t => t.TopicID == Model.SelectedTopicId);
+}
+
+@if (selectedTopic != null)
+{
+    <div class="topic-registered-banner">
+        <i class="fa-solid fa-circle-check"></i>
+        <div>
+            <span>Nhóm của bạn đã đăng ký đề tài:</span>
+            <strong>@selectedTopic.TopicName</strong>
+        </div>
+    </div>
+}
+
 @foreach (var topic in Model.Topics)
 {
     var isSelected = Model.SelectedTopicId.HasValue
@@ -8,13 +24,11 @@
     var currentCount = topic.TopicRegistrations?.Count ?? 0;
     var maxGroup = topic.MaxGroupCount ?? 5;
     var isFull = currentCount >= maxGroup;
-
     <div class="col-12 mb-4">
-        <div class="topic-card">
-
+        <div class="topic-card @(isSelected ? "selected" : "")">
             <div class="topic-header">
                 <div class="topic-title">
-                    <div class="topic-icon">
+                    <div class="topic-icon @(isSelected ? "selected" : "")">
                         <i class="fa-solid fa-book-open"></i>
                     </div>
 
@@ -79,7 +93,7 @@
                 }
                 else
                 {
-                    <button class="btn-select select-topic"      data-id="@topic.TopicID">
+                    <button class="btn-select select-topic" data-id="@topic.TopicID">
                         <i class="fa-solid fa-paper-plane me-1"></i>
                         Chọn đề tài
                     </button>
@@ -87,4 +101,4 @@
             }
         </div>
     </div>
-} 
+}

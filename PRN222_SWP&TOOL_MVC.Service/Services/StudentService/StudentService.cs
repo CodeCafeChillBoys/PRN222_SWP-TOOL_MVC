@@ -12,7 +12,7 @@ namespace PRN222_SWP_TOOL_MVC.Service.Services.StudentService
         {
             _unitOfWork = unitOfWork;
         }
-        
+
         public async Task<StudentDashboardRequestDTO> GetDashboardAsync(StudentDashboardFilterRequestDTO request)
         {
             // Lấy danh sách group member trong đó có student lấy studentId
@@ -34,18 +34,14 @@ namespace PRN222_SWP_TOOL_MVC.Service.Services.StudentService
             }
 
             var topics = (await _unitOfWork.topicRepository
-                .GetAllWithIncludeAsync(t => t.TopicRegistrations,t => t.Teacher.User))
+                .GetAllWithIncludeAsync(t => t.TopicRegistrations, t => t.Teacher.User))
                 .ToList();
 
             var questions = (await _unitOfWork.questionRepository
                 .GetAllAsync())
                 .ToList();
-
-            
             //kiểm tra selectTopicId
             int? selectedTopicId = null;
-
-
             if (group != null)
             {
                 // lấy topicId ra
