@@ -3,11 +3,6 @@ using PRN222_SWP_TOOL_MVC.Repository.UnitOfWorkRepo.IUnitOfWork;
 using PRN222_SWP_TOOL_MVC.Service.DTO.Request;
 using PRN222_SWP_TOOL_MVC.Service.DTO.Response;
 using PRN222_SWP_TOOL_MVC.Service.IServices.IStudentGroup;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PRN222_SWP_TOOL_MVC.Service.Services.StudentGroupService
 {
@@ -40,7 +35,7 @@ namespace PRN222_SWP_TOOL_MVC.Service.Services.StudentGroupService
 
             using var tx = await _db.Database.BeginTransactionAsync();
 
-            var group = new StudentGroup 
+            var group = new StudentGroup
             {
                 ClassID = request.ClassID,
                 GroupName = request.GroupName.Trim(),
@@ -101,9 +96,9 @@ namespace PRN222_SWP_TOOL_MVC.Service.Services.StudentGroupService
                     {
                         StudentID = m.StudentID,
                         IsLeader = m.IsLeader,
-                       
+
                         FullName = m.Student?.User?.FullName ?? ""
-                        
+
                     })
                     .ToList()
             };

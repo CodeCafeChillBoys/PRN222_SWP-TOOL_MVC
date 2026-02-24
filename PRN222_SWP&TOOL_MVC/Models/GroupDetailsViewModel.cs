@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace PRN222_SWP_TOOL_MVC.Models.GroupViewModels
+﻿namespace PRN222_SWP_TOOL_MVC.Models.GroupViewModels
 {
     public class GroupDetailsViewModel
     {

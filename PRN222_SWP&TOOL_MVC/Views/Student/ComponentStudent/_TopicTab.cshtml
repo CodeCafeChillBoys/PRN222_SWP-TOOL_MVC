@@ -16,6 +16,21 @@
     </div>
 }
 
+<div id="miniModal" class="mini-overlay hidden">
+    <div class="mini-modal">
+        <div class="mini-header">
+            <h5 id="miniTitle">Thông báo</h5>
+            <span class="mini-close" onclick="closeMiniModal()">×</span>
+        </div>
+
+        <p id="miniMessage" class="mini-message"></p>
+
+        <div class="mini-actions">
+            <button class="btn-cancel" onclick="closeMiniModal()">Hủy</button>
+        </div>
+    </div>
+</div>
+
 @foreach (var topic in Model.Topics)
 {
     var isSelected = Model.SelectedTopicId.HasValue
@@ -24,7 +39,7 @@
     var currentCount = topic.TopicRegistrations?.Count ?? 0;
     var maxGroup = topic.MaxGroupCount ?? 5;
     var isFull = currentCount >= maxGroup;
-    <div class="col-12 mb-4">
+    <div class=" col-12 mb-4">
         <div class="topic-card @(isSelected ? "selected" : "")">
             <div class="topic-header">
                 <div class="topic-title">
@@ -42,7 +57,6 @@
                 </div>
 
                 <div class="topic-badges">
-
                     @* Badge Đã chọn *@
                     @if (isSelected)
                     {
@@ -55,7 +69,6 @@
                         <i class="fa-solid fa-users me-1"></i>
                         @currentCount/@maxGroup nhóm
                     </span>
-
                 </div>
             </div>
 

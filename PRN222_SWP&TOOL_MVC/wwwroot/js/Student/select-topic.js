@@ -12,10 +12,13 @@
         })
             .then(res => res.json())
             .then(data => {
-                alert(data.message);
+                showMiniModal(data.message, data.success);
+
                 if (data.success) {
-                    location.reload();
+                    setTimeout(() => location.reload(), 1500);
                 }
+            }).catch(() => {
+                showModal("Có lỗi hệ thống!", false);
             });
     });
 });
