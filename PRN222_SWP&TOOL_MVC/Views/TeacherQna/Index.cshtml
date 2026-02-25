@@ -1,0 +1,109 @@
+@using PRN222_SWP_TOOL_MVC.Service.DTO.QnA
+@model IEnumerable<QuestionListItemDto>
+
+@{
+    ViewData["Title"] = "Câu hỏi từ học sinh";
+    Layout = "~/Views/Shared/TeacherLayout/_TeacherLayout.cshtml";
+
+    string BadgeClass(string s) => s switch {
+        "ANSWERED"   => "bg-success",
+        "PROCESSING" => "bg-warning text-dark",
+        "CLOSED"     => "bg-secondary",
+        _            => "bg-danger"
+    };
+    string BadgeLabel(string s) => s switch {
+        "ANSWERED"   => "Đã trả lời",
+        "PROCESSING" => "Đang xử lý",
+        "CLOSED"     => "Đã đóng",
+        _            => "Chờ xử lý"
+    };
+
+    var list = Model?.ToList() ?? new List<QuestionListItemDto>();
+}
+
+<div class="container-fluid px-4 py-4">
+    <div class="d-flex align-items-center gap-2 mb-4">
+        <i class="bi bi-chat-left-dots fs-4 text-primary"></i>
+        <h3 class="mb-0 fw-bold">Hộp thư câu hỏi</h3>
+    </div>
+
+    <!-- Filter tabs -->
+    <ul class="nav nav-pills mb-4 gap-2">
+        @foreach (var (label, val, cls) in new[]{
+            ("Tất cả",        "",            "secondary"),
+            ("Chờ xử lý",     "PENDING",     "danger"),
+            ("Đang xử lý",    "PROCESSING",  "warning"),
+            ("Đã trả lời",    "ANSWERED",    "success"),
+            ("Đã đóng",       "CLOSED",      "secondary"),
+        })
+        {
+            <li class="nav-item">
+                <a class="nav-link btn btn-sm btn-outline-@cls"
+                   asp-action="Index"
+                   asp-route-topicId="@ViewBag.TopicId"
+                   asp-route-status="@val">@label</a>
+            </li>
+        }
+    </ul>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    @if (!list.Any())
+    {
+        <div class="card text-center p-5 text-muted">
+            <i class="bi bi-inbox fs-1 mb-3 d-block"></i>
+            <p class="mb-0">Không có câu hỏi nào.</p>
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Câu hỏi</th>
+                            <th>Nhóm</th>
+                            <th>Topic</th>
+                            <th class="text-center">Trạng thái</th>
+                            <th class="text-center">Tin nhắn</th>
+                            <th>Thời gian</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var q in list)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="fw-semibold">@(string.IsNullOrWhiteSpace(q.Title) ? "(Không tiêu đề)" : q.Title)</div>
+                                    <small class="text-muted">@(q.Content.Length > 80 ? q.Content[..80] + "…" : q.Content)</small>
+                                </td>
+                                <td><small>@q.StudentName</small></td>
+                                <td><small class="text-muted">@q.TopicName</small></td>
+                                <td class="text-center">
+                                    <span class="badge @BadgeClass(q.Status)">@BadgeLabel(q.Status)</span>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-light text-dark border">@q.MessageCount</span>
+                                </td>
+                                <td>
+                                    <small class="text-muted">@q.CreatedAt.ToLocalTime().ToString("dd/MM HH:mm")</small>
+                                </td>
+                                <td>
+                                    <a asp-controller="TeacherQna" asp-action="Detail" asp-route-id="@q.Id"
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-reply me-1"></i> Trả lời
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

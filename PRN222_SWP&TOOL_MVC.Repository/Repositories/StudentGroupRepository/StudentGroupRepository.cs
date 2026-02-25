@@ -30,5 +30,12 @@ namespace PRN222_SWP_TOOL_MVC.Repository.Repositories.GroupRepository
            .ThenInclude(s => s.User) 
            .FirstOrDefaultAsync(g => g.GroupID == groupId);
         }
+
+        public async Task<StudentGroup?> GetByInviteCodeAsync(string inviteCode)
+        {
+            return await _context.StudentGroups
+                .Include(g => g.Members)
+                .FirstOrDefaultAsync(g => g.InviteCode == inviteCode.Trim().ToUpper());
+        }
     }
 }

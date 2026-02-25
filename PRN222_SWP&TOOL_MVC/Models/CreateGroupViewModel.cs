@@ -4,5 +4,6 @@
     {
         public int ClassID { get; set; }
         public string GroupName { get; set; }
+        public int MaxMember { get; set; } = 5;
     }
 }

@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using PRN222_SWP_TOOL_MVC.Repository.Entities;
 using PRN222_SWP_TOOL_MVC.Repository.Enums;
 using PRN222_SWP_TOOL_MVC.Repository.UnitOfWorkRepo.IUnitOfWork;
@@ -8,13 +9,14 @@ namespace PRN222_SWP_TOOL_MVC.Service.Services.QnAService
 {
     public class QnaService : IQnaService
     {
-        private readonly IUnitOfWork _uow;
+        private readonly IUnitOfWork  _uow;
+        private readonly AppDbContext _db;
 
         // Thứ tự status hợp lệ — chỉ được đi tới (forward-only)
         private static readonly string[] StatusOrder =
             ["PENDING", "PROCESSING", "ANSWERED", "CLOSED"];
 
-        public QnaService(IUnitOfWork uow) => _uow = uow;
+        public QnaService(IUnitOfWork uow, AppDbContext db) { _uow = uow; _db = db; }
 
         // ════════════════════════════════════════════════════════════════
         // STUDENT — Tạo câu hỏi mới
@@ -28,11 +30,18 @@ namespace PRN222_SWP_TOOL_MVC.Service.Services.QnAService
                 return ApiResponse<QuestionDetailDto>.Fail(
                     ReasonCodes.NOT_GROUP_MEMBER, "Bạn không thuộc nhóm này.");
 
-            // 2. Kiểm tra topic có tồn tại không
+            // 2. Kiểm tra topic có tồn tại và nhóm đã đăng ký topic đó chưa
             var topic = await _uow.topicRepository.GetByIdAsync(req.TopicId);
             if (topic == null)
                 return ApiResponse<QuestionDetailDto>.Fail(
                     ReasonCodes.GROUP_NO_TOPIC, "Topic không tồn tại.");
+
+            var registered = await _db.TopicRegistrations
+                .AnyAsync(tr => tr.GroupID == req.GroupId && tr.TopicID == req.TopicId);
+            if (!registered)
+                return ApiResponse<QuestionDetailDto>.Fail(
+                    ReasonCodes.GROUP_NO_TOPIC,
+                    "Nhóm bạn chưa đăng ký đề tài này. Chỉ được hỏi về đề tài nhóm đã chọn.");
 
             // 3. Tạo Question
             var now = DateTime.UtcNow;
@@ -142,6 +151,25 @@ namespace PRN222_SWP_TOOL_MVC.Service.Services.QnAService
 
             var updated = await _uow.questionRepository.GetWithMessagesAsync(questionId);
             return ApiResponse<QuestionDetailDto>.Ok(MapToDetail(updated!));
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        // TEACHER — Chi tiết câu hỏi (check topic owner)
+        // ════════════════════════════════════════════════════════════════
+        public async Task<ApiResponse<QuestionDetailDto>> GetQuestionDetailForTeacherAsync(
+            int currentUserId, int questionId)
+        {
+            var question = await _uow.questionRepository.GetWithMessagesAsync(questionId);
+            if (question == null)
+                return ApiResponse<QuestionDetailDto>.Fail(
+                    ReasonCodes.QUESTION_NOT_FOUND, "Không tìm thấy câu hỏi.");
+
+            var topic = await _uow.topicRepository.GetByIdAsync(question.TopicID);
+            if (topic == null || topic.TeacherID != currentUserId)
+                return ApiResponse<QuestionDetailDto>.Fail(
+                    ReasonCodes.NOT_TOPIC_OWNER, "Bạn không phụ trách topic này.");
+
+            return ApiResponse<QuestionDetailDto>.Ok(MapToDetail(question));
         }
 
         // ════════════════════════════════════════════════════════════════

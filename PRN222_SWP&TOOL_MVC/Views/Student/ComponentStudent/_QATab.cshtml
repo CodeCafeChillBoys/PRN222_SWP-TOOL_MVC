@@ -1,47 +1,117 @@
-﻿﻿<!-- TAB: HOI & DAP -->
+﻿﻿@using PRN222_SWP_TOOL_MVC.Repository.Entities
+@using PRN222_SWP_TOOL_MVC.Service.DTO.Request
+@model StudentDashboardRequestDTO
 
-<div id="tab-qa" class="tab-content d-none">
+@{
+    var questionList   = (Model?.Questions ?? new List<Question>());
+    var group          = Model?.Group;
+    var hasGroup       = group != null && group.GroupID != 0;
+    var hasTopic       = Model?.RegisteredTopicId != null;
+    var groupId        = group?.GroupID ?? 0;
+    var sortedQuestions = questionList.OrderByDescending(q => q.CreatedAt).ToList();
 
+    string BadgeClass(string s) => s switch {
+        "ANSWERED"   => "bg-success",
+        "PROCESSING" => "bg-warning text-dark",
+        "CLOSED"     => "bg-secondary",
+        _            => "bg-danger"
+    };
+    string BadgeLabel(string s) => s switch {
+        "ANSWERED"   => "Đã trả lời",
+        "PROCESSING" => "Đang xử lý",
+        "CLOSED"     => "Đã đóng",
+        _            => "Chờ xử lý"
+    };
+}
 
-	<!-- HOI & DAP -->
-	<div class="card p-4 mb-5">
-		<div class="d-flex align-items-center gap-2 mb-1">
-			<i class="bi bi-send"></i>
-			<strong>Đặt câu hỏi cho giảng viên</strong>
-		</div>
-		<small class="text-muted">Bạn cần chọn đề tài trước khi đặt câu hỏi</small>
+<div id="tab-qa">
+    <!-- BLOCK: ĐẶT CÂU HỎI -->
+    <div class="card p-4 mb-4">
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <i class="bi bi-send fs-5 text-primary"></i>
+            <strong>Đặt câu hỏi cho giảng viên</strong>
+        </div>
 
+        @if (!hasGroup)
+        {
+            <div class="alert alert-warning mb-3 py-2">
+                <i class="bi bi-exclamation-triangle me-1"></i>
+                Bạn cần <strong>tham gia nhóm</strong> trước khi có thể đặt câu hỏi.
+            </div>
+            <button class="btn btn-secondary" disabled>
+                <i class="bi bi-send me-1"></i> Gửi câu hỏi
+            </button>
+        }
+        else if (!hasTopic)
+        {
+            <div class="alert alert-info mb-3 py-2">
+                <i class="bi bi-info-circle me-1"></i>
+                Nhóm của bạn chưa <strong>chọn đề tài</strong>. Hãy chọn đề tài trong tab <b>Đề tài</b> trước khi đặt câu hỏi.
+            </div>
+            <button class="btn btn-secondary" disabled>
+                <i class="bi bi-send me-1"></i> Gửi câu hỏi
+            </button>
+        }
+        else
+        {
+            <small class="text-muted d-block mb-3">
+                Nhóm: <strong>@group!.GroupName</strong> | Đề tài: <strong>@Model!.RegisteredTopicName</strong>
+            </small>
+            <a asp-controller="StudentQna"
+               asp-action="Create"
+               asp-route-groupId="@groupId"
+               asp-route-topicId="@Model!.RegisteredTopicId"
+               class="btn btn-primary">
+                <i class="bi bi-plus-circle me-1"></i> Tạo câu hỏi mới
+            </a>
+        }
+    </div>
 
-		<div class="alert alert-light border mt-3">
-			<i class="bi bi-info-circle"></i>
-			Bạn cần tham gia nhóm và chọn đề tài trước khi có thể đặt câu hỏi.
-		</div>
+    <!-- BLOCK: DANH SÁCH CÂU HỎI -->
+    <h5 class="fw-bold mb-3">
+        <i class="bi bi-chat-square-text me-2"></i>Lịch sử câu hỏi
+        @if (sortedQuestions.Any())
+        {
+            <span class="badge bg-secondary ms-1">@sortedQuestions.Count</span>
+        }
+    </h5>
 
-
-<textarea class="form-control mb-3" rows="4" placeholder="Nhập câu hỏi của bạn..." disabled></textarea>
-		<button class="btn btn-secondary w-100" disabled>
-			<i class="bi bi-send"></i> Gửi câu hỏi
-		</button>
-	</div>
-
-
-	<h5 class="fw-bold mb-3">Lịch sử câu hỏi</h5>
-	<div class="card p-4 mb-4">
-		<div class="d-flex justify-content-between align-items-center mb-2">
-			<strong>Em có thể sử dụng framework nào để xây dựng ứng dụng?</strong>
-			<div>
-				<span class="badge bg-success">Đã trả lời</span>
-				<span class="badge bg-light text-dark">Công khai</span>
-			</div>
-		</div>
-		<small class="text-muted">Gửi lúc: 2025-01-14 10:30</small>
-
-
-		<div class="border-start border-4 border-primary bg-light p-3 mt-3">
-			<strong>Trả lời từ giảng viên:</strong>
-			<p class="mb-0">Bạn có thể sử dụng React hoặc Vue.js cho frontend. Backend nên dùng Node.js với Express hoặc NestJS.</p>
-		</div>
-	</div>
-
-
+    @if (!sortedQuestions.Any())
+    {
+        <div class="card p-5 text-center text-muted">
+            <i class="bi bi-inbox fs-1 mb-3 d-block"></i>
+            <p class="mb-0">Chưa có câu hỏi nào.</p>
+        </div>
+    }
+    else
+    {
+        foreach (var q in sortedQuestions)
+        {
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-1">
+                        <strong class="me-3">@(string.IsNullOrWhiteSpace(q.Title) ? "(Không có tiêu đề)" : q.Title)</strong>
+                        <span class="badge @BadgeClass(q.Status) flex-shrink-0">@BadgeLabel(q.Status)</span>
+                    </div>
+                    @if (!string.IsNullOrWhiteSpace(q.Title))
+                    {
+                        <p class="text-muted small mb-2">@q.Content</p>
+                    }
+                    <div class="d-flex flex-wrap gap-3 text-muted small">
+                        <span><i class="bi bi-clock me-1"></i>@q.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</span>
+                        @if (q.Messages != null && q.Messages.Any())
+                        {
+                            <span><i class="bi bi-chat-dots me-1"></i>@q.Messages.Count tin nhắn</span>
+                        }
+                    </div>
+                </div>
+                <div class="card-footer bg-light py-2">
+                    <a asp-controller="StudentQna" asp-action="Detail" asp-route-id="@q.Id"
+                       class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-eye me-1"></i> Xem chi tiết
+                    </a>
+                </div>
+            </div>
+        }
+    }
 </div>

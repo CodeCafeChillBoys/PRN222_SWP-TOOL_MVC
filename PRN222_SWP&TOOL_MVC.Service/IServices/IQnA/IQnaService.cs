@@ -32,6 +32,10 @@ namespace PRN222_SWP_TOOL_MVC.Service.IServices.IQnA
         Task<ApiResponse<bool>> UpdateQuestionStatusAsync(
             int currentUserId, int questionId, UpdateStatusRequest request);
 
+        /// <summary>Teacher xem chi tiết câu hỏi (check topic owner).</summary>
+        Task<ApiResponse<QuestionDetailDto>> GetQuestionDetailForTeacherAsync(
+            int currentUserId, int questionId);
+
         /// <summary>Teacher trả lời → auto set ANSWERED.</summary>
         Task<ApiResponse<QuestionDetailDto>> AddTeacherMessageAsync(
             int currentUserId, int questionId, AddMessageRequest request);

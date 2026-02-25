@@ -59,6 +59,15 @@ namespace PRN222_SWP_TOOL_MVC.Service.Services.TopicService
             return true;
         }
 
+        public async Task<List<Topic>> GetAllTopicsAsync()
+        {
+            var topics = await _unitOfWork.topicRepository.GetAllAsync();
+            return topics.ToList();
+        }
+
+        public async Task<Topic?> GetByIdAsync(int id) =>
+            await _unitOfWork.topicRepository.GetByIdAsync(id);
+
         public async Task<TopicDetailResponseDTO> GetTopicDetailAsync(int id)
         {
             var topic = await _unitOfWork.topicRepository.GetByIdAsync(id);

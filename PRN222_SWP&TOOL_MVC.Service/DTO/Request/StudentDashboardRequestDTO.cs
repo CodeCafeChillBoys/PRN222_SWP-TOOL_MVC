@@ -10,5 +10,9 @@ namespace PRN222_SWP_TOOL_MVC.Service.DTO.Request
         public GroupDetailsViewModel Group { get; set; } = new();
         public List<Topic> Topics { get; set; }
         public List<Question> Questions { get; set; }
+
+        /// <summary>TopicID mà nhóm đã đăng ký (null nếu chưa chọn đề tài)</summary>
+        public int? RegisteredTopicId   { get; set; }
+        public string? RegisteredTopicName { get; set; }
     }
 }

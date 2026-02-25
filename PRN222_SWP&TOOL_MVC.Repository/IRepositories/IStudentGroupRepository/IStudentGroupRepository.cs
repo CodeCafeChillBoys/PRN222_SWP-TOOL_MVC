@@ -12,6 +12,7 @@ namespace PRN222_SWP_TOOL_MVC.Repository.IRepositories.IGroupRepository
     public interface IStudentGroupRepository : IGenericRepository<StudentGroup>
     {
         Task<StudentGroup?> GetGroupWithMembersAsync(int groupId);
-        Task<int> CountMembersAsync(int groupId);
+        Task<int>           CountMembersAsync(int groupId);
+        Task<StudentGroup?> GetByInviteCodeAsync(string inviteCode);
     }
 }

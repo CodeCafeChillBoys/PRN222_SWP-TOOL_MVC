@@ -1,0 +1,179 @@
+@model PRN222_SWP_TOOL_MVC.Service.DTO.QnA.QuestionDetailDto
+
+@{
+    ViewData["Title"] = "Chi tiết câu hỏi";
+    Layout = "~/Views/Shared/StudentLayout/_StudentLayout.cshtml";
+
+    string StatusBadgeClass(string status) => status switch
+    {
+        "ANSWERED"   => "bg-success",
+        "PROCESSING" => "bg-warning text-dark",
+        "CLOSED"     => "bg-secondary",
+        _            => "bg-danger"
+    };
+
+    string StatusLabel(string status) => status switch
+    {
+        "ANSWERED"   => "Đã trả lời",
+        "PROCESSING" => "Đang xử lý",
+        "CLOSED"     => "Đã đóng",
+        _            => "Chờ xử lý"
+    };
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a asp-controller="Student" asp-action="Index">Dashboard</a>
+                    </li>
+                    <li class="breadcrumb-item active">Chi tiết câu hỏi</li>
+                </ol>
+            </nav>
+
+            <!-- TempData -->
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show">
+                    <i class="bi bi-exclamation-circle me-1"></i> @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <!-- Info card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">
+                        @(string.IsNullOrWhiteSpace(Model.Title) ? "Câu hỏi" : Model.Title)
+                    </h5>
+                    <span class="badge @StatusBadgeClass(Model.Status)">
+                        @StatusLabel(Model.Status)
+                    </span>
+                </div>
+                <div class="card-body">
+                    <p class="text-secondary">@Model.Content</p>
+                    <hr />
+                    <div class="row text-muted small">
+                        <div class="col-md-4">
+                            <i class="bi bi-person me-1"></i>
+                            <strong>Sinh viên:</strong> @Model.StudentName
+                        </div>
+                        <div class="col-md-4">
+                            <i class="bi bi-book me-1"></i>
+                            <strong>Topic:</strong> @Model.TopicName
+                        </div>
+                        <div class="col-md-4">
+                            <i class="bi bi-people me-1"></i>
+                            <strong>Nhóm:</strong> @Model.GroupName
+                        </div>
+                    </div>
+                    <div class="text-muted small mt-2">
+                        <i class="bi bi-clock me-1"></i>
+                        Gửi lúc: @Model.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thread messages -->
+            <h6 class="fw-bold mb-3">
+                <i class="bi bi-chat-dots me-1"></i> Lịch sử trò chuyện
+            </h6>
+
+            @if (!Model.Messages.Any())
+            {
+                <div class="alert alert-light border text-muted text-center mb-4">
+                    <i class="bi bi-chat-square me-1"></i> Chưa có tin nhắn nào.
+                </div>
+            }
+            else
+            {
+                <div class="d-flex flex-column gap-3 mb-4">
+                    @foreach (var msg in Model.Messages.OrderBy(m => m.CreatedAt))
+                    {
+                        bool isTeacher = msg.SenderRole == "TEACHER";
+                        <div class="d-flex @(isTeacher ? "justify-content-start" : "justify-content-end")">
+                            <div class="card @(isTeacher ? "border-primary" : "border-success") shadow-sm"
+                                 style="max-width: 75%;">
+                                <div class="card-header py-1 px-3 @(isTeacher ? "bg-primary text-white" : "bg-success text-white") small">
+                                    <i class="bi @(isTeacher ? "bi-person-badge" : "bi-person") me-1"></i>
+                                    @msg.SenderName
+                                    <span class="ms-2 opacity-75">
+                                        @msg.CreatedAt.ToLocalTime().ToString("dd/MM HH:mm")
+                                    </span>
+                                </div>
+                                <div class="card-body py-2 px-3">
+                                    <p class="mb-0">@msg.Content</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
+            <!-- Form gửi thêm tin nhắn (chỉ khi chưa CLOSED) -->
+            @if (Model.Status != "CLOSED")
+            {
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light fw-semibold">
+                        <i class="bi bi-reply me-1"></i> Gửi thêm thông tin
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="AddMessage" asp-route-id="@Model.Id" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="Content" id="hiddenContent" />
+
+                            <div class="mb-3">
+                                <textarea id="messageContent" class="form-control" rows="3"
+                                          placeholder="Nhập nội dung bổ sung..."
+                                          required maxlength="1000"></textarea>
+                                <div class="form-text text-end">
+                                    <span id="msgCount">0</span>/1000 ký tự
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-send me-1"></i> Gửi
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-secondary text-center">
+                    <i class="bi bi-lock me-1"></i> Câu hỏi này đã được đóng.
+                </div>
+            }
+
+            <div class="mt-4">
+                <a href="javascript:history.back()" class="btn btn-sm btn-secondary">
+                    <i class="bi bi-arrow-left me-1"></i> Quay lại
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Đếm ký tự textarea
+        const ta    = document.getElementById('messageContent');
+        const count = document.getElementById('msgCount');
+        if (ta && count) {
+            ta.addEventListener('input', () => count.textContent = ta.value.length);
+        }
+
+        // Copy nội dung sang hidden input trước khi submit
+        const form = ta?.closest('form');
+        if (form) {
+            form.addEventListener('submit', () => {
+                document.getElementById('hiddenContent').value = ta.value;
+            });
+        }
+    </script>
+}

@@ -1,5 +1,104 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using PRN222_SWP_TOOL_MVC.Repository.Entities
+@model List<Question>
+
 @{
+    var questions = Model ?? new List<Question>();
+    var pending   = questions.Count(q => q.Status == "PENDING");
+    var processing = questions.Count(q => q.Status == "PROCESSING");
+
+    string BadgeClass(string s) => s switch {
+        "ANSWERED"   => "bg-success",
+        "PROCESSING" => "bg-warning text-dark",
+        "CLOSED"     => "bg-secondary",
+        _            => "bg-danger"
+    };
+    string BadgeLabel(string s) => s switch {
+        "ANSWERED"   => "Đã trả lời",
+        "PROCESSING" => "Đang xử lý",
+        "CLOSED"     => "Đã đóng",
+        _            => "Chờ xử lý"
+    };
 }
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header d-flex align-items-center gap-2">
+        <i class="bi bi-chat-left-dots text-primary fs-5"></i>
+        <span class="fw-semibold">Câu hỏi từ học sinh</span>
+        @if (pending > 0)
+        {
+            <span class="badge bg-danger ms-1">@pending chờ xử lý</span>
+        }
+        @if (processing > 0)
+        {
+            <span class="badge bg-warning text-dark ms-1">@processing đang xử lý</span>
+        }
+        @if (!questions.Any())
+        {
+            <span class="badge bg-secondary ms-1">Không có</span>
+        }
+    </div>
+
+    @if (!questions.Any())
+    {
+        <div class="card-body text-center text-muted py-5">
+            <i class="bi bi-inbox fs-1 mb-3 d-block"></i>
+            <p>Không có câu hỏi nào từ học sinh.</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Câu hỏi</th>
+                        <th>Nhóm / Topic</th>
+                        <th class="text-center">Trạng thái</th>
+                        <th>Thời gian</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var q in questions.OrderByDescending(q => q.CreatedAt))
+                    {
+                        <tr @(q.Status == "PENDING" ? "class=table-danger" : "")>
+                            <td>
+                                <div class="fw-semibold">
+                                    @(string.IsNullOrWhiteSpace(q.Title) ? "(Không tiêu đề)" : q.Title)
+                                </div>
+                                <small class="text-muted">
+                                    @(q.Content.Length > 80 ? q.Content[..80] + "…" : q.Content)
+                                </small>
+                            </td>
+                            <td>
+                                <small>
+                                    @q.StudentGroup?.GroupName
+                                    @if (q.Topic != null)
+                                    {
+                                        <br /><span class="text-muted">@q.Topic.TopicName</span>
+                                    }
+                                </small>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge @BadgeClass(q.Status)">@BadgeLabel(q.Status)</span>
+                            </td>
+                            <td>
+                                <small class="text-muted">
+                                    @q.CreatedAt.ToLocalTime().ToString("dd/MM HH:mm")
+                                </small>
+                            </td>
+                            <td>
+                                <a asp-controller="TeacherQna"
+                                   asp-action="Detail"
+                                   asp-route-id="@q.Id"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-reply me-1"></i> Xem & Trả lời
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

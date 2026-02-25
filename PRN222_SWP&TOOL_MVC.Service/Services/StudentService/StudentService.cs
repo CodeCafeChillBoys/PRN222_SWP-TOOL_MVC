@@ -9,26 +9,33 @@ namespace PRN222_SWP_TOOL_MVC.Service.Services.StudentService
 {
     public class StudentService : IStudentService
     {
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork  _unitOfWork;
+        private readonly AppDbContext _db;
 
-        public StudentService(IUnitOfWork unitOfWork)
+        public StudentService(IUnitOfWork unitOfWork, AppDbContext db)
         {
             _unitOfWork = unitOfWork;
+            _db         = db;
         }
 
         public async Task<StudentDashboardRequestDTO> GetDashboardAsync(string tab)
         {
-            // Lấy danh sách topic (không cần include phức tạp)
-            var topics = (await _unitOfWork.topicRepository.GetAllAsync()).ToList();
-
-            // Lấy danh sách questions (chỉ lấy basic, không include navigation)
-            var questions = (await _unitOfWork.questionRepository.GetAllAsync()).ToList();
-
-            // Lấy nhóm đầu tiên — kèm Members để tránh NullReference
-            // Dùng GetAllWithIncludeAsync để eager-load Members
+            // 1. Lấy nhóm trước — kèm Members để đỡ NullReference
             var groupsRaw = await _unitOfWork.studentGroupRepository
                 .GetAllWithIncludeAsync(g => g.Members);
             var group = groupsRaw.FirstOrDefault();
+
+            // 2. Lấy topic (tất cả — student xem để chọn đề tài)
+            var topics = (await _unitOfWork.topicRepository.GetAllAsync()).ToList();
+
+            // 3. Lấy questions kèm Messages, lọc theo nhóm của student
+            var allQuestions = (await _unitOfWork.questionRepository
+                .GetAllWithIncludeAsync(q => q.Messages)).ToList();
+
+            var questions = group != null
+                ? allQuestions.Where(q => q.GroupID == group.GroupID).ToList()
+                : new List<Question>();
+
 
             GroupDetailsViewModel groupViewModel;
             if (group != null)
@@ -64,12 +71,23 @@ namespace PRN222_SWP_TOOL_MVC.Service.Services.StudentService
                 };
             }
 
+            // 4. Lấy TopicRegistration của nhóm
+            TopicRegistration? reg = null;
+            if (group != null)
+            {
+                reg = await _db.TopicRegistrations
+                    .Include(tr => tr.Topic)
+                    .FirstOrDefaultAsync(tr => tr.GroupID == group.GroupID);
+            }
+
             return new StudentDashboardRequestDTO
             {
-                CurrentTab = tab ?? "group",
-                Group = groupViewModel,
-                Topics = topics,
-                Questions = questions
+                CurrentTab         = tab ?? "group",
+                Group              = groupViewModel,
+                Topics             = topics,
+                Questions          = questions,
+                RegisteredTopicId  = reg?.TopicID,
+                RegisteredTopicName = reg?.Topic?.TopicName
             };
         }
     }

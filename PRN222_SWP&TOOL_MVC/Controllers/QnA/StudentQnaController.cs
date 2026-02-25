@@ -1,70 +1,115 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PRN222_SWP_TOOL_MVC.Service.DTO.QnA;
 using PRN222_SWP_TOOL_MVC.Service.IServices.IQnA;
+using PRN222_SWP_TOOL_MVC.Service.IServices.ITopic;
 using System.Security.Claims;
 
 namespace PRN222_SWP_TOOL_MVC.Controllers.QnA
 {
-    [ApiController]
-    [Route("api/student/questions")]
-    public class StudentQnaController : ControllerBase
+    [Authorize(Roles = "Student")]
+    public class StudentQnaController : Controller
     {
         private readonly IQnaService _qnaService;
+        private readonly ITopicService _topicService;
 
-        public StudentQnaController(IQnaService qnaService)
+        public StudentQnaController(IQnaService qnaService, ITopicService topicService)
         {
-            _qnaService = qnaService;
+            _qnaService   = qnaService;
+            _topicService = topicService;
         }
 
-        /// <summary>Lấy UserID của student đang đăng nhập từ JWT claims.</summary>
-        private int CurrentUserId =>
-            int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0");
-
-        // ── POST /api/student/questions ────────────────────────────────
-        /// <summary>Tạo câu hỏi mới. Body: { groupId, topicId, content, title? }</summary>
-        [HttpPost]
-        public async Task<IActionResult> CreateQuestion([FromBody] CreateQuestionRequest request)
+        private int GetCurrentUserId()
         {
-            var result = await _qnaService.CreateQuestionAsync(CurrentUserId, request);
-            return result.Success ? StatusCode(201, result) : MapError(result);
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdStr))
+                throw new InvalidOperationException("User is not authenticated");
+            return int.Parse(userIdStr);
         }
 
-        // ── GET /api/student/questions?groupId=&status= ────────────────
+        // GET: /StudentQna/Index?groupId=&status=
         /// <summary>Danh sách câu hỏi của nhóm mình.</summary>
         [HttpGet]
-        public async Task<IActionResult> GetQuestions(
-            [FromQuery] int groupId,
-            [FromQuery] string? status = null)
+        public async Task<IActionResult> Index(int groupId, string? status = null)
         {
-            var result = await _qnaService.GetStudentQuestionsAsync(CurrentUserId, groupId, status);
-            return result.Success ? Ok(result) : MapError(result);
+            var result = await _qnaService.GetStudentQuestionsAsync(GetCurrentUserId(), groupId, status);
+            if (!result.Success)
+            {
+                TempData["Error"] = result.Message;
+                return RedirectToAction("Index", "Student");
+            }
+            return View(result.Data);
         }
 
-        // ── GET /api/student/questions/{id} ───────────────────────────
+        // GET: /StudentQna/Detail/5
         /// <summary>Chi tiết câu hỏi + thread messages.</summary>
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetQuestion(int id)
+        [HttpGet]
+        public async Task<IActionResult> Detail(int id)
         {
-            var result = await _qnaService.GetQuestionDetailForStudentAsync(CurrentUserId, id);
-            return result.Success ? Ok(result) : MapError(result);
+            var result = await _qnaService.GetQuestionDetailForStudentAsync(GetCurrentUserId(), id);
+            if (!result.Success)
+            {
+                TempData["Error"] = result.Message;
+                return RedirectToAction("Index", "Student");
+            }
+            return View(result.Data);
         }
 
-        // ── POST /api/student/questions/{id}/messages ──────────────────
+        // GET: /StudentQna/Create?groupId=&topicId=
+        [HttpGet]
+        public async Task<IActionResult> Create(int groupId, int topicId = 0)
+        {
+            // Chỉ truyền topic đã đăng ký (nếu có) vào ViewBag
+            if (topicId > 0)
+            {
+                var topic = await _topicService.GetByIdAsync(topicId);
+                ViewBag.Topics = topic != null
+                    ? new List<PRN222_SWP_TOOL_MVC.Repository.Entities.Topic> { topic }
+                    : new List<PRN222_SWP_TOOL_MVC.Repository.Entities.Topic>();
+            }
+            else
+            {
+                ViewBag.Topics = await _topicService.GetAllTopicsAsync();
+            }
+            return View(new CreateQuestionRequest(groupId, topicId, string.Empty));
+        }
+
+        // POST: /StudentQna/Create
+        /// <summary>Tạo câu hỏi mới.</summary>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CreateQuestionRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Topics = await _topicService.GetAllTopicsAsync();
+                return View(request);
+            }
+
+            var result = await _qnaService.CreateQuestionAsync(GetCurrentUserId(), request);
+            if (!result.Success)
+            {
+                ModelState.AddModelError("", result.Message);
+                ViewBag.Topics = await _topicService.GetAllTopicsAsync();
+                return View(request);
+            }
+
+            TempData["Success"] = "Câu hỏi đã được gửi thành công.";
+            return RedirectToAction("Index", new { groupId = request.GroupId });
+        }
+
+        // POST: /StudentQna/AddMessage/5
         /// <summary>Gửi thêm tin nhắn vào thread.</summary>
-        [HttpPost("{id}/messages")]
-        public async Task<IActionResult> AddMessage(int id, [FromBody] AddMessageRequest request)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddMessage(int id, AddMessageRequest request)
         {
-            var result = await _qnaService.AddStudentMessageAsync(CurrentUserId, id, request);
-            return result.Success ? Ok(result) : MapError(result);
+            var result = await _qnaService.AddStudentMessageAsync(GetCurrentUserId(), id, request);
+            if (!result.Success)
+            {
+                TempData["Error"] = result.Message;
+            }
+            return RedirectToAction("Detail", new { id });
         }
-
-        // ── HTTP error mapping ─────────────────────────────────────────
-        private IActionResult MapError<T>(ApiResponse<T> result) => result.ReasonCode switch
-        {
-            ReasonCodes.NOT_GROUP_MEMBER    => StatusCode(403, result),
-            ReasonCodes.QUESTION_NOT_FOUND  => NotFound(result),
-            ReasonCodes.GROUP_NO_TOPIC      => UnprocessableEntity(result),
-            _                               => BadRequest(result)
-        };
     }
 }

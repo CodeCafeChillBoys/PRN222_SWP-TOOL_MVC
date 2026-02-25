@@ -10,8 +10,8 @@ namespace PRN222_SWP_TOOL_MVC.Service.IServices.IStudentGroup
 {
     public interface IStudentGroupService 
     {
-
-        Task<ReturnData<int>> CreateGroupAsync(CreateGroupRequestDTO request, int creatorUserId );
+        Task<ReturnData<int>>  CreateGroupAsync(CreateGroupRequestDTO request, int creatorUserId);
+        Task<ReturnData<int>>  JoinGroupAsync(string inviteCode, int studentId);
         Task<ReturnData<bool>> AddMemberAsync(int groupId, int studentId);
         Task<ReturnData<bool>> RemoveMemberAsync(int groupId, int studentId);
         Task<ReturnData<GroupInfoResponseDTO>> GetGroupInfoAsync(int groupId);

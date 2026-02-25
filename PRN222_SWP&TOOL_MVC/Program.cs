@@ -52,7 +52,19 @@ namespace PRN222_SWP_TOOL_MVC
 
             // DI session
             builder.Services.AddDistributedMemoryCache();
-            builder.Services.AddSession();
+            builder.Services.AddSession(options =>
+            {
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            });
+
+            // Fix Google OAuth Correlation Failed
+            // Trình duyệt hiện đại chặn SameSite=Lax với cross-site redirect → cần None+Secure
+            builder.Services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+                options.Secure = CookieSecurePolicy.Always;
+            });
 
             // DI DB
             builder.Services.AddDbContext<AppDbContext>(options =>
@@ -135,6 +147,7 @@ namespace PRN222_SWP_TOOL_MVC
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseCookiePolicy();  // ← PHẢI đặt trước UseSession + UseAuthentication
             app.UseSession();
 
             app.UseAuthentication();

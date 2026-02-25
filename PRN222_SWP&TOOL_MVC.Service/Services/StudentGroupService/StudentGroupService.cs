@@ -42,11 +42,17 @@ namespace PRN222_SWP_TOOL_MVC.Service.Services.StudentGroupService
 
             var group = new StudentGroup 
             {
-                ClassID = request.ClassID,
-                GroupName = request.GroupName.Trim(),
-                CreatedByUserID = creatorUserId,
-                IsLocked = false
+                ClassID          = request.ClassID,
+                GroupName        = request.GroupName.Trim(),
+                CreatedByUserID  = creatorUserId,
+                IsLocked         = false,
+                MaxMember        = request.MaxMember > 0 ? request.MaxMember : 5,
+                Status           = "ACTIVE",
+                // Sinh mã mời ngẫu nhiên 8 ký tự — viết hoa để dễ nhập
+                InviteCode       = Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper(),
+                CreatedAt        = DateTime.UtcNow
             };
+
 
             await _uow.studentGroupRepository.AddAsync(group);
             await _uow.SaveChangeAsync();
@@ -69,6 +75,47 @@ namespace PRN222_SWP_TOOL_MVC.Service.Services.StudentGroupService
                 ResponseMessage = "Create group successfully",
                 Data = group.GroupID
             };
+        }
+
+        public async Task<ReturnData<int>> JoinGroupAsync(string inviteCode, int studentId)
+        {
+            if (string.IsNullOrWhiteSpace(inviteCode))
+                return new ReturnData<int> { Success = false, ResponseMessage = "Vui lòng nhập mã mời." };
+
+            var group = await _uow.studentGroupRepository.GetByInviteCodeAsync(inviteCode);
+            if (group == null)
+                return new ReturnData<int> { Success = false, ResponseMessage = $"Mã mời '{inviteCode.ToUpper()}' không hợp lệ." };
+
+            if (group.IsLocked)
+                return new ReturnData<int> { Success = false, ResponseMessage = "Nhóm này đã bị khoá, không thể tham gia." };
+
+            var memberCount = await _uow.groupMemberRepository.CountByGroupAsync(group.GroupID);
+            if (memberCount >= group.MaxMember)
+                return new ReturnData<int> { Success = false, ResponseMessage = $"Nhóm đã đầy ({memberCount}/{group.MaxMember} thành viên)." };
+
+            var alreadyMember = await _uow.groupMemberRepository.IsMemberAsync(group.GroupID, studentId);
+            if (alreadyMember)
+                return new ReturnData<int> { Success = false, ResponseMessage = "Bạn đã là thành viên của nhóm này." };
+
+            var member = new GroupMember
+            {
+                GroupID   = group.GroupID,
+                StudentID = studentId,
+                IsLeader  = false
+            };
+            await _uow.groupMemberRepository.AddAsync(member);
+            await _uow.SaveChangeAsync();
+
+            // Tự động khoá khi đủ MaxMember
+            var newCount = memberCount + 1;
+            if (newCount >= group.MaxMember)
+            {
+                group.IsLocked = true;
+                await _uow.studentGroupRepository.UpdateAsync(group);
+                await _uow.SaveChangeAsync();
+            }
+
+            return new ReturnData<int> { Success = true, ResponseMessage = "Tham gia nhóm thành công!", Data = group.GroupID };
         }
 
         public async Task<ReturnData<GroupInfoResponseDTO>> GetGroupInfoAsync(int groupId)
