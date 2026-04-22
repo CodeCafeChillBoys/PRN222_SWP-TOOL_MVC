@@ -1,4 +1,5 @@
-﻿@model PRN222_SWP_TOOL_MVC.Service.DTO.Request.TeacherDashboardReuqestDTO
+@* @model PRN222_SWP_TOOL_MVC.Service.DTO.Request.TeacherDashboardReuqestDTO *@
+@model PRN222_SWP_TOOL_MVC.Models.StudentDashboardViewModel
 
 @{
     ViewData["Title"] = "Teacher";
@@ -15,7 +16,7 @@
         <!-- CONTENT -->
         @if (Model.CurrentTab == "qa")
         {
-            @await Html.PartialAsync("~/Views/Teacher/ComponentTeacher/_QuestionList.cshtml", Model.Question)
+            @await Html.PartialAsync("~/Views/Teacher/ComponentTeacher/_QuestionList.cshtml", Model)
         }
         else if (Model.CurrentTab == "topic")
         {

@@ -1,10 +1,11 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PRN222_SWP_TOOL_MVC.Models;
 using PRN222_SWP_TOOL_MVC.Service.DTO.Request;
 using PRN222_SWP_TOOL_MVC.Service.IServices.ISemester;
 using PRN222_SWP_TOOL_MVC.Service.IServices.ITeacher;
 using PRN222_SWP_TOOL_MVC.Service.IServices.ITopic;
+using System.Security.Claims;
 
 namespace PRN222_MVC.Controllers
 {
@@ -54,10 +55,15 @@ namespace PRN222_MVC.Controllers
             ViewBag.SelectedStatus = status;
             return View(filteredSemesters);
         }
-
         public async Task<IActionResult> Index(string tab = "qa")
         {
-            var model = await _teacherService.GetDashboardDataAsync(tab);
+            var dto = await _teacherService.GetDashboardDataAsync(tab);
+
+            var model = new StudentDashboardViewModel
+            {
+                CurrentTab = tab,
+                teacherDashboardReuqestDTO = dto
+            };
 
             return View(model);
         }

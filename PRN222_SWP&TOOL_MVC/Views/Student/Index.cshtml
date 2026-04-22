@@ -5,6 +5,7 @@
     Layout = "~/Views/Shared/StudentLayout/_StudentLayout.cshtml";
 }
 
+
 <div class="container-fluid min-vh-100">
     <div class="container">
         <div class="row g-3 mb-4">
@@ -16,7 +17,7 @@
 
             @if (Model?.CurrentTab == "group")
             {
-                @await Html.PartialAsync("~/Views/Student/ComponentStudent/_GroupTab.cshtml", Model?.Group)
+                @await Html.PartialAsync("~/Views/Student/ComponentStudent/_GroupTab.cshtml", Model)
             }
             else if (Model?.CurrentTab == "topic")
             {
@@ -26,7 +27,6 @@
             {
                 @await Html.PartialAsync("~/Views/Student/ComponentStudent/_QATab.cshtml", Model?.Questions)
             }
-
         </div>
 
         <script>

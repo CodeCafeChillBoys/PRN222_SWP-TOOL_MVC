@@ -21,4 +21,11 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="IRepositories\IGroupMemberRepository\" />
+    <Folder Include="IRepositories\IStudentGroupRepository\" />
+    <Folder Include="Repositories\GroupMemberRepository\" />
+    <Folder Include="Repositories\StudentGroupRepository\" />
+  </ItemGroup>
+
 </Project>
