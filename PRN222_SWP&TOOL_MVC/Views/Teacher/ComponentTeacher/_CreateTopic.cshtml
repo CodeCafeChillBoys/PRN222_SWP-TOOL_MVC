@@ -1,4 +1,5 @@
-﻿@model IEnumerable<PRN222_SWP_TOOL_MVC.Service.DTO.Response.SemesterResponseDTO>
+﻿@* @model IEnumerable<PRN222_SWP_TOOL_MVC.Service.DTO.Response.SemesterResponseDTO> *@
+@model IEnumerable<SemesterDashboardViewModel>
 
 <form id="createTopicForm">
 
@@ -29,8 +30,8 @@
 
             @foreach (var s in Model)
             {
-                <option value="@s.SemesterID">
-                    @s.SemesterName
+                <option value="@s.semesterResponseDTO.SemesterID">
+                    @s.semesterResponseDTO.SemesterName
                 </option>
             }
         </select>

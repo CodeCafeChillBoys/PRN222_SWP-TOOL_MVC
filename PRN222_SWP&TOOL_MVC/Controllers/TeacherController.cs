@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PRN222_SWP_TOOL_MVC.Models;
+using PRN222_SWP_TOOL_MVC.Repository.Entities;
 using PRN222_SWP_TOOL_MVC.Service.DTO.Request;
+using PRN222_SWP_TOOL_MVC.Service.DTO.Response;
 using PRN222_SWP_TOOL_MVC.Service.IServices.ISemester;
 using PRN222_SWP_TOOL_MVC.Service.IServices.ITeacher;
 using PRN222_SWP_TOOL_MVC.Service.IServices.ITopic;
@@ -50,10 +52,15 @@ namespace PRN222_MVC.Controllers
                 }
             }
 
+            var model = allSemesters.Select(s => new SemesterDashboardViewModel
+            {
+                semesterResponseDTO = s
+            }).ToList();
+
             ViewBag.AllSemesters = allSemesters;
             ViewBag.SelectedSemesterId = semesterId;
             ViewBag.SelectedStatus = status;
-            return View(filteredSemesters);
+            return View(model);
         }
         public async Task<IActionResult> Index(string tab = "qa")
         {
@@ -62,7 +69,7 @@ namespace PRN222_MVC.Controllers
             var model = new StudentDashboardViewModel
             {
                 CurrentTab = tab,
-                teacherDashboardReuqestDTO = dto
+                teacherDashboardResDTO = dto
             };
 
             return View(model);
@@ -71,10 +78,11 @@ namespace PRN222_MVC.Controllers
         {
             var semesters = await _semesterService.GetAllAsync();
 
-            var model = new TeacherDashboardReuqestDTO
+            var model = semesters.Select(s => new SemesterDashboardViewModel
             {
-                Semesters = semesters.ToList()
-            };
+                semesterResponseDTO = s
+            }).ToList();
+
             return PartialView(
                 "~/Views/Teacher/ComponentTeacher/_CreateTopic.cshtml",
                 model

@@ -1,9 +1,8 @@
 ﻿using PRN222_SWP_TOOL_MVC.Repository.Entities;
-using PRN222_SWP_TOOL_MVC.Service.DTO.Response;
 
-namespace PRN222_SWP_TOOL_MVC.Service.DTO.Request
+namespace PRN222_SWP_TOOL_MVC.Service.DTO.Response
 {
-    public class TeacherDashboardReuqestDTO
+    public class TeacherDashboardResponseDTO
     {
         public string CurrentTab { get; set; }
         public List<Topic> Topics { get; set; }

@@ -1,6 +1,3 @@
-@* @model PRN222_SWP_TOOL_MVC.Service.DTO.Request.TeacherDashboardReuqestDTO *@
-
-
 @model PRN222_SWP_TOOL_MVC.Models.StudentDashboardViewModel
 <div class="topic-header">
     <div class="topic-header-left">
@@ -31,7 +28,11 @@
 
         @await Html.PartialAsync(
              "ComponentTeacher/_CreateTopic",
-             Model.teacherDashboardReuqestDTO.Semesters
+                Model.teacherDashboardResDTO.Semesters
+                .Select(s => new SemesterDashboardViewModel
+                {
+                    semesterResponseDTO = s
+                }).ToList()
              )
     </div>
 </div>
@@ -73,9 +74,9 @@
     </div>
 </div>
 
-@if (Model?.teacherDashboardReuqestDTO.Topics != null && Model.teacherDashboardReuqestDTO.Topics.Any())
+@if (Model?.teacherDashboardResDTO.Topics != null && Model.teacherDashboardResDTO.Topics.Any())
 {
-    @foreach (var topic in Model.teacherDashboardReuqestDTO.Topics)
+    @foreach (var topic in Model.teacherDashboardResDTO.Topics)
     {
         <div class="topic-wrapper">
             <!-- HEADER -->

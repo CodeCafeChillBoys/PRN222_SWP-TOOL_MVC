@@ -1,6 +1,4 @@
-﻿using PRN222_SWP_TOOL_MVC.Repository.Entities;
-using PRN222_SWP_TOOL_MVC.Service.DTO.Request;
-using System.Text.RegularExpressions;
+﻿using PRN222_SWP_TOOL_MVC.Service.DTO.Response;
 
 namespace PRN222_SWP_TOOL_MVC.Models
 {
@@ -12,6 +10,6 @@ namespace PRN222_SWP_TOOL_MVC.Models
         //public List<Topic> Topics { get; set; }
         //public List<Question> Questions { get; set; }
 
-        public TeacherDashboardReuqestDTO teacherDashboardReuqestDTO { get; set; }
+        public TeacherDashboardResponseDTO teacherDashboardResDTO { get; set; }
     }
 }

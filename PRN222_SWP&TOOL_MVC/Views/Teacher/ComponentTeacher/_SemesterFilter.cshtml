@@ -1,4 +1,3 @@
-
 <div class="filter-header">
     <h2>Bộ Lọc</h2>
     <div class="filter-group">
@@ -60,23 +59,24 @@
         const semesterFilterHeader = document.getElementById("semesterFilterHeader");
         const statusFilterHeader = document.getElementById("statusFilterHeader");
 
-        if (filterBtnHeader) {
-            filterBtnHeader.addEventListener("click", function () {
-                const semesterId = semesterFilterHeader.value;
-                const status = statusFilterHeader.value;
-                
-                let url = `/Teacher/Index?`;
-                if (semesterId) url += `semesterId=${semesterId}&`;
-                if (status) url += `status=${status}&`;
-                
-                window.location.href = url.endsWith("&") ? url.slice(0, -1) : url;
-            });
-        }
+          if (filterBtnHeader) {
+        filterBtnHeader.addEventListener("click", function () {
+            const semesterId = semesterFilterHeader.value;
+            const status = statusFilterHeader.value;
 
-        if (clearBtnHeader) {
-            clearBtnHeader.addEventListener("click", function () {
-                window.location.href = `/Teacher/Index`;
-            });
-        }
+            let url = `/Teacher/Semester?`; 
+
+            if (semesterId) url += `semesterId=${semesterId}&`;
+            if (status) url += `status=${status}&`;
+
+            window.location.href = url.endsWith("&") ? url.slice(0, -1) : url;
+        });
+    }
+
+    if (clearBtnHeader) {
+        clearBtnHeader.addEventListener("click", function () {
+            window.location.href = `/Teacher/Semester`; 
+        });
+    }
     });
 </script>

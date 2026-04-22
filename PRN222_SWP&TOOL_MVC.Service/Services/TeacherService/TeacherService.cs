@@ -1,5 +1,4 @@
 ﻿using PRN222_SWP_TOOL_MVC.Repository.UnitOfWorkRepo.IUnitOfWork;
-using PRN222_SWP_TOOL_MVC.Service.DTO.Request;
 using PRN222_SWP_TOOL_MVC.Service.DTO.Response;
 using PRN222_SWP_TOOL_MVC.Service.IServices.ITeacher;
 
@@ -14,7 +13,7 @@ namespace PRN222_SWP_TOOL_MVC.Service.Services.TeacherService
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<TeacherDashboardReuqestDTO> GetDashboardDataAsync(string tab)
+        public async Task<TeacherDashboardResponseDTO> GetDashboardDataAsync(string tab)
         {
             var questions = await _unitOfWork.questionRepository
                 .GetAllWithIncludeAsync(q => q.Topic);
@@ -27,7 +26,7 @@ namespace PRN222_SWP_TOOL_MVC.Service.Services.TeacherService
 
             var semesters = await _unitOfWork.semesterRepository.GetAllAsync();
 
-            return new TeacherDashboardReuqestDTO
+            return new TeacherDashboardResponseDTO
             {
                 CurrentTab = tab,
                 Question = questions.ToList(),
