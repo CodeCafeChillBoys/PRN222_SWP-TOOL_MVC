@@ -1,4 +1,4 @@
-﻿using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IClassRepository;
+using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IClassRepository;
 using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IQuestionRepository;
 using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IRoleRepository;
 using PRN222_SWP_TOOL_MVC.Repository.IRepositories.ISemesterRepository;
@@ -23,5 +23,7 @@ namespace PRN222_SWP_TOOL_MVC.Repository.UnitOfWorkRepo.IUnitOfWork
         IQuestionRepository questionRepository { get; set; }
         ITopicRepository topicRepository { get; set; }
         ITopicRegistrationsRepository topicRegistrationsRepository { get; set; }
+        PRN222_SWP_TOOL_MVC.Repository.IRepositories.IStudentGroupRepository.IStudentGroupRepository studentGroupRepository { get; set; }
+        PRN222_SWP_TOOL_MVC.Repository.IRepositories.IGroupMemberRepository.IGroupMemberRepository groupMemberRepository { get; set; }
     }
 }

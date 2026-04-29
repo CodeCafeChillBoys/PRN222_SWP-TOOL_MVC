@@ -1,4 +1,4 @@
-﻿using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IClassRepository;
+using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IClassRepository;
 using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IQuestionRepository;
 using PRN222_SWP_TOOL_MVC.Repository.IRepositories.IRoleRepository;
 using PRN222_SWP_TOOL_MVC.Repository.IRepositories.ISemesterRepository;
@@ -23,10 +23,14 @@ namespace PRN222_SWP_TOOL_MVC.Repository.UnitOfWorkRepo.UnitOfWork
         public IQuestionRepository questionRepository { get; set; }
         public ITopicRepository topicRepository { get; set; }
         public ITopicRegistrationsRepository topicRegistrationsRepository { get; set; }
+        public PRN222_SWP_TOOL_MVC.Repository.IRepositories.IStudentGroupRepository.IStudentGroupRepository studentGroupRepository { get; set; }
+        public PRN222_SWP_TOOL_MVC.Repository.IRepositories.IGroupMemberRepository.IGroupMemberRepository groupMemberRepository { get; set; }
 
         public UnitOfWork(AppDbContext dbContext, IUserRepository userRepository, IRoleRepository roleRepository, ISemesterRepository semesterRepository,
                             IStudentRepository studentRepository, ITeacherRepository teacherRepository, IQuestionRepository questionRepository, ITopicRepository topicRepository,
-                          ITopicRegistrationsRepository topicRegistrationsRepository)
+                          ITopicRegistrationsRepository topicRegistrationsRepository, IClassRepository classRepository,
+                          PRN222_SWP_TOOL_MVC.Repository.IRepositories.IStudentGroupRepository.IStudentGroupRepository studentGroupRepository,
+                          PRN222_SWP_TOOL_MVC.Repository.IRepositories.IGroupMemberRepository.IGroupMemberRepository groupMemberRepository)
         {
             this._dbContext = dbContext;
             this.userRepository = userRepository;
@@ -38,6 +42,8 @@ namespace PRN222_SWP_TOOL_MVC.Repository.UnitOfWorkRepo.UnitOfWork
             this.questionRepository = questionRepository;
             this.topicRepository = topicRepository;
             this.topicRegistrationsRepository = topicRegistrationsRepository;
+            this.studentGroupRepository = studentGroupRepository;
+            this.groupMemberRepository = groupMemberRepository;
         }
 
         public void Dispose()

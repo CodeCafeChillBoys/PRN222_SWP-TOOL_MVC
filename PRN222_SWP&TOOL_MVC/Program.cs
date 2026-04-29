@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -93,12 +93,15 @@ namespace PRN222_SWP_TOOL_MVC
             builder.Services.AddScoped<ITopicRepository, TopicRepository>();
             builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
             builder.Services.AddScoped<ITopicRegistrationsRepository, TopicRegistrationsRepository>();
+            builder.Services.AddScoped<PRN222_SWP_TOOL_MVC.Repository.IRepositories.IStudentGroupRepository.IStudentGroupRepository, PRN222_SWP_TOOL_MVC.Repository.Repositories.StudentGroupRepository.StudentGroupRepository>();
+            builder.Services.AddScoped<PRN222_SWP_TOOL_MVC.Repository.IRepositories.IGroupMemberRepository.IGroupMemberRepository, PRN222_SWP_TOOL_MVC.Repository.Repositories.GroupMemberRepository.GroupMemberRepository>();
             //DI Service
             builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
             builder.Services.AddScoped<ISemesterService, SemesterService>();
 
             builder.Services.AddScoped<ITeacherService, TeacherService>();
             builder.Services.AddScoped<ITopicService, TopicService>();
+            builder.Services.AddScoped<PRN222_SWP_TOOL_MVC.Service.IServices.IStudentGroup.IStudentGroupService, PRN222_SWP_TOOL_MVC.Service.Services.StudentGroupService.StudentGroupService>();
 
             var app = builder.Build();
 

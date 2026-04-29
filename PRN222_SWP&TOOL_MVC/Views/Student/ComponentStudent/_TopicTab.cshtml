@@ -1,8 +1,29 @@
-﻿@model PRN222_SWP_TOOL_MVC.Service.DTO.Request.StudentDashboardRequestDTO
+@model PRN222_SWP_TOOL_MVC.Service.DTO.Request.StudentDashboardRequestDTO
 
 @{
     var selectedTopic = Model.Topics
         ?.FirstOrDefault(t => t.TopicID == Model.SelectedTopicId);
+
+    var myGroup  = ViewBag.MyGroup as PRN222_SWP_TOOL_MVC.Service.DTO.Response.GroupInfoResponseDTO;
+    var currentUserId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
+    var isLeader = myGroup?.Members?.Any(m => m.IsLeader && m.StudentID == currentUserId) ?? false;
+
+    var successMsg = TempData["SuccessMessage"] as string;
+    var errorMsg   = TempData["ErrorMessage"]   as string;
+}
+
+@* ── Alerts ── *@
+@if (!string.IsNullOrEmpty(successMsg))
+{
+    <div class="alert alert-success d-flex align-items-center gap-2 rounded-3 mb-3" style="border-left:4px solid #16a34a">
+        <i class="fa-solid fa-circle-check"></i> @successMsg
+    </div>
+}
+@if (!string.IsNullOrEmpty(errorMsg))
+{
+    <div class="alert alert-danger d-flex align-items-center gap-2 rounded-3 mb-3" style="border-left:4px solid #dc2626">
+        <i class="fa-solid fa-triangle-exclamation"></i> @errorMsg
+    </div>
 }
 
 @if (selectedTopic != null)
@@ -87,7 +108,7 @@
             {
                 if (isSelected)
                 {
-                    <!-- Ẩn luôn nút nếu đã chọn -->
+                    @* Đã chọn topic này → không hiện nút *@
                 }
                 else
                 {
@@ -104,12 +125,28 @@
                         Đã đủ nhóm
                     </button>
                 }
+                else if (!isLeader)
+                {
+                    <button class="btn-select disabled-btn" disabled title="Chỉ trưởng nhóm mới được chọn đề tài">
+                        <i class="fa-solid fa-lock me-1"></i>
+                        Chỉ trưởng nhóm chọn
+                    </button>
+                }
+                else if (myGroup == null)
+                {
+                    <button class="btn-select disabled-btn" disabled title="Bạn cần có nhóm trước">
+                        Cần có nhóm
+                    </button>
+                }
                 else
                 {
-                    <button class="btn-select select-topic" data-id="@topic.TopicID">
-                        <i class="fa-solid fa-paper-plane me-1"></i>
-                        Chọn đề tài
-                    </button>
+                    <form asp-controller="Student" asp-action="RegisterTopic" method="post" class="d-inline">
+                        <input type="hidden" name="topicId" value="@topic.TopicID" />
+                        <button type="submit" class="btn-select select-topic">
+                            <i class="fa-solid fa-paper-plane me-1"></i>
+                            Chọn đề tài
+                        </button>
+                    </form>
                 }
             }
         </div>

@@ -1,15 +1,20 @@
-﻿
+/* ===== DEFAULT (DARK MODE) ===== */
 .filter-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: rgba(255,255,255,0.05);
     padding: 20px;
-    border-radius: 8px;
-    color: white;
+    border-radius: 16px;
+    color: #e5e7eb;
     margin-bottom: 30px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    transition: all 0.3s ease;
 }
 
 .filter-header h2 {
     margin-bottom: 15px;
-    color: white;
+    color: #ffffff;
+    font-size: 1.25rem;
+    font-weight: 600;
 }
 
 .filter-group {
@@ -27,15 +32,18 @@
     .filter-item label {
         display: block;
         margin-bottom: 5px;
-        color: white;
+        color: #cbd5e1;
         font-weight: 500;
     }
 
     .filter-item select {
         width: 100%;
         padding: 8px;
-        border: none;
-        border-radius: 4px;
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 6px;
+        color: #e5e7eb;
+        background-color: #1e293b;
+        transition: all 0.3s ease;
     }
 
 .filter-buttons {
@@ -46,27 +54,68 @@
     .filter-buttons button {
         padding: 8px 20px;
         border: none;
-        border-radius: 4px;
+        border-radius: 6px;
         cursor: pointer;
         font-weight: 500;
         transition: all 0.3s ease;
     }
 
     .filter-buttons .btn-filter {
-        background-color: #fff;
-        color: #667eea;
+        background-color: #3b82f6;
+        color: #fff;
     }
 
         .filter-buttons .btn-filter:hover {
-            background-color: #f0f0f0;
+            background-color: #2563eb;
         }
 
     .filter-buttons .btn-clear {
-        background-color: rgba(255,255,255,0.3);
-        color: white;
+        background-color: rgba(255,255,255,0.1);
+        color: #e5e7eb;
+        border: 1px solid rgba(255,255,255,0.1);
     }
 
         .filter-buttons .btn-clear:hover {
-            background-color: rgba(255,255,255,0.5);
+            background-color: rgba(255,255,255,0.15);
         }
 
+/* ===== LIGHT MODE ===== */
+body.light-mode .filter-header {
+    background: #ffffff;
+    color: #333;
+    border: 1px solid #eaeaea;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+body.light-mode .filter-header h2 {
+    color: #333;
+}
+
+body.light-mode .filter-item label {
+    color: #555;
+}
+
+body.light-mode .filter-item select {
+    background-color: #fff;
+    color: #495057;
+    border: 1px solid #ced4da;
+}
+
+body.light-mode .filter-buttons .btn-filter {
+    background-color: #0d6efd;
+    color: #fff;
+}
+
+body.light-mode .filter-buttons .btn-filter:hover {
+    background-color: #0b5ed7;
+}
+
+body.light-mode .filter-buttons .btn-clear {
+    background-color: #f8f9fa;
+    color: #212529;
+    border: 1px solid #ced4da;
+}
+
+body.light-mode .filter-buttons .btn-clear:hover {
+    background-color: #e2e6ea;
+}

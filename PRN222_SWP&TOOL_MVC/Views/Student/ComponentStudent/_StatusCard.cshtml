@@ -1,20 +1,117 @@
-﻿﻿<div class="col-md-4">
-    <div class="stat-card bg-blue">
+@model PRN222_SWP_TOOL_MVC.Service.DTO.Request.StudentDashboardRequestDTO
+
+@{
+    var myGroup       = ViewBag.MyGroup as PRN222_SWP_TOOL_MVC.Service.DTO.Response.GroupInfoResponseDTO;
+    var questionCount = Model?.Questions?.Count ?? 0;
+
+    // Tên đề tài đã đăng ký (nếu có)
+    PRN222_SWP_TOOL_MVC.Repository.Entities.Topic? registeredTopic = null;
+    if (Model?.SelectedTopicId.HasValue == true && Model.Topics != null)
+    {
+        registeredTopic = Model.Topics.FirstOrDefault(t => t.TopicID == Model.SelectedTopicId.Value);
+    }
+}
+
+@* ===== CARD 1: NHÓM ===== *@
+<div class="col-md-4">
+    <div class="stat-card bg-blue" style="position:relative; overflow:hidden;">
         <div class="d-flex align-items-center gap-2 mb-2">
-            <i class="bi bi-people"></i>
+            <i class="bi bi-people-fill" style="font-size:1.3rem;"></i>
             <strong>Nhóm của tôi</strong>
         </div>
-        <p class="mb-0 text-muted">Chưa có nhóm</p>
+
+        @if (myGroup != null)
+        {
+            <h5 class="fw-bold mb-1" style="word-break:break-word;">@myGroup.GroupName</h5>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <small class="text-muted">
+                    <i class="fa-solid fa-users me-1"></i>@myGroup.MemberCount/@myGroup.MaxMember thành viên
+                </small>
+                @if (myGroup.IsLocked)
+                {
+                    <span class="badge" style="background:rgba(239,68,68,0.2);color:#fca5a5;font-size:0.68rem;">
+                        <i class="fa-solid fa-lock me-1"></i>Đã khóa
+                    </span>
+                }
+                else
+                {
+                    <span class="badge" style="background:rgba(34,197,94,0.2);color:#86efac;font-size:0.68rem;">
+                        <i class="fa-solid fa-circle-dot me-1"></i>Đang mở
+                    </span>
+                }
+            </div>
+
+            @* Invite Code mini badge *@
+            <div class="mt-2" style="font-size:0.75rem; letter-spacing:1.5px; font-weight:700; opacity:0.7;">
+                <i class="fa-solid fa-key me-1"></i>@myGroup.InviteCode
+            </div>
+        }
+        else
+        {
+            <p class="mb-0 text-muted fst-italic small">Chưa có nhóm</p>
+            <small style="opacity:0.6;">Hãy tạo hoặc tham gia nhóm</small>
+        }
+
+        @* Decorative circle *@
+        <div style="position:absolute;right:-20px;bottom:-20px;width:80px;height:80px;
+                    border-radius:50%;background:rgba(255,255,255,0.06);pointer-events:none;"></div>
     </div>
 </div>
 
-﻿<div class="col-md-4">
-    <div class="stat-card bg-green">
+@* ===== CARD 2: ĐỀ TÀI ===== *@
+<div class="col-md-4">
+    <div class="stat-card bg-orange" style="position:relative; overflow:hidden;">
         <div class="d-flex align-items-center gap-2 mb-2">
-            <i class="bi bi-chat-dots"></i>
+            <i class="bi bi-book-half" style="font-size:1.3rem;"></i>
+            <strong>Đề tài</strong>
+        </div>
+
+        @if (registeredTopic != null)
+        {
+            <h5 class="fw-bold mb-1" style="word-break:break-word;font-size:0.95rem;">@registeredTopic.TopicName</h5>
+            @if (registeredTopic.Teacher?.User != null)
+            {
+                <small class="text-muted">
+                    <i class="fa-solid fa-user-tie me-1"></i>@registeredTopic.Teacher.User.FullName
+                </small>
+            }
+            <div class="mt-2">
+                <span class="badge" style="background:rgba(34,197,94,0.2);color:#86efac;font-size:0.68rem;">
+                    <i class="fa-solid fa-circle-check me-1"></i>Đã đăng ký
+                </span>
+            </div>
+        }
+        else
+        {
+            <p class="mb-0 text-muted fst-italic small">Chưa chọn đề tài</p>
+            <small style="opacity:0.6;">
+                @if (myGroup == null)
+                {
+                    <span>Cần có nhóm trước</span>
+                }
+                else
+                {
+                    <span>Trưởng nhóm vào tab Đề tài để chọn</span>
+                }
+            </small>
+        }
+
+        <div style="position:absolute;right:-20px;bottom:-20px;width:80px;height:80px;
+                    border-radius:50%;background:rgba(255,255,255,0.06);pointer-events:none;"></div>
+    </div>
+</div>
+
+@* ===== CARD 3: CÂU HỎI ===== *@
+<div class="col-md-4">
+    <div class="stat-card bg-green" style="position:relative; overflow:hidden;">
+        <div class="d-flex align-items-center gap-2 mb-2">
+            <i class="bi bi-chat-dots-fill" style="font-size:1.3rem;"></i>
             <strong>Câu hỏi</strong>
         </div>
-        <h4 class="fw-bold mb-0">3</h4>
+        <h4 class="fw-bold mb-0">@questionCount</h4>
         <small class="text-muted">Đã gửi</small>
+
+        <div style="position:absolute;right:-20px;bottom:-20px;width:80px;height:80px;
+                    border-radius:50%;background:rgba(255,255,255,0.06);pointer-events:none;"></div>
     </div>
 </div>
