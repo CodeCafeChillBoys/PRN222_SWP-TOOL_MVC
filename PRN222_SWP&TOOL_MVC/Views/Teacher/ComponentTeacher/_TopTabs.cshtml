@@ -1,23 +1,61 @@
-﻿<div class="teacher-tabs mt-4">
-    <ul class="nav nav-pills main-tabs mb-4">
-        <li class="nav-item flex-fill text-center">
-            <a class="nav-link @(Model.CurrentTab == "qa" ? "active active-qa" : "")"
-               asp-controller="Teacher"
-               asp-action="Index"
-               asp-route-tab="qa">
-                <i class="fa-regular fa-comment me-1"></i>
-                Hộp thư Q&A
-            </a>
-        </li>
+@model PRN222_SWP_TOOL_MVC.Models.StudentDashboardViewModel
+@{
+    var tab = Model?.CurrentTab ?? "topic";
+}
 
-        <li class="nav-item flex-fill text-center">
-            <a class="nav-link @(Model.CurrentTab == "topic" ? "active active-topic" : "")"
-               asp-controller="Teacher"
-               asp-action="Index"
-               asp-route-tab="topic">
-                <i class="fa-regular fa-book me-1"></i>
+<!-- ===== PAGE TAB NAVIGATION ===== -->
+<div class="page-tabs-wrap">
+    <div class="page-tabs">
+
+        <!-- Đề tài Tab -->
+        <a class="page-tab @(tab == "topic" ? "page-tab--active page-tab--topic" : "")"
+           asp-controller="Teacher"
+           asp-action="Index"
+           asp-route-tab="topic">
+            <span class="page-tab__icon page-tab__icon--topic">
+                <i class="bi bi-journal-bookmark-fill"></i>
+            </span>
+            <span class="page-tab__label">Quản lý Đề tài</span>
+            @if (tab == "topic")
+            {
+                <span class="page-tab__bar"></span>
+            }
+        </a>
+
+        <!-- Q&A Tab -->
+        <a class="page-tab @(tab == "qa" ? "page-tab--active page-tab--qa" : "")"
+           asp-controller="Teacher"
+           asp-action="Index"
+           asp-route-tab="qa">
+            <span class="page-tab__icon page-tab__icon--qa">
+                <i class="bi bi-chat-square-dots-fill"></i>
+            </span>
+            <span class="page-tab__label">Hộp thư Q&A</span>
+            @if (tab == "qa")
+            {
+                <span class="page-tab__bar"></span>
+            }
+        </a>
+
+    </div>
+
+    <!-- Tab content label (right side) -->
+    <div class="page-tabs__meta">
+        @if (tab == "topic")
+        {
+            <span class="page-tabs__breadcrumb">
+                <i class="bi bi-house-door me-1"></i> Dashboard
+                <i class="bi bi-chevron-right mx-1" style="font-size:11px"></i>
                 Quản lý Đề tài
-            </a>
-        </li>
-    </ul>
+            </span>
+        }
+        else
+        {
+            <span class="page-tabs__breadcrumb">
+                <i class="bi bi-house-door me-1"></i> Dashboard
+                <i class="bi bi-chevron-right mx-1" style="font-size:11px"></i>
+                Hộp thư Q&A
+            </span>
+        }
+    </div>
 </div>

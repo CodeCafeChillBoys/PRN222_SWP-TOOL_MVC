@@ -1,34 +1,56 @@
-﻿<div class="student-tabs mt-4">
-    <ul class="nav nav-pills custom-tabs mb-4">
-        <li class="nav-item flex-fill text-center">
-            <a class="nav-link tab-group @(Model.CurrentTab == "group" ? "active" : "")"
-               asp-controller="Student"
-               asp-action="Index"
-               asp-route-tab="group">
-                <i class="fa-solid fa-users me-2"></i>
-                Quản lý Nhóm
-            </a>
-        </li>
+@model PRN222_SWP_TOOL_MVC.Service.DTO.Request.StudentDashboardRequestDTO
+@{
+    var tab = Model?.CurrentTab ?? "group";
+}
 
-        <li class="nav-item flex-fill text-center">
-            <a class="nav-link tab-topic @(Model.CurrentTab == "topic" ? "active" : "")"
-               asp-controller="Student"
-               asp-action="Index"
-               asp-route-tab="topic">
-                <i class="fa-solid fa-book-open me-2"></i>
-                Chọn Đề tài
-            </a>
-        </li>
+<!-- ===== STUDENT PAGE TAB NAVIGATION ===== -->
+<div class="spt-wrap">
+    <div class="spt-tabs">
 
-        <li class="nav-item flex-fill text-center">
-            <a class="nav-link tab-qa @(Model.CurrentTab == "qa" ? "active" : "")"
-               asp-controller="Student"
-               asp-action="Index"
-               asp-route-tab="qa">
-                <i class="fa-regular fa-comment me-2"></i>
-                Hỏi & Đáp
-            </a>
-        </li>
+        <!-- Nhóm Tab -->
+        <a class="spt-tab @(tab == "group" ? "spt-tab--active spt-tab--group" : "")"
+           asp-controller="Student"
+           asp-action="Index"
+           asp-route-tab="group">
+            <span class="spt-tab__icon spt-icon--group">
+                <i class="bi bi-people-fill"></i>
+            </span>
+            <span class="spt-tab__label">Quản lý Nhóm</span>
+            @if (tab == "group") { <span class="spt-tab__bar"></span> }
+        </a>
 
-    </ul>
+        <!-- Đề tài Tab -->
+        <a class="spt-tab @(tab == "topic" ? "spt-tab--active spt-tab--topic" : "")"
+           asp-controller="Student"
+           asp-action="Index"
+           asp-route-tab="topic">
+            <span class="spt-tab__icon spt-icon--topic">
+                <i class="bi bi-book-half"></i>
+            </span>
+            <span class="spt-tab__label">Chọn Đề tài</span>
+            @if (tab == "topic") { <span class="spt-tab__bar"></span> }
+        </a>
+
+        <!-- Q&A Tab -->
+        <a class="spt-tab @(tab == "qa" ? "spt-tab--active spt-tab--qa" : "")"
+           asp-controller="Student"
+           asp-action="Index"
+           asp-route-tab="qa">
+            <span class="spt-tab__icon spt-icon--qa">
+                <i class="bi bi-chat-dots-fill"></i>
+            </span>
+            <span class="spt-tab__label">Hỏi &amp; Đáp</span>
+            @if (tab == "qa") { <span class="spt-tab__bar"></span> }
+        </a>
+
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="spt-breadcrumb">
+        <i class="bi bi-house-door"></i>
+        <span class="spt-bc-sep"><i class="bi bi-chevron-right"></i></span>
+        @if (tab == "group") { <span>Quản lý Nhóm</span> }
+        else if (tab == "topic") { <span>Chọn Đề tài</span> }
+        else { <span>Hỏi &amp; Đáp</span> }
+    </div>
 </div>

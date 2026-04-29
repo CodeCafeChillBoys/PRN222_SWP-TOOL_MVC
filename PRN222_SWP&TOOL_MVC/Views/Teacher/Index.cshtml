@@ -4,13 +4,15 @@
     Layout = "~/Views/Shared/TeacherLayout/_TeacherLayout.cshtml";
 }
 
-<div class="container-fluid">
-    <!-- Filter Header Component -->
-    <div class="container">
-        @await Html.PartialAsync("~/Views/Teacher/ComponentTeacher/_SemesterFilter.cshtml")
-        @await Html.PartialAsync("~/Views/Teacher/ComponentTeacher/_TopTabs.cshtml")
+@* Page Tab Bar — fixed strip, lives outside inner container *@
+@await Html.PartialAsync("~/Views/Teacher/ComponentTeacher/_TopTabs.cshtml", Model)
 
-        <!-- CONTENT -->
+<div class="container-fluid">
+    <div class="container">
+        @* Semester Filter *@
+        @await Html.PartialAsync("~/Views/Teacher/ComponentTeacher/_SemesterFilter.cshtml")
+
+        @* Tab Content *@
         @if (Model.CurrentTab == "qa")
         {
             @await Html.PartialAsync("~/Views/Teacher/ComponentTeacher/_QuestionList.cshtml", Model)
@@ -21,29 +23,3 @@
         }
     </div>
 </div>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const btn = document.getElementById("themeToggle");
-        const icon = document.getElementById("themeIcon");
-
-        if (btn && icon) {
-            // Load trạng thái đã lưu
-            if (localStorage.getItem("theme") === "light") {
-                document.body.classList.add("light-mode");
-                icon.classList.replace("bi-moon", "bi-sun");
-            }
-
-            btn.addEventListener("click", () => {
-                document.body.classList.toggle("light-mode");
-
-                const isLight = document.body.classList.contains("light-mode");
-
-                icon.classList.toggle("bi-moon", !isLight);
-                icon.classList.toggle("bi-sun", isLight);
-
-                localStorage.setItem("theme", isLight ? "light" : "dark");
-            });
-        }
-    });
-</script>

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PRN222_SWP_TOOL_MVC.Models;
 using PRN222_SWP_TOOL_MVC.Repository.Entities;
@@ -62,7 +62,7 @@ namespace PRN222_MVC.Controllers
             ViewBag.SelectedStatus = status;
             return View(model);
         }
-        public async Task<IActionResult> Index(string tab = "qa")
+        public async Task<IActionResult> Index(string tab = "topic")
         {
             var dto = await _teacherService.GetDashboardDataAsync(tab);
 

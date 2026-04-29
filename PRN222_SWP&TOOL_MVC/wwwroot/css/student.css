@@ -1,214 +1,500 @@
-﻿/* =========================
-   RESET + BASE
-========================= */
-* {
-    box-sizing: border-box;
+/* =====================================================================
+   STUDENT.CSS  — Complete Dark/Light Theme for Student Portal
+   ===================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* =====================================================================
+   CSS VARIABLES
+   ===================================================================== */
+:root {
+    --s-bg:          #060d1f;
+    --s-surface:     #0d1626;
+    --s-card:        rgba(255,255,255,0.045);
+    --s-card-hov:    rgba(255,255,255,0.075);
+    --s-border:      rgba(255,255,255,0.08);
+    --s-border-hov:  rgba(255,255,255,0.18);
+    --s-text:        #f1f5f9;
+    --s-muted:       #64748b;
+    --s-sub:         #94a3b8;
+
+    /* accent per tab */
+    --s-group-a:     #2563eb;
+    --s-group-b:     #3b82f6;
+    --s-topic-a:     #7b2ff7;
+    --s-topic-b:     #a855f7;
+    --s-qa-a:        #16a34a;
+    --s-qa-b:        #22c55e;
+
+    --s-navbar-h:    64px;
+    --s-tabs-h:      56px;
+    --s-ease:        cubic-bezier(.4,0,.2,1);
+    --s-radius-xl:   20px;
+    --s-radius-lg:   16px;
+    --s-radius-md:   12px;
+    --s-radius-sm:   8px;
 }
+
+/* Light mode */
+body.light-mode {
+    --s-bg:         #f0f4ff;
+    --s-surface:    #ffffff;
+    --s-card:       #ffffff;
+    --s-card-hov:   #f8fafc;
+    --s-border:     #e2e8f0;
+    --s-border-hov: #c7d2fe;
+    --s-text:       #0f172a;
+    --s-muted:      #94a3b8;
+    --s-sub:        #64748b;
+}
+
+/* =====================================================================
+   BASE
+   ===================================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
 
 body {
-    margin: 0;
-    font-family: "Inter", "Segoe UI", sans-serif;
-    background: #f5f6fa;
-    color: #111827;
-    transition: background 0.3s ease, color 0.3s ease;
+    background: var(--s-bg);
+    color: var(--s-text);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    transition: background .3s var(--s-ease), color .3s var(--s-ease);
+    display: flex;
+    flex-direction: column;
 }
 
-/* =========================
-   CARD
-========================= */
-.card,
-.stat-card {
-    background: #ffffff;
-    border-radius: 16px;
-    border: none;
-    padding: 20px;
+main {
+    flex: 1;
+    /* push content below both fixed bars */
+    padding-top: calc(var(--s-navbar-h) + var(--s-tabs-h) + 4px);
+}
+
+/* =====================================================================
+   STUDENT NAVBAR
+   ===================================================================== */
+.sn-navbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--s-navbar-h);
+    z-index: 1000;
+    background: rgba(6,13,31,0.88);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border-bottom: 1px solid var(--s-border);
+    box-shadow: 0 2px 24px rgba(0,0,0,0.35);
+    transition: background .3s var(--s-ease);
+}
+
+body.light-mode .sn-navbar {
+    background: rgba(255,255,255,0.92);
+    box-shadow: 0 1px 16px rgba(37,99,235,0.08), 0 1px 0 var(--s-border);
+}
+
+.sn-navbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     height: 100%;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
-    transition: background 0.3s ease, box-shadow 0.3s ease;
+    padding: 0 32px;
+    max-width: 1600px;
+    margin: 0 auto;
 }
 
-/* =========================
-   STAT CARD
-========================= */
-.stat-card {
-    min-height: 120px;
+/* ── Brand ── */
+.sn-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
 }
 
-    .stat-card i {
-        font-size: 1.4rem;
-    }
+.sn-logo-wrap {
+    position: relative;
+    width: 40px; height: 40px;
+    flex-shrink: 0;
+}
 
-/* =========================
-   STAT CARD COLORS (LIGHT)
-========================= */
+.sn-logo-icon {
+    width: 40px; height: 40px;
+    border-radius: 11px;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 4px 18px rgba(37,99,235,0.42);
+    transition: transform .25s var(--s-ease);
+}
+
+.sn-logo-icon:hover { transform: scale(1.08) rotate(-4deg); }
+
+.sn-logo-glow {
+    position: absolute;
+    inset: 5px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    filter: blur(10px);
+    opacity: 0.45;
+    z-index: 0;
+}
+
+.sn-brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.sn-brand-name {
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    background: linear-gradient(90deg, #60a5fa, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.sn-brand-sub {
+    font-size: 11px;
+    color: var(--s-sub);
+    font-weight: 500;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+}
+
+/* ── Right Actions ── */
+.sn-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.sn-icon-btn {
+    width: 36px; height: 36px;
+    border-radius: 9px;
+    background: var(--s-card);
+    border: 1px solid var(--s-border);
+    color: var(--s-sub);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all .22s var(--s-ease);
+    flex-shrink: 0;
+}
+
+.sn-icon-btn:hover {
+    background: var(--s-card-hov);
+    border-color: var(--s-border-hov);
+    color: var(--s-text);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+}
+
+.sn-divider {
+    width: 1px; height: 26px;
+    background: var(--s-border);
+    margin: 0 4px;
+    flex-shrink: 0;
+}
+
+.sn-user-chip {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 4px 12px 4px 4px;
+    border-radius: 10px;
+    background: var(--s-card);
+    border: 1px solid var(--s-border);
+    transition: all .22s var(--s-ease);
+}
+
+.sn-user-chip:hover {
+    background: var(--s-card-hov);
+    border-color: var(--s-border-hov);
+}
+
+.sn-avatar {
+    width: 28px; height: 28px;
+    border-radius: 7px;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.35);
+}
+
+.sn-user-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.sn-user-name {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--s-text);
+}
+
+.sn-user-role {
+    font-size: 10.5px;
+    color: var(--s-sub);
+    font-weight: 500;
+}
+
+.sn-logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border-radius: 9px;
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.22);
+    color: #f87171;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all .22s var(--s-ease);
+    white-space: nowrap;
+}
+
+.sn-logout-btn:hover {
+    background: rgba(239,68,68,0.2);
+    border-color: rgba(239,68,68,0.45);
+    color: #fca5a5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(239,68,68,0.18);
+}
+
+/* =====================================================================
+   STUDENT PAGE TABS — fixed strip under navbar
+   ===================================================================== */
+.spt-wrap {
+    position: fixed;
+    top: var(--s-navbar-h);
+    left: 0; right: 0;
+    height: var(--s-tabs-h);
+    z-index: 900;
+    background: var(--s-surface);
+    border-bottom: 1px solid var(--s-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    transition: background .3s var(--s-ease), border-color .3s var(--s-ease);
+}
+
+body.light-mode .spt-wrap {
+    background: #ffffff;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+
+.spt-tabs {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 100%;
+}
+
+/* ── Individual tab ── */
+.spt-tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 20px;
+    height: 100%;
+    position: relative;
+    color: var(--s-sub);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: color .22s var(--s-ease);
+    white-space: nowrap;
+}
+
+.spt-tab:hover { color: var(--s-text); }
+
+/* Active state — color depends on tab */
+.spt-tab--group { color: var(--s-text); }
+.spt-tab--topic { color: var(--s-text); }
+.spt-tab--qa    { color: var(--s-text); }
+
+/* ── Underline bar ── */
+.spt-tab__bar {
+    position: absolute;
+    bottom: 0; left: 10px; right: 10px;
+    height: 3px;
+    border-radius: 3px 3px 0 0;
+    animation: spt-bar-in .25s var(--s-ease);
+}
+
+@keyframes spt-bar-in {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+}
+
+.spt-tab--group .spt-tab__bar { background: linear-gradient(90deg, var(--s-group-a), var(--s-group-b)); }
+.spt-tab--topic .spt-tab__bar { background: linear-gradient(90deg, var(--s-topic-a), var(--s-topic-b)); }
+.spt-tab--qa    .spt-tab__bar { background: linear-gradient(90deg, var(--s-qa-a), var(--s-qa-b)); }
+
+/* ── Tab icon ── */
+.spt-tab__icon {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    background: var(--s-card);
+    border: 1px solid var(--s-border);
+    transition: all .22s var(--s-ease);
+    flex-shrink: 0;
+}
+
+.spt-tab--group .spt-icon--group {
+    background: linear-gradient(135deg, rgba(37,99,235,.2), rgba(59,130,246,.2));
+    border-color: rgba(37,99,235,.3);
+    color: #60a5fa;
+}
+
+.spt-tab--topic .spt-icon--topic {
+    background: linear-gradient(135deg, rgba(123,47,247,.2), rgba(168,85,247,.2));
+    border-color: rgba(123,47,247,.3);
+    color: #c084fc;
+}
+
+.spt-tab--qa .spt-icon--qa {
+    background: linear-gradient(135deg, rgba(22,163,74,.2), rgba(34,197,94,.2));
+    border-color: rgba(22,163,74,.3);
+    color: #4ade80;
+}
+
+/* ── Breadcrumb ── */
+.spt-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: var(--s-muted);
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.spt-bc-sep { font-size: 10px; opacity: 0.5; }
+
+/* =====================================================================
+   STAT CARDS (Dashboard summary)
+   ===================================================================== */
+.stat-card, .card {
+    background: var(--s-card);
+    border-radius: var(--s-radius-xl);
+    border: 1px solid var(--s-border);
+    padding: 22px;
+    height: 100%;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.2);
+    transition: all .25s var(--s-ease);
+    color: var(--s-text);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before, .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+.stat-card:hover, .card:hover {
+    transform: translateY(-4px);
+    border-color: var(--s-border-hov);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+}
+
+/* Stat card gradient backgrounds */
 .bg-blue {
-    background: linear-gradient(135deg, #e8f1ff, #f5f9ff);
+    background: linear-gradient(135deg, rgba(37,99,235,0.18) 0%, rgba(99,102,241,0.1) 100%);
+    border-color: rgba(37,99,235,0.25);
 }
 
 .bg-orange {
-    background: linear-gradient(135deg, #fff1e6, #fff7f0);
+    background: linear-gradient(135deg, rgba(234,88,12,0.18) 0%, rgba(251,146,60,0.1) 100%);
+    border-color: rgba(234,88,12,0.25);
 }
 
 .bg-green {
-    background: linear-gradient(135deg, #e8fff3, #f4fffa);
+    background: linear-gradient(135deg, rgba(22,163,74,0.18) 0%, rgba(34,197,94,0.1) 100%);
+    border-color: rgba(22,163,74,0.25);
 }
 
-/* =========================
+body.light-mode .bg-blue {
+    background: linear-gradient(135deg, #eff6ff, #eef2ff);
+    border-color: #bfdbfe;
+}
+
+body.light-mode .bg-orange {
+    background: linear-gradient(135deg, #fff7ed, #fffbeb);
+    border-color: #fed7aa;
+}
+
+body.light-mode .bg-green {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border-color: #bbf7d0;
+}
+
+/* =====================================================================
    BUTTONS
-========================= */
-.btn {
-    font-weight: 500;
-}
-
+   ===================================================================== */
 .btn-gradient {
-    background: linear-gradient(90deg, #3b82f6, #6366f1);
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
     color: #fff;
-    border-radius: 12px;
+    border-radius: var(--s-radius-md);
     border: none;
-    padding: 10px 18px;
+    padding: 10px 20px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all .25s var(--s-ease);
+    cursor: pointer;
 }
 
-    .btn-gradient:hover {
-        opacity: 0.9;
-        color: #fff;
-    }
-
-/* Logout button */
-.btn-logout {
-    border-radius: 999px;
-    padding: 8px 14px;
-    border: 1px solid #dee2e6;
-    background: #ffffff;
-    font-weight: 500;
-    transition: all .25s ease;
+.btn-gradient:hover {
+    opacity: 0.9;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37,99,235,0.35);
 }
 
-    .btn-logout:hover {
-        background: #f1f3f5;
-    }
-
-
-
-/* =========================
-   TAB BAR
-========================= */
-.tab-btn {
-    background: #f8fafc;
-    padding: 6px;
-    border-radius: 999px;
-    border: 1px solid #e5e7eb;
-}
-
-.tab-item {
-    background: transparent;
-    border: none;
-    border-radius: 999px;
-    font-weight: 500;
-    color: #0f172a;
-    padding: 10px 0;
-}
-    /* ACTIVE - LIGHT */
-    .tab-item.active {
-        background: #ffffff;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-    }
-/* =========================
-   INPUT
-========================= */
+/* =====================================================================
+   INPUTS
+   ===================================================================== */
 input {
-    border-radius: 12px;
+    border-radius: var(--s-radius-md);
     padding: 10px 14px;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--s-border);
+    background: var(--s-card);
+    color: var(--s-text);
     outline: none;
-    transition: border 0.2s ease, background 0.2s ease;
+    transition: border .2s ease, background .2s ease;
+    font-family: inherit;
 }
 
-    input:focus {
-        border-color: #2563eb;
-    }
-
-/* =====================================================
-   ===================== DARK MODE =====================
-   ===================================================== */
-
-body.dark {
-    background: #0f172a;
-    color: #e5e7eb;
+input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
 }
 
-    /* Card */
-    body.dark .card,
-    body.dark .stat-card {
-        background: #1e293b;
-        box-shadow: none;
-    }
+input::placeholder { color: var(--s-sub); }
 
-    /* Stat card colors (dark) */
-    body.dark .bg-blue {
-        background: linear-gradient(135deg, #1e3a8a, #1e40af);
-    }
-
-    body.dark .bg-orange {
-        background: linear-gradient(135deg, #7c2d12, #9a3412);
-    }
-
-    body.dark .bg-green {
-        background: linear-gradient(135deg, #14532d, #166534);
-    }
-
-    /* Tab bar */
-    body.dark .tab-btn {
-        background: #020617;
-    }
-
-        body.dark .tab-btn .btn {
-            color: #e5e7eb;
-        }
-
-            body.dark .tab-btn .btn.active {
-                background: #3b82f6;
-                color: #ffffff;
-            }
-
-    /* Buttons */
-    body.dark .btn-gradient {
-        background: linear-gradient(90deg, #2563eb, #4f46e5);
-    }
-
-    body.dark .btn-logout {
-        background: #020617;
-        border-color: #334155;
-        color: #e5e7eb;
-    }
-
-        body.dark .btn-logout:hover {
-            background: #1e293b;
-        }
-
-    /* Input */
-    body.dark input {
-        background: #020617;
-        color: #ffffff;
-        border-color: #334155;
-    }
-
-        body.dark input::placeholder {
-            color: #94a3b8;
-        }
-
-    body.dark .app-header {
-        background: rgba(2, 6, 23, 0.75);
-        backdrop-filter: blur(10px);
-        border-bottom: 1px solid rgba(148,163,184,0.12);
-    }
-
-/* =========================
-   SMOOTH TRANSITION
-========================= */
-.card,
-.stat-card,
-.tab-btn,
-.btn,
-input {
-    transition: all 0.25s ease;
+body.light-mode input {
+    background: #ffffff;
+    border-color: #e2e8f0;
+    color: #0f172a;
 }

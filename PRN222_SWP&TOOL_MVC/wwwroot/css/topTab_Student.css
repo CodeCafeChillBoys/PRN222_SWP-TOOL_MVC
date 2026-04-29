@@ -1,38 +1,4 @@
-﻿/* Khung ngoài */
-.custom-tabs {
-    background: #f1f3f5;
-    padding: 8px;
-    border-radius: 16px;
-}
-    /* Tab mặc định */
-    .custom-tabs .nav-link {
-        border-radius: 14px;
-        font-weight: 600;
-        color: #444;
-        transition: all 0.3s ease;
-        background: transparent;
-    }
-
-/* ===== MÀU ACTIVE RIÊNG ===== */
-
-/* GROUP - Xanh dương */
-.tab-group.active {
-    background: linear-gradient(135deg, #2563eb, #3b82f6);
-    color: #fff !important;
-    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
-}
-
-/* TOPIC - Tím */
-.tab-topic.active {
-    background: linear-gradient(135deg, #7b2ff7, #a833ff);
-    color: #fff !important;
-    box-shadow: 0 6px 18px rgba(123, 47, 247, 0.35);
-}
-
-/* QA - Xanh lá */
-.tab-qa.active {
-    background: linear-gradient(135deg, #16a34a, #22c55e);
-    color: #fff !important;
-    box-shadow: 0 6px 18px rgba(22, 163, 74, 0.35);
-}
-
+/*
+   topTab_Student.css — Styles gộp vào student.css (.spt-* classes)
+   File này giữ lại để không bị lỗi link reference.
+*/
