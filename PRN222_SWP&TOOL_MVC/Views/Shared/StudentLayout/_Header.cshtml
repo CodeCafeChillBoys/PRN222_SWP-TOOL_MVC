@@ -1,36 +1,49 @@
-﻿<!-- HEADER -->
-<nav class="navbar  shadow-sm mb-4 px-4 py-4 app-header">
-    <div class="container-fluid">
-        <div class="d-flex align-items-center gap-3" style="margin-left:4rem">
+<!-- ===== STUDENT TOP NAVBAR ===== -->
+<nav class="sn-navbar">
+    <div class="sn-navbar-inner">
 
-            <!-- LOGO -->
-            <div class="logo-box d-flex align-items-center justify-content-center fw-semibold">
-                🎓
+        <!-- LEFT: Logo + Brand -->
+        <div class="sn-brand">
+            <div class="sn-logo-wrap">
+                <div class="sn-logo-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 3L1 9L12 15L21 10.09V17H23V9L12 3Z" fill="white"/>
+                        <path d="M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z" fill="rgba(255,255,255,0.75)"/>
+                    </svg>
+                </div>
+                <div class="sn-logo-glow"></div>
             </div>
-
-            <!-- TITLE -->
-            <div class="lh-sm">
-                <div class="fw-bold">SWP&TOOL</div>
-                <small class="subtitle">Student Project Management</small>
+            <div class="sn-brand-text">
+                <span class="sn-brand-name">SWP&amp;TOOL</span>
+                <span class="sn-brand-sub">Student Portal</span>
             </div>
         </div>
 
-        <!-- RIGHT -->
-        <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-outline-secondary btn-sm">
-                <i class="fa-solid fa-file-pdf me-1"></i>
-                Xuất PDF
+        <!-- RIGHT: Actions -->
+        <div class="sn-actions">
+            <!-- Theme Toggle -->
+            <button id="themeToggle" class="sn-icon-btn" title="Chế độ sáng/tối">
+                <i id="themeIcon" class="bi bi-moon-stars-fill"></i>
             </button>
 
-            <button id="themeToggle"
-                    class="btn btn-outline-secondary btn-sm shadow-sm">
-                <i id="themeIcon" class="bi bi-moon"></i>
-            </button>
+            <!-- Divider -->
+            <div class="sn-divider"></div>
 
-            <a href="/Auth/Logout" class="btn btn-warning btn-sm fw-semibold">
-                <i class="fa-solid fa-right-from-bracket me-1"></i>
-                Đăng xuất
+            <!-- User chip -->
+            <div class="sn-user-chip">
+                <div class="sn-avatar">S</div>
+                <div class="sn-user-info">
+                    <span class="sn-user-name">Sinh viên</span>
+                    <span class="sn-user-role">Student</span>
+                </div>
+            </div>
+
+            <!-- Logout -->
+            <a href="/Account/Logout" class="sn-logout-btn" title="Đăng xuất">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Đăng xuất</span>
             </a>
         </div>
+
     </div>
 </nav>

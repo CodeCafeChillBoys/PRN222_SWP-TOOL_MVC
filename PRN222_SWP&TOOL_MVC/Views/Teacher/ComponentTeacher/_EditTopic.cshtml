@@ -1,0 +1,25 @@
+﻿<form id="editTopicForm">
+
+    <input type="hidden" name="TopicID" id="editTopicId" />
+
+    <div>
+        <label>Tiêu đề *</label>
+        <input type="text" name="TopicName" id="editTopicName" required>
+    </div>
+
+    <div>
+        <label>Mô tả *</label>
+        <textarea name="Description" id="editDescription" required></textarea>
+    </div>
+
+    <div>
+        <label>Yêu cầu</label>
+        <textarea name="Requirement" id="editRequirement"></textarea>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn-cancel" onclick="closeEditModal()">Hủy</button>
+        <button type="submit" class="btn-save">Cập nhật</button>
+    </div>
+
+</form>

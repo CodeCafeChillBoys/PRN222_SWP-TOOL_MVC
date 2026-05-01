@@ -1,56 +1,154 @@
-﻿﻿<!-- TAB: CHỌN ĐỀ TÀI -->
-<div id="tab-topic" class="tab-content d-none">
+@model PRN222_SWP_TOOL_MVC.Service.DTO.Request.StudentDashboardRequestDTO
 
-    <div class="alert alert-light border">
-        <i class="bi bi-info-circle"></i>
-        Bạn cần tham gia hoặc tạo nhóm trước khi chọn đề tài.
+@{
+    var selectedTopic = Model.Topics
+        ?.FirstOrDefault(t => t.TopicID == Model.SelectedTopicId);
+
+    var myGroup  = ViewBag.MyGroup as PRN222_SWP_TOOL_MVC.Service.DTO.Response.GroupInfoResponseDTO;
+    var currentUserId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
+    var isLeader = myGroup?.Members?.Any(m => m.IsLeader && m.StudentID == currentUserId) ?? false;
+
+    var successMsg = TempData["SuccessMessage"] as string;
+    var errorMsg   = TempData["ErrorMessage"]   as string;
+}
+
+@* ── Alerts ── *@
+@if (!string.IsNullOrEmpty(successMsg))
+{
+    <div class="alert alert-success d-flex align-items-center gap-2 rounded-3 mb-3" style="border-left:4px solid #16a34a">
+        <i class="fa-solid fa-circle-check"></i> @successMsg
     </div>
+}
+@if (!string.IsNullOrEmpty(errorMsg))
+{
+    <div class="alert alert-danger d-flex align-items-center gap-2 rounded-3 mb-3" style="border-left:4px solid #dc2626">
+        <i class="fa-solid fa-triangle-exclamation"></i> @errorMsg
+    </div>
+}
 
-    <div class="card p-4 mb-4">
-        <div class="d-flex justify-content-between align-items-start">
-            <div>
-                <h6 class="fw-bold">
-                    <i class="bi bi-book"></i> Ứng dụng AI trong Phát hiện Bệnh tật
-                </h6>
-                <small class="text-muted">Giảng viên: TS. Nguyễn Văn A</small>
-            </div>
-            <span class="badge bg-light text-dark">2/5 nhóm</span>
+@if (selectedTopic != null)
+{
+    <div class="topic-registered-banner">
+        <i class="fa-solid fa-circle-check"></i>
+        <div>
+            <span>Nhóm của bạn đã đăng ký đề tài:</span>
+            <strong>@selectedTopic.TopicName</strong>
+        </div>
+    </div>
+}
+
+<div id="miniModal" class="mini-overlay hidden">
+    <div class="mini-modal">
+        <div class="mini-header">
+            <h5 id="miniTitle">Thông báo</h5>
+            <span class="mini-close" onclick="closeMiniModal()">×</span>
         </div>
 
-        <p class="mt-3">
-            Nghiên cứu và phát triển hệ thống sử dụng Machine Learning để phát hiện
-            các bệnh lý từ hình ảnh y tế (X-ray, MRI).
-        </p>
+        <p id="miniMessage" class="mini-message"></p>
 
-        <strong>Yêu cầu:</strong>
-        <ul>
-            <li>Kiến thức về Deep Learning</li>
-            <li>Python, TensorFlow/PyTorch</li>
-            <li>Xử lý ảnh y tế</li>
-        </ul>
-
-        <button class="btn btn-outline-secondary w-100" disabled>
-            Không thể chọn
-        </button>
-    </div>
-
-    <div class="card p-4">
-        <div class="d-flex justify-content-between align-items-start">
-            <div>
-                <h6 class="fw-bold">
-                    <i class="bi bi-book"></i> Hệ thống Quản lý Dự án Sinh viên
-                </h6>
-                <small class="text-muted">Giảng viên: ThS. Trần Thị B</small>
-            </div>
-            <span class="badge bg-light text-dark">1/4 nhóm</span>
+        <div class="mini-actions">
+            <button class="btn-cancel" onclick="closeMiniModal()">Hủy</button>
         </div>
-
-        <p class="mt-3">
-            Xây dựng web application quản lý đề tài, nhóm sinh viên,
-            và hệ thống Q&A tích hợp AI.
-        </p>
-
-        <button class="btn btn-primary w-100">Chọn đề tài</button>
     </div>
-
 </div>
+
+@foreach (var topic in Model.Topics)
+{
+    var isSelected = Model.SelectedTopicId.HasValue
+                     && Model.SelectedTopicId.Value == topic.TopicID;
+    var hasSelected = Model.SelectedTopicId.HasValue;
+    var currentCount = topic.TopicRegistrations?.Count ?? 0;
+    var maxGroup = topic.MaxGroupCount ?? 5;
+    var isFull = currentCount >= maxGroup;
+    <div class=" col-12 mb-4">
+        <div class="topic-card @(isSelected ? "selected" : "")">
+            <div class="topic-header">
+                <div class="topic-title">
+                    <div class="topic-icon @(isSelected ? "selected" : "")">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+
+                    <div>
+                        <h5>@topic.TopicName</h5>
+                        <p class="lecturer">
+                            <i class="fa-solid fa-user-tie me-1"></i>
+                            @topic.Teacher?.User?.FullName
+                        </p>
+                    </div>
+                </div>
+
+                <div class="topic-badges">
+                    @* Badge Đã chọn *@
+                    @if (isSelected)
+                    {
+                        <span class="badge selected-badge">
+                            <i class="fa-solid fa-check me-1"></i> Đã chọn
+                        </span>
+                    }
+
+                    <span class="badge group-count">
+                        <i class="fa-solid fa-users me-1"></i>
+                        @currentCount/@maxGroup nhóm
+                    </span>
+                </div>
+            </div>
+
+            <div class="topic-description">
+                @topic.Description
+            </div>
+
+            <div class="topic-requirement">
+                <strong>Yêu cầu:</strong>
+                <p>@topic.Requirement</p>
+            </div>
+
+            @* ===== BUTTON LOGIC ===== *@
+
+            @if (hasSelected)
+            {
+                if (isSelected)
+                {
+                    @* Đã chọn topic này → không hiện nút *@
+                }
+                else
+                {
+                    <button class="btn-select disabled-btn" disabled>
+                        Không thể chọn
+                    </button>
+                }
+            }
+            else
+            {
+                if (isFull)
+                {
+                    <button class="btn-select disabled-btn" disabled>
+                        Đã đủ nhóm
+                    </button>
+                }
+                else if (!isLeader)
+                {
+                    <button class="btn-select disabled-btn" disabled title="Chỉ trưởng nhóm mới được chọn đề tài">
+                        <i class="fa-solid fa-lock me-1"></i>
+                        Chỉ trưởng nhóm chọn
+                    </button>
+                }
+                else if (myGroup == null)
+                {
+                    <button class="btn-select disabled-btn" disabled title="Bạn cần có nhóm trước">
+                        Cần có nhóm
+                    </button>
+                }
+                else
+                {
+                    <form asp-controller="Student" asp-action="RegisterTopic" method="post" class="d-inline">
+                        <input type="hidden" name="topicId" value="@topic.TopicID" />
+                        <button type="submit" class="btn-select select-topic">
+                            <i class="fa-solid fa-paper-plane me-1"></i>
+                            Chọn đề tài
+                        </button>
+                    </form>
+                }
+            }
+        </div>
+    </div>
+}

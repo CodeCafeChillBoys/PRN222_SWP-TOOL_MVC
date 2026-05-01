@@ -11,4 +11,11 @@
     <ProjectReference Include="..\PRN222_SWP&amp;TOOL_MVC.Repository\PRN222_SWP&amp;TOOL_MVC.Repository.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="IServices\IStudentGroup\" />
+    <Folder Include="IServices\IStudent\" />
+    <Folder Include="Services\StudentGroupService\" />
+    <Folder Include="Services\StudentService\" />
+  </ItemGroup>
+
 </Project>

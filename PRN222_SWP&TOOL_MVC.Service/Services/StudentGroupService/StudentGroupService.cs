@@ -1,129 +1,158 @@
-﻿using PRN222_SWP_TOOL_MVC.Repository.Entities;
+using PRN222_SWP_TOOL_MVC.Repository.Entities;
 using PRN222_SWP_TOOL_MVC.Repository.UnitOfWorkRepo.IUnitOfWork;
-using PRN222_SWP_TOOL_MVC.Service.DTO.Request;
 using PRN222_SWP_TOOL_MVC.Service.DTO.Response;
 using PRN222_SWP_TOOL_MVC.Service.IServices.IStudentGroup;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PRN222_SWP_TOOL_MVC.Service.Services.StudentGroupService
 {
     public class StudentGroupService : IStudentGroupService
     {
-        private readonly IUnitOfWork _uow;
-        private readonly AppDbContext _db;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public StudentGroupService(IUnitOfWork uow, AppDbContext db)
+        public StudentGroupService(IUnitOfWork unitOfWork)
         {
-            _uow = uow;
-            _db = db;
+            _unitOfWork = unitOfWork;
         }
 
-        public Task<ReturnData<bool>> AddMemberAsync(int groupId, int studentId)
+        public async Task<StudentGroup> CreateGroupAsync(int classId, int studentId, string groupName)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<ReturnData<int>> CreateGroupAsync(CreateGroupRequestDTO request, int creatorUserId)
-        {
-            if (request == null || string.IsNullOrWhiteSpace(request.GroupName))
+            // Tạo mã kí tự lấy từ 0 đến 0 đc định dạng bằng hex
+            string inviteCode = Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper();
+            var newGroup = new StudentGroup
             {
-                return new ReturnData<int>
-                {
-                    Success = false,
-                    ResponseMessage = "GroupName is required"
-                };
-            }
-
-            using var tx = await _db.Database.BeginTransactionAsync();
-
-            var group = new StudentGroup 
-            {
-                ClassID = request.ClassID,
-                GroupName = request.GroupName.Trim(),
-                CreatedByUserID = creatorUserId,
-                IsLocked = false
+                GroupName = groupName,
+                ClassID = classId,
+                CreatedByUserID = studentId,
+                MaxMember = 6,
+                InviteCode = inviteCode,
+                IsLocked = false,
+                Status = "Active"
             };
+            // Tạo ra một group mới đc leader tạo
+            await _unitOfWork.studentGroupRepository.AddAsync(newGroup);
+            await _unitOfWork.SaveChangeAsync();
 
-            await _uow.studentGroupRepository.AddAsync(group);
-            await _uow.SaveChangeAsync();
-
-            var leader = new GroupMember
+            var member = new GroupMember
             {
-                GroupID = group.GroupID,
-                StudentID = creatorUserId,
+                GroupID = newGroup.GroupID,
+                StudentID = studentId,
                 IsLeader = true
             };
 
-            await _uow.groupMemberRepository.AddAsync(leader);
-            await _uow.SaveChangeAsync();
+            await _unitOfWork.groupMemberRepository.AddAsync(member);
+            await _unitOfWork.SaveChangeAsync();
 
-            await tx.CommitAsync();
-
-            return new ReturnData<int>
-            {
-                Success = true,
-                ResponseMessage = "Create group successfully",
-                Data = group.GroupID
-            };
+            return newGroup;
         }
 
-        public async Task<ReturnData<GroupInfoResponseDTO>> GetGroupInfoAsync(int groupId)
+
+        public async Task<List<Class>> GetClassesBySemesterAsync(int semesterId)
         {
-            var group = await _uow.studentGroupRepository.GetGroupWithMembersAsync(groupId);
-            if (group == null)
+            // Lấy ra danh sách class
+            var classes = await _unitOfWork.classRepository.GetAllAsync();
+            // check semester == 0 thì trả về class
+            if (semesterId == 0) return classes.ToList();
+            // lấy lên classs có semeter
+            return classes.Where(c => c.SemesterID == semesterId).ToList();
+        }
+
+        public async Task<StudentGroup> GetGroupInfoAsync(int groupId)
+        {
+            // lấy lên danh sách group theo ID
+            return await _unitOfWork.studentGroupRepository.GetByIdAsync(groupId);
+        }
+
+        /// <summary>
+        /// Lấy nhóm mà student đang thuộc về, kèm danh sách thành viên
+        /// </summary>
+        public async Task<GroupInfoResponseDTO?> GetMyGroupAsync(int studentId)
+        {
+            // 1. Tìm GroupMember record của student này
+            var allMembers = await _unitOfWork.groupMemberRepository.GetAllAsync();
+            // lấy lên studentID là tk leader
+            var myMembership = allMembers.FirstOrDefault(m => m.StudentID == studentId);
+            if (myMembership == null) return null;
+
+            // 2. Lấy Group của tk leader đã chọn
+            var group = await _unitOfWork.studentGroupRepository.GetByIdAsync(myMembership.GroupID);
+            if (group == null) return null;
+
+            // 3. Lấy tất cả thành viên của nhóm đó
+            // Sau khi lấy lên groupID và xem từng thanh viên
+            var membersInGroup = allMembers.Where(m => m.GroupID == group.GroupID).ToList();
+
+            // 4. Map sang DTO — dùng GetWithUserAsync để load kèm User.FullName
+            // lấy ra từng thanh viên
+            var memberDTOs = new List<GroupMemberResponseDTO>();
+            foreach (var m in membersInGroup)
             {
-                return new ReturnData<GroupInfoResponseDTO>
+                var student = await _unitOfWork.studentRepository.GetWithUserAsync(m.StudentID);
+                memberDTOs.Add(new GroupMemberResponseDTO
                 {
-                    Success = false,
-                    ResponseMessage = "Group not found",
-                    Data = null
-                };
+                    StudentID = m.StudentID,
+                    FullName = student?.User?.FullName ?? $"Student #{m.StudentID}",
+                    IsLeader = m.IsLeader
+                });
             }
 
-            var dto = new GroupInfoResponseDTO
+            return new GroupInfoResponseDTO
             {
                 GroupID = group.GroupID,
                 GroupName = group.GroupName,
                 IsLocked = group.IsLocked,
                 Status = group.Status,
-
                 ClassID = group.ClassID,
                 MaxMember = group.MaxMember,
                 InviteCode = group.InviteCode,
-
-                MemberCount = group.Members?.Count ?? 0,
-                Members = (group.Members ?? new List<GroupMember>())
-                    .Select(m => new GroupMemberResponseDTO
-                    {
-                        StudentID = m.StudentID,
-                        IsLeader = m.IsLeader,
-                       
-                        FullName = m.Student?.User?.FullName ?? ""
-                        
-                    })
-                    .ToList()
+                MemberCount = membersInGroup.Count,
+                Members = memberDTOs
             };
+        }
 
-            return new ReturnData<GroupInfoResponseDTO>
+        public async Task<bool> JoinGroupAsync(string inviteCode, int studentId)
+        {
+            // lấy lên danh sách group
+            var groups = await _unitOfWork.studentGroupRepository.GetAllAsync();
+            // Check inviteCode
+            var targetGroup = groups.FirstOrDefault(g => g.InviteCode == inviteCode);
+            // if == null or locked = true thì return false
+            if (targetGroup == null || targetGroup.IsLocked)
+                return false;
+            // lấy lên groupMembers
+            var groupMembers = await _unitOfWork.groupMemberRepository.GetAllAsync();
+            // Check groupID exist
+            var membersInGroup = groupMembers.Where(m => m.GroupID == targetGroup.GroupID).ToList();
+
+            // nếu nhóm đã đủ thành viên thì return false
+            if (membersInGroup.Count >= targetGroup.MaxMember)
             {
-                Success = true,
-                ResponseMessage = "OK",
-                Data = dto
+                targetGroup.IsLocked = true;
+                await _unitOfWork.studentGroupRepository.UpdateAsync(targetGroup);
+                await _unitOfWork.SaveChangeAsync();
+                return false;
+            }
+
+            // Không cho join nếu đã là thành viên
+            if (membersInGroup.Any(m => m.StudentID == studentId))
+                return false;
+
+            var newMember = new GroupMember
+            {
+                GroupID = targetGroup.GroupID,
+                StudentID = studentId,
+                IsLeader = false
             };
-        }
 
-        public Task<ReturnData<bool>> RemoveMemberAsync(int groupId, int studentId)
-        {
-            throw new NotImplementedException();
-        }
+            await _unitOfWork.groupMemberRepository.AddAsync(newMember);
 
-        Task<ReturnData<GroupInfoResponseDTO>> IStudentGroupService.GetGroupInfoAsync(int groupId)
-        {
-            throw new NotImplementedException();
+            // sau khi thêm vào thì check cái này full chưa nếu full rồi đóng luôn
+            if (membersInGroup.Count + 1 >= targetGroup.MaxMember)
+            {
+                targetGroup.IsLocked = true;
+                await _unitOfWork.studentGroupRepository.UpdateAsync(targetGroup);
+            }
+            await _unitOfWork.SaveChangeAsync();
+            return true;
         }
     }
 }

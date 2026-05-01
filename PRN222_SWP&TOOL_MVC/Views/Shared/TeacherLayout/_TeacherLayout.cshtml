@@ -1,48 +1,80 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Teacher</title>
+    <meta name="description" content="SWP&TOOL Teacher Portal - Quản lý đề tài và Q&A cho giáo viên" />
+    <title>@ViewData["Title"] - Teacher | SWP&TOOL</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 
-    <link rel="stylesheet" href="~/css/teacher.css" />
-        <link rel="stylesheet" href="~/css/SemesterFilter.css" />
+    <!-- App CSS -->
+    <link rel="stylesheet" href="~/css/teacher.css"          asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/SemesterFilter.css"   asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/topTab.css"           asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/topTabHeader.css"     asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/topTabTopicList.css"  asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/createTopic.css"      asp-append-version="true" />
+
     @RenderSection("Styles", false)
-
-
-    <style>
-        html, body {
-            height: 100%;
-        }
-
-        body {
-            display: flex;
-            flex-direction: column;
-        }
-
-        main {
-            flex: 1;
-        }x
-    </style>
-
-  
 </head>
 <body>
+
     @await Html.PartialAsync("TeacherLayout/_Header")
-    <!-- Body -->
-    <main class="container-fluid px-4 py-4">
+
+    <!-- Main Content -->
+    <main>
         @RenderBody()
     </main>
-    @await Html.PartialAsync("StudentLayout/_Footer")
 
-
+    <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
+    <!-- Theme toggle script (global) -->
+    <script>
+        (function () {
+            const saved = localStorage.getItem("theme");
+            if (saved === "light") {
+                document.body.classList.add("light-mode");
+            }
+        })();
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const btn  = document.getElementById("themeToggle");
+            const icon = document.getElementById("themeIcon");
+            if (!btn || !icon) return;
+
+            function applyTheme(light) {
+                document.body.classList.toggle("light-mode", light);
+                icon.className = light ? "bi bi-sun-fill" : "bi bi-moon-stars-fill";
+                localStorage.setItem("theme", light ? "light" : "dark");
+            }
+
+            // Apply on load
+            applyTheme(localStorage.getItem("theme") === "light");
+
+            btn.addEventListener("click", () => {
+                applyTheme(!document.body.classList.contains("light-mode"));
+            });
+        });
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script src="~/js/Teacher/loadFormTopic.js" asp-append-version="true"></script>
+    <script src="~/js/Teacher/editForm.js"       asp-append-version="true"></script>
+    <script src="~/js/Teacher/topicCreate.js"    asp-append-version="true"></script>
+    <script src="~/js/Teacher/deleteForm.js"     asp-append-version="true"></script>
 </body>
 </html>

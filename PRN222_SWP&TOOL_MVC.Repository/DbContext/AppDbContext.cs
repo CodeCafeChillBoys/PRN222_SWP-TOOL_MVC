@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PRN222_SWP_TOOL_MVC.Repository.Entities;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public class AppDbContext : DbContext
 {
@@ -17,6 +16,12 @@ public class AppDbContext : DbContext
     public DbSet<Class> Classes { get; set; }
     public DbSet<StudentGroup> StudentGroups { get; set; }
     public DbSet<GroupMember> GroupMembers { get; set; }
+
+    public DbSet<Question> questions { get; set; }
+    public DbSet<Topic> Topics { get; set; }
+
+    public DbSet<TopicRegistration> TopicRegisters { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

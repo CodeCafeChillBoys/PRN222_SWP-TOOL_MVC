@@ -1,69 +1,61 @@
-﻿<div class="container py-4" >
+@model PRN222_SWP_TOOL_MVC.Models.StudentDashboardViewModel
+@{
+    var tab = Model?.CurrentTab ?? "topic";
+}
 
+<!-- ===== PAGE TAB NAVIGATION ===== -->
+<div class="page-tabs-wrap">
+    <div class="page-tabs">
 
-	<!-- TOP TABS -->
-	<div class="pill-tabs mb-3">
-		<div class="tab active">Hộp thư Q&A</div>
-		<div class="tab">Quản lý Đề tài</div>
-	</div>
+        <!-- Đề tài Tab -->
+        <a class="page-tab @(tab == "topic" ? "page-tab--active page-tab--topic" : "")"
+           asp-controller="Teacher"
+           asp-action="Index"
+           asp-route-tab="topic">
+            <span class="page-tab__icon page-tab__icon--topic">
+                <i class="bi bi-journal-bookmark-fill"></i>
+            </span>
+            <span class="page-tab__label">Quản lý Đề tài</span>
+            @if (tab == "topic")
+            {
+                <span class="page-tab__bar"></span>
+            }
+        </a>
 
+        <!-- Q&A Tab -->
+        <a class="page-tab @(tab == "qa" ? "page-tab--active page-tab--qa" : "")"
+           asp-controller="Teacher"
+           asp-action="Index"
+           asp-route-tab="qa">
+            <span class="page-tab__icon page-tab__icon--qa">
+                <i class="bi bi-chat-square-dots-fill"></i>
+            </span>
+            <span class="page-tab__label">Hộp thư Q&A</span>
+            @if (tab == "qa")
+            {
+                <span class="page-tab__bar"></span>
+            }
+        </a>
 
-	<div class="pill-tabs mb-4">
-		<div class="tab active">Chờ trả lời (2)</div>
-		<div class="tab">Đã trả lời (1)</div>
-	</div>
+    </div>
 
-
-	<!-- QUESTION -->
-	<div class="question-card pending">
-
-
-		<span class="status-badge">⏳ Chờ trả lời</span>
-
-
-		<h5 class="fw-semibold">
-			Em có thể sử dụng framework nào để xây dựng ứng dụng?
-		</h5>
-
-
-		<div class="text-muted small mt-2">
-			Sinh viên: Nguyễn Văn An – Nhóm: GROUP001<br>
-			Đề tài: Ứng dụng AI trong Phát hiện Bệnh tật<br>
-			Gửi lúc: 2025-01-15 10:30
-		</div>
-
-
-		<!-- AI SUGGESTION -->
-		<div class="ai-box">
-			<div class="d-flex justify-content-between align-items-start">
-				<div>
-					<strong>✨ AI gợi ý câu trả lời:</strong>
-					<p class="mb-0 mt-2">
-						Bạn có thể sử dụng React hoặc Vue.js cho frontend,
-						kết hợp với Node.js/Express cho backend. Với AI,
-						nên dùng Python với Flask hoặc FastAPI.
-					</p>
-				</div>
-				<button class="btn btn-outline-dark btn-sm">✏️ Sử dụng</button>
-			</div>
-		</div>
-
-
-		<button class="btn btn-dark btn-dark-rounded mt-4">
-			Trả lời câu hỏi
-		</button>
-
-
-	</div>
-
-
-	<!-- QUESTION 2 -->
-	<div class="question-card pending">
-		<span class="status-badge">⏳ Chờ trả lời</span>
-		<h5 class="fw-semibold">
-			Dataset nên lấy từ nguồn nào cho dự án về phát hiện bệnh?
-		</h5>
-	</div>
-
-
+    <!-- Tab content label (right side) -->
+    <div class="page-tabs__meta">
+        @if (tab == "topic")
+        {
+            <span class="page-tabs__breadcrumb">
+                <i class="bi bi-house-door me-1"></i> Dashboard
+                <i class="bi bi-chevron-right mx-1" style="font-size:11px"></i>
+                Quản lý Đề tài
+            </span>
+        }
+        else
+        {
+            <span class="page-tabs__breadcrumb">
+                <i class="bi bi-house-door me-1"></i> Dashboard
+                <i class="bi bi-chevron-right mx-1" style="font-size:11px"></i>
+                Hộp thư Q&A
+            </span>
+        }
+    </div>
 </div>

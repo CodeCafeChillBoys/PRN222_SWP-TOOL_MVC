@@ -1,45 +1,25 @@
-﻿@model List<PRN222_SWP_TOOL_MVC.Service.DTO.Response.SemesterResponseDTO>
-
+@model PRN222_SWP_TOOL_MVC.Models.StudentDashboardViewModel
 @{
     ViewData["Title"] = "Teacher";
     Layout = "~/Views/Shared/TeacherLayout/_TeacherLayout.cshtml";
 }
 
+@* Page Tab Bar — fixed strip, lives outside inner container *@
+@await Html.PartialAsync("~/Views/Teacher/ComponentTeacher/_TopTabs.cshtml", Model)
+
 <div class="container-fluid">
-    <!-- Filter Header Component -->
-    
-
     <div class="container">
-         @await Html.PartialAsync("~/Views/Teacher/ComponentTeacher/_SemesterFilter.cshtml")
-        @await Html.PartialAsync("~/Views/Teacher/ComponentTeacher/_Stats.cshtml")
-        @await Html.PartialAsync("~/Views/Teacher/ComponentTeacher/_TopTabs.cshtml")
-       
+        @* Semester Filter *@
+        @await Html.PartialAsync("~/Views/Teacher/ComponentTeacher/_SemesterFilter.cshtml")
+
+        @* Tab Content *@
+        @if (Model.CurrentTab == "qa")
+        {
+            @await Html.PartialAsync("~/Views/Teacher/ComponentTeacher/_QuestionList.cshtml", Model)
+        }
+        else if (Model.CurrentTab == "topic")
+        {
+            @await Html.PartialAsync("~/Views/Teacher/ComponentTeacher/_TopicList.cshtml", Model)
+        }
     </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const btn = document.getElementById("themeToggle");
-            const icon = document.getElementById("themeIcon");
-
-            if (btn && icon) {
-                // Load trạng thái đã lưu
-                if (localStorage.getItem("theme") === "light") {
-                    document.body.classList.add("light-mode");
-                    icon.classList.replace("bi-moon", "bi-sun");
-                }
-
-                btn.addEventListener("click", () => {
-                    document.body.classList.toggle("light-mode");
-
-                    const isLight = document.body.classList.contains("light-mode");
-
-                    icon.classList.toggle("bi-moon", !isLight);
-                    icon.classList.toggle("bi-sun", isLight);
-
-                    localStorage.setItem("theme", isLight ? "light" : "dark");
-                });
-            }
-        });
-    </script>
-</div>
 </div>

@@ -1,69 +1,103 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PRN222_SWP_TOOL_MVC.Models.StudentViewModels;
-using PRN222_SWP_TOOL_MVC.Models.GroupViewModels;
+using PRN222_SWP_TOOL_MVC.Repository.Entities;
+using PRN222_SWP_TOOL_MVC.Service.DTO.Request;
 using PRN222_SWP_TOOL_MVC.Service.IServices.IStudentGroup;
+using PRN222_SWP_TOOL_MVC.Service.IServices.ITopic;
 using System.Security.Claims;
 
 [Authorize(Roles = "Student")]
 public class StudentController : Controller
 {
-    private readonly IStudentGroupService _groupService;
+    private readonly IStudentGroupService _studentGroupService;
+    private readonly ITopicService _topicService;
 
-    public StudentController(IStudentGroupService groupService)
+    public StudentController(IStudentGroupService studentGroupService, ITopicService topicService)
     {
-        _groupService = groupService;
+        _studentGroupService = studentGroupService;
+        _topicService = topicService;
     }
 
-    private int GetCurrentUserId()
+    public async Task<IActionResult> Index(string tab = "group")
     {
-        var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrEmpty(userIdStr))
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+        // ── Nhóm hiện tại ──────────────────────────────────────
+        var myGroup = await _studentGroupService.GetMyGroupAsync(userId);
+        ViewBag.MyGroup = myGroup;
+
+        // ── Danh sách lớp học cho dropdown ──────────────────────
+        ViewBag.Classes = await _studentGroupService.GetClassesBySemesterAsync(0);
+
+        // ── Topics + trạng thái đã đăng ký ──────────────────────
+        var topics = await _topicService.GetTopicsWithDetailsAsync();
+        int? selectedId = myGroup != null  // nhóm tồn tại
+            ? await _topicService.GetRegisteredTopicIdAsync(myGroup.GroupID)
+            : null;
+
+        var model = new StudentDashboardRequestDTO
         {
-            throw new InvalidOperationException("User is not authenticated");
-        }
-        return int.Parse(userIdStr);
+            CurrentTab = tab,
+            Topics = topics,
+            Questions = new List<Question>(),
+            SelectedTopicId = selectedId
+        };
+        return View(model);
     }
 
-    public async Task<IActionResult> Index(int groupId = 0)
+    // ── Tạo nhóm ──────────────────────────────────────────────
+    [HttpPost]
+    public async Task<IActionResult> CreateGroup(int classId, string groupName)
     {
-        var vm = new StudentIndexViewModel();
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var group = await _studentGroupService.CreateGroupAsync(classId, userId, groupName);
+        TempData["SuccessMessage"] = $"Tạo nhóm \"{group.GroupName}\" thành công! Mã mời: {group.InviteCode}";
+        return RedirectToAction("Index", new { tab = "group" });
+    }
 
-        // Tạm thời: nếu bạn truyền groupId vào Index thì load group
-        // Chuẩn hơn là theo classId -> MyGroup (mình làm sau)
-        if (groupId > 0)
-        {
-            var result = await _groupService.GetGroupInfoAsync(groupId);
-            if (result.Success && result.Data != null)
-            {
-                vm.Group = new GroupDetailsViewModel
-                {
-                    GroupID = result.Data.GroupID,
-                    GroupName = result.Data.GroupName,
-                    IsLocked = result.Data.IsLocked,
-                    Status = result.Data.Status,
-                    ClassID = result.Data.ClassID,
-                    MaxMember = result.Data.MaxMember,
-                    InviteCode = result.Data.InviteCode,
-                    MemberCount = result.Data.MemberCount,
-                    Members = result.Data.Members.Select(m => new GroupMemberItemViewModel
-                    {
-                        StudentID = m.StudentID,
-                        FullName = m.FullName,
-                        IsLeader = m.IsLeader
-                    }).ToList()
-                };
-            }
-            else
-            {
-                ViewBag.Message = result.ResponseMessage ?? "Bạn chưa có nhóm.";
-            }
-        }
+    // ── Tham gia nhóm ─────────────────────────────────────────
+    [HttpPost]
+    public async Task<IActionResult> JoinGroup(string inviteCode)
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var success = await _studentGroupService.JoinGroupAsync(inviteCode, userId);
+
+        if (success)
+            TempData["SuccessMessage"] = "Tham gia nhóm thành công!";
         else
+            TempData["ErrorMessage"] = "Tham gia thất bại! Nhóm đã đủ người, mã sai, hoặc bạn đã ở trong nhóm khác.";
+
+        return RedirectToAction("Index", new { tab = "group" });
+    }
+
+    // ── Đăng ký đề tài ────────────────────────────────────────
+    [HttpPost]
+    public async Task<IActionResult> RegisterTopic(int topicId)
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var myGroup = await _studentGroupService.GetMyGroupAsync(userId);
+
+        if (myGroup == null)
         {
-            ViewBag.Message = "Bạn chưa có nhóm.";
+            TempData["ErrorMessage"] = "Bạn chưa có nhóm. Hãy tạo hoặc tham gia nhóm trước!";
+            return RedirectToAction("Index", new { tab = "topic" });
         }
 
-        return View(vm);
+        // Chỉ trưởng nhóm được đăng ký
+        var leader = myGroup.Members.FirstOrDefault(m => m.IsLeader);
+        if (leader == null || leader.StudentID != userId)
+        {
+            TempData["ErrorMessage"] = "Chỉ trưởng nhóm mới có thể chọn đề tài!";
+            return RedirectToAction("Index", new { tab = "topic" });
+        }
+
+        var (success, message) = await _topicService.RegisterTopicAsync(topicId, myGroup.GroupID);
+
+        if (success)
+            TempData["SuccessMessage"] = message;
+        else
+            TempData["ErrorMessage"] = message;
+
+        return RedirectToAction("Index", new { tab = "topic" });
     }
 }

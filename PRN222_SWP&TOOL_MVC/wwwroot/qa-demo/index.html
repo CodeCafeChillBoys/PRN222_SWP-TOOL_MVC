@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduFlow – Hệ thống Q&A Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- NAV -->
+<nav class="topnav">
+  <div class="nav-left">
+    <span class="logo">⚡ EduFlow</span>
+    <select class="sem-select" onchange="alert('Đã chọn kỳ: '+this.value)">
+      <option>HK1 – 2025</option>
+      <option>HK2 – 2025</option>
+    </select>
+  </div>
+  <div class="nav-right">
+    <span class="role-badge" id="roleLabel">👨‍🎓 Học sinh</span>
+    <button class="btn-switch" onclick="toggleRole()">🔄 Đổi vai: Giáo viên</button>
+    <div class="avatar">A</div>
+  </div>
+</nav>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-group" id="sidebarStudent">
+      <div class="sb-item" onclick="showScreen('s-dashboard')">🏠 Dashboard</div>
+      <div class="sb-item" onclick="showScreen('s-dashboard')">👥 Nhóm của tôi</div>
+      <div class="sb-item active" id="sbQA" onclick="showScreen('s-dashboard')">💬 Q&A</div>
+      <div class="sb-item" onclick="showScreen('faq')">📚 FAQ Công khai</div>
+    </div>
+    <div class="sidebar-group hidden" id="sidebarTeacher">
+      <div class="sb-item" onclick="showScreen('t-inbox')">🏠 Dashboard</div>
+      <div class="sb-item" onclick="showScreen('t-inbox')">📅 Quản lý Kỳ học</div>
+      <div class="sb-item" onclick="showScreen('t-inbox')">📖 Quản lý Đề tài</div>
+      <div class="sb-item active" onclick="showScreen('t-inbox')">📬 Hộp thư hỗ trợ</div>
+      <div class="sb-item" onclick="showScreen('faq')">📚 FAQ Công khai</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ===== SCREEN: STUDENT DASHBOARD ===== -->
+    <div class="screen active" id="s-dashboard">
+      <div class="page-header">
+        <div>
+          <h1>💬 Hỏi &amp; Đáp</h1>
+          <p class="sub">Nhóm 5 · Lớp SE1851 · Đề tài: <strong>Hệ thống quản lý thư viện</strong></p>
+        </div>
+        <button class="btn-primary" onclick="openModal('modalSend')">+ Gửi câu hỏi mới</button>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-num">12</div><div class="stat-lbl">Tổng câu hỏi</div></div>
+        <div class="stat-card orange"><div class="stat-num">3</div><div class="stat-lbl">Chờ trả lời</div></div>
+        <div class="stat-card green"><div class="stat-num">9</div><div class="stat-lbl">Đã trả lời</div></div>
+      </div>
+
+      <div class="card">
+        <table class="tbl">
+          <thead><tr><th>#</th><th>Câu hỏi</th><th>Thời gian gửi</th><th>Trạng thái</th><th></th></tr></thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Làm thế nào để thiết kế ERD cho module mượn sách?</td>
+              <td>30/04/2025 09:15</td>
+              <td><span class="badge green">✅ Đã trả lời</span></td>
+              <td><button class="btn-link" onclick="showScreen('s-thread')">Xem chi tiết →</button></td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Cách implement JWT authentication trong ASP.NET Core?</td>
+              <td>01/05/2025 10:30</td>
+              <td><span class="badge orange">⏳ Đang xử lý</span></td>
+              <td><button class="btn-link" onclick="showScreen('s-thread')">Xem chi tiết →</button></td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Có thể dùng MongoDB thay SQL Server không?</td>
+              <td>01/05/2025 14:00</td>
+              <td><span class="badge red">🔴 Chưa trả lời</span></td>
+              <td><button class="btn-link" onclick="showScreen('s-thread')">Xem chi tiết →</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ===== SCREEN: THREAD DETAIL ===== -->
+    <div class="screen" id="s-thread">
+      <div class="page-header">
+        <div>
+          <div class="breadcrumb"><span onclick="showScreen('s-dashboard')" style="cursor:pointer;color:var(--accent)">Q&A</span> › Chi tiết câu hỏi</div>
+          <h1>Thiết kế ERD cho module mượn sách?</h1>
+        </div>
+        <span class="badge green">✅ Đã trả lời</span>
+      </div>
+      <div class="card mb16">
+        <div class="meta-chips">
+          <span class="chip blue">HK1-2025</span>
+          <span class="chip orange">Hệ thống quản lý thư viện</span>
+          <span class="chip purple">Nhóm 5 · SE1851</span>
+          <span class="chip teal">GV: TS. Trần Minh Khoa</span>
+        </div>
+        <p style="margin-top:12px;color:var(--text-muted)">Em đang gặp khó khăn trong việc xác định các entity và relationship cho module mượn trả sách. Cụ thể, em không biết nên đặt foreign key ở bảng nào và quan hệ giữa Phiếu mượn và Sách là 1-N hay N-N ạ?</p>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-bottom:16px">🗂 Lịch sử trao đổi</h3>
+        <div class="thread">
+          <div class="msg student">
+            <div class="msg-meta">👤 Nguyễn Văn A &nbsp;·&nbsp; 30/04 09:15</div>
+            <div class="msg-bubble student-bubble">Thầy ơi, em cần giúp đỡ về ERD ạ. Phiếu mượn nên có quan hệ gì với bảng Sách?</div>
+          </div>
+          <div class="msg teacher">
+            <div class="msg-meta">👨‍🏫 TS. Trần Minh Khoa &nbsp;<span class="badge-sm green">Giáo viên</span>&nbsp;·&nbsp; 30/04 14:22</div>
+            <div class="msg-bubble teacher-bubble">
+              Để thiết kế ERD cho module mượn sách, em cần xác định:<br>
+              1. <strong>Entity:</strong> Sách, Bạn đọc, Phiếu mượn, Chi tiết phiếu mượn<br>
+              2. Quan hệ Phiếu mượn ↔ Sách là <strong>N-N</strong>, cần bảng trung gian "Chi tiết phiếu mượn"<br>
+              3. Foreign key đặt ở bảng con (Chi tiết phiếu mượn)
+              <div class="ai-tag">🤖 AI hỗ trợ soạn thảo</div>
+            </div>
+          </div>
+          <div class="msg student">
+            <div class="msg-meta">👤 Nguyễn Văn A &nbsp;·&nbsp; 30/04 15:10</div>
+            <div class="msg-bubble student-bubble">Em hiểu rồi ạ! Cảm ơn thầy nhiều!</div>
+          </div>
+        </div>
+        <div class="reply-box">
+          <input type="text" class="reply-input" placeholder="Nhập phản hồi thêm...">
+          <button class="btn-primary" onclick="alert('Đã gửi phản hồi!')">Gửi</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SCREEN: TEACHER INBOX ===== -->
+    <div class="screen" id="t-inbox">
+      <div class="page-header">
+        <div>
+          <h1>📬 Hộp thư hỗ trợ</h1>
+          <p class="sub">Đề tài: Hệ thống quản lý thư viện</p>
+        </div>
+      </div>
+      <div class="filter-bar">
+        <select class="sem-select">
+          <option>Tất cả lớp</option><option>SE1851</option><option>SE1852</option>
+        </select>
+        <select class="sem-select">
+          <option>Tất cả nhóm</option><option>Nhóm 1</option><option>Nhóm 3</option><option>Nhóm 5</option>
+        </select>
+        <div class="tab-pills">
+          <button class="pill active" onclick="setPill(this)">Tất cả (15)</button>
+          <button class="pill" onclick="setPill(this)">Chưa trả lời (5)</button>
+          <button class="pill" onclick="setPill(this)">Đang xử lý (3)</button>
+          <button class="pill" onclick="setPill(this)">Đã trả lời (7)</button>
+        </div>
+      </div>
+      <div class="inbox-layout">
+        <div class="inbox-list">
+          <div class="inbox-item unread active" onclick="selectInbox(this,'t-ai')">
+            <div class="inbox-meta">Nhóm 3 · SE1851 &nbsp;<span style="float:right;color:var(--text-muted);font-size:12px">14 phút trước</span></div>
+            <div class="inbox-title">Cách implement JWT authentication trong...</div>
+            <div style="margin-top:6px;display:flex;gap:6px"><span class="badge red" style="font-size:11px">Chưa trả lời</span><span class="badge purple" style="font-size:11px">🤖 AI sẵn sàng</span></div>
+          </div>
+          <div class="inbox-item" onclick="selectInbox(this,'t-ai')">
+            <div class="inbox-meta">Nhóm 5 · SE1851 &nbsp;<span style="float:right;color:var(--text-muted);font-size:12px">2 giờ trước</span></div>
+            <div class="inbox-title">Làm thế nào để thiết kế ERD cho module...</div>
+            <div style="margin-top:6px"><span class="badge orange" style="font-size:11px">Đang xử lý</span></div>
+          </div>
+          <div class="inbox-item" onclick="selectInbox(this,'t-ai')">
+            <div class="inbox-meta">Nhóm 1 · SE1852 &nbsp;<span style="float:right;color:var(--text-muted);font-size:12px">Hôm qua</span></div>
+            <div class="inbox-title">Có thể dùng MongoDB thay SQL Server không?</div>
+            <div style="margin-top:6px;display:flex;gap:6px"><span class="badge green" style="font-size:11px">Đã trả lời</span><span class="badge blue" style="font-size:11px">📢 Public</span></div>
+          </div>
+        </div>
+        <div class="inbox-detail">
+          <div class="q-preview card mb16">
+            <div class="meta-chips"><span class="chip purple">Nhóm 3 · SE1851</span><span class="chip orange">HK1-2025</span></div>
+            <h3 style="margin:12px 0 8px">Cách implement JWT authentication trong ASP.NET Core?</h3>
+            <p style="color:var(--text-muted)">Em muốn hỏi về cách cấu hình JWT Bearer token trong ASP.NET Core 8. Em đã thêm package nhưng chưa biết cách setup middleware và validate token ạ.</p>
+          </div>
+          <button class="btn-ai-reply" onclick="showScreen('t-ai')">🤖 Xem gợi ý AI &amp; soạn câu trả lời →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SCREEN: TEACHER AI REPLY ===== -->
+    <div class="screen" id="t-ai">
+      <div class="page-header">
+        <div>
+          <div class="breadcrumb"><span onclick="showScreen('t-inbox')" style="cursor:pointer;color:var(--accent)">Hộp thư</span> › Trả lời câu hỏi</div>
+          <h1>JWT Authentication trong ASP.NET Core?</h1>
+        </div>
+        <span class="badge red">🔴 Chưa trả lời</span>
+      </div>
+      <div class="two-col">
+        <div class="ai-panel card">
+          <div class="ai-header">🤖 Gợi ý từ AI <span class="badge purple" style="font-size:11px;margin-left:8px">87% tin cậy</span></div>
+          <p class="ai-source">Dựa trên: 3 câu trả lời tương tự + Tài liệu đề tài</p>
+          <div class="ai-progress"><div class="ai-bar"></div></div>
+          <div class="ai-content">
+            Để implement JWT trong ASP.NET Core 8:<br><br>
+            <strong>1. Cài NuGet:</strong><br>
+            <code>Microsoft.AspNetCore.Authentication.JwtBearer</code><br><br>
+            <strong>2. Cấu hình Program.cs:</strong><br>
+            <code>builder.Services.AddAuthentication(JwtBearerDefaults...)</code><br><br>
+            <strong>3. Tạo JwtService</strong> để generate &amp; validate token.<br>
+            <strong>4. Thêm [Authorize]</strong> attribute lên controller cần bảo vệ.
+          </div>
+          <div class="ai-actions">
+            <button class="btn-accept" onclick="acceptAI()">✅ Chấp nhận gợi ý này</button>
+            <button class="btn-edit" onclick="editAI()">✏️ Chỉnh sửa trước khi gửi</button>
+          </div>
+        </div>
+
+        <div class="reply-panel card">
+          <div class="reply-header">📝 Soạn câu trả lời</div>
+          <div class="kb-tags"><span class="chip blue">JWT</span><span class="chip purple">ASP.NET Core</span><span class="chip teal">Authentication</span></div>
+          <textarea class="reply-area" id="replyArea" placeholder="Nội dung câu trả lời..."></textarea>
+          <div class="kb-toggle">
+            <label class="toggle-label">
+              <input type="checkbox" checked id="saveKB"> <span class="toggle-track"></span>
+              Lưu vào Knowledge Base
+            </label>
+          </div>
+          <div class="reply-actions">
+            <button class="btn-ghost" onclick="alert('Đã lưu nháp!')">⏳ Lưu nháp</button>
+            <button class="btn-direct" onclick="sendReply('direct')">💬 Trả lời trực tiếp<br><small>Chỉ Nhóm 3 thấy</small></button>
+            <button class="btn-primary" onclick="sendReply('public')">📢 Đăng FAQ<br><small>Tất cả nhóm thấy</small></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== SCREEN: FAQ ===== -->
+    <div class="screen" id="faq">
+      <div class="page-header">
+        <div>
+          <div class="breadcrumb">Đề tài › Hệ thống quản lý thư viện › FAQ</div>
+          <h1>📚 Câu hỏi thường gặp (FAQ)</h1>
+          <p class="sub">Hiển thị công khai cho tất cả nhóm cùng đề tài</p>
+        </div>
+      </div>
+      <div class="faq-search">
+        <input type="text" placeholder="🔍 Tìm kiếm câu hỏi..." oninput="filterFAQ(this.value)">
+      </div>
+      <div class="faq-cats">
+        <button class="cat active" onclick="setCat(this)">Tất cả</button>
+        <button class="cat" onclick="setCat(this)">Database</button>
+        <button class="cat" onclick="setCat(this)">Authentication</button>
+        <button class="cat" onclick="setCat(this)">Frontend</button>
+        <button class="cat" onclick="setCat(this)">API</button>
+      </div>
+      <div class="faq-list" id="faqList">
+        <div class="faq-item card" onclick="toggleFAQ(this)">
+          <div class="faq-q">
+            <span>Cách implement JWT authentication trong ASP.NET Core?</span>
+            <span class="faq-arrow">▼</span>
+          </div>
+          <div class="faq-a open">
+            <p>Để implement JWT trong ASP.NET Core 8, bạn cần: 1. Cài NuGet package <code>Microsoft.AspNetCore.Authentication.JwtBearer</code>. 2. Cấu hình trong <code>Program.cs</code>. 3. Tạo JwtService để generate &amp; validate token. 4. Thêm <code>[Authorize]</code> attribute.</p>
+            <div class="faq-meta">📢 Công khai bởi TS. Trần Minh Khoa · 01/05/2025 &nbsp;<span class="chip teal">Authentication</span>&nbsp;<span class="chip purple" style="font-size:11px">🤖 AI hỗ trợ</span></div>
+            <div class="faq-like">👍 24 nhóm thấy hữu ích &nbsp;<button class="btn-like" onclick="event.stopPropagation();likeIt(this)">Hữu ích</button></div>
+          </div>
+        </div>
+        <div class="faq-item card" onclick="toggleFAQ(this)">
+          <div class="faq-q">
+            <span>Có thể dùng MongoDB thay SQL Server không?</span>
+            <span class="faq-arrow">▶</span>
+          </div>
+          <div class="faq-a">
+            <p>Hoàn toàn có thể, tuy nhiên với đề tài này yêu cầu relational data. MongoDB phù hợp hơn cho dữ liệu phi cấu trúc. Khuyến nghị dùng SQL Server hoặc PostgreSQL.</p>
+            <div class="faq-meta">📢 Công khai bởi TS. Trần Minh Khoa · 28/04/2025 &nbsp;<span class="chip blue">Database</span></div>
+            <div class="faq-like">👍 18 nhóm thấy hữu ích &nbsp;<button class="btn-like" onclick="event.stopPropagation();likeIt(this)">Hữu ích</button></div>
+          </div>
+        </div>
+        <div class="faq-item card" onclick="toggleFAQ(this)">
+          <div class="faq-q">
+            <span>Làm thế nào để thiết kế ERD cho module mượn sách?</span>
+            <span class="faq-arrow">▶</span>
+          </div>
+          <div class="faq-a">
+            <p>Cần xác định entities: Sách, Bạn đọc, Phiếu mượn, Chi tiết phiếu mượn. Quan hệ Phiếu mượn ↔ Sách là N-N, cần bảng trung gian.</p>
+            <div class="faq-meta">📢 Công khai bởi TS. Trần Minh Khoa · 30/04/2025 &nbsp;<span class="chip blue">Database</span></div>
+            <div class="faq-like">👍 31 nhóm thấy hữu ích &nbsp;<button class="btn-like" onclick="event.stopPropagation();likeIt(this)">Hữu ích</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="faq-note">💡 Chỉ nhóm của bạn mới xem được câu hỏi riêng tư. FAQ là kiến thức chung cho tất cả nhóm cùng đề tài.</div>
+    </div>
+
+  </main>
+</div>
+
+<!-- MODAL: SEND QUESTION -->
+<div class="modal-overlay hidden" id="modalSend">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>📝 Gửi câu hỏi mới</h2>
+      <button class="modal-close" onclick="closeModal('modalSend')">✕</button>
+    </div>
+    <div class="meta-chips" style="margin-bottom:16px">
+      <span class="chip blue">HK1 – 2025</span>
+      <span class="chip purple">SE1851</span>
+      <span class="chip green">Nhóm 5</span>
+      <span class="chip orange">Hệ thống quản lý thư viện</span>
+      <span class="chip teal">GV: TS. Trần Minh Khoa</span>
+    </div>
+    <div class="form-group">
+      <label>Tiêu đề câu hỏi *</label>
+      <input type="text" placeholder="Nhập tiêu đề câu hỏi của bạn...">
+    </div>
+    <div class="form-group">
+      <label>Nội dung chi tiết *</label>
+      <textarea rows="5" placeholder="Mô tả chi tiết vấn đề bạn gặp phải..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Đính kèm tệp</label>
+      <div class="dropzone" onclick="alert('Chọn file...')">
+        ☁️ Kéo thả file hoặc <u>nhấn để chọn</u><br>
+        <small style="color:var(--text-muted)">PDF, DOCX, PNG – tối đa 10MB</small>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <small style="color:#f97316">⚠️ Câu hỏi sẽ gửi trực tiếp đến giáo viên phụ trách đề tài</small>
+      <div style="display:flex;gap:12px">
+        <button class="btn-ghost" onclick="closeModal('modalSend')">Hủy</button>
+        <button class="btn-primary" onclick="submitQ()">✉️ Gửi câu hỏi</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,36 +1,55 @@
-﻿<!-- HEADER -->
-<nav class="navbar  shadow-sm mb-4 px-4 py-4 app-header">
-    <div class="container-fluid">
-        <div class="d-flex align-items-center gap-3" style="margin-left:4rem">
+<!-- ===== TEACHER TOP NAVBAR ===== -->
+<nav class="teacher-navbar">
+    <div class="teacher-navbar-inner">
 
-            <!-- LOGO -->
-            <div class="logo-box d-flex align-items-center justify-content-center fw-semibold">
-                🎓
+        <!-- LEFT: Logo + Brand -->
+        <div class="tn-brand">
+            <div class="tn-logo-wrap">
+                <div class="tn-logo-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 3L1 9L12 15L21 10.09V17H23V9L12 3Z" fill="white"/>
+                        <path d="M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z" fill="rgba(255,255,255,0.75)"/>
+                    </svg>
+                </div>
+                <div class="tn-logo-glow"></div>
             </div>
-
-            <!-- TITLE -->
-            <div class="lh-sm">
-                <div class="fw-bold">SWP&TOOL</div>
-                <small class="subtitle">Student Project Management</small>
+            <div class="tn-brand-text">
+                <span class="tn-brand-name">SWP&amp;TOOL</span>
+                <span class="tn-brand-sub">Teacher Portal</span>
             </div>
         </div>
 
-        <!-- RIGHT -->
-        <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-outline-secondary btn-sm">
-                <i class="fa-solid fa-file-pdf me-1"></i>
-                Xuất PDF
+        <!-- RIGHT: Actions -->
+        <div class="tn-actions">
+            <!-- Notification Bell -->
+            <button class="tn-icon-btn tn-notif" title="Thông báo">
+                <i class="bi bi-bell-fill"></i>
+                <span class="tn-badge">3</span>
             </button>
 
-            <button id="themeToggle"
-                    class="btn btn-outline-secondary btn-sm shadow-sm">
-                <i id="themeIcon" class="bi bi-moon"></i>
+            <!-- Theme Toggle -->
+            <button id="themeToggle" class="tn-icon-btn" title="Chế độ sáng/tối">
+                <i id="themeIcon" class="bi bi-moon-stars-fill"></i>
             </button>
 
-            <a href="/Auth/Logout" class="btn btn-warning btn-sm fw-semibold">
-                <i class="fa-solid fa-right-from-bracket me-1"></i>
-                Đăng xuất
+            <!-- Divider -->
+            <div class="tn-divider"></div>
+
+            <!-- User chip -->
+            <div class="tn-user-chip">
+                <div class="tn-avatar">T</div>
+                <div class="tn-user-info">
+                    <span class="tn-user-name">Giáo viên</span>
+                    <span class="tn-user-role">Teacher</span>
+                </div>
+            </div>
+
+            <!-- Logout -->
+            <a href="/Account/Logout" class="tn-logout-btn" title="Đăng xuất">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Đăng xuất</span>
             </a>
         </div>
+
     </div>
 </nav>

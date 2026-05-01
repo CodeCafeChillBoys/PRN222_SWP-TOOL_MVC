@@ -1,43 +1,655 @@
-﻿@model PRN222_SWP_TOOL_MVC.Models.GroupViewModels.GroupDetailsViewModel
+﻿@*
+    _GroupTab.cshtml
+    - Tạo nhóm mới (Form tạo nhóm + chọn lớp)
+    - Tham gia nhóm bằng Invite Code
+    - Hiển thị thông tin nhóm hiện tại (nếu đã có)
+*@
 
-<h2>Group Details</h2>
-
-@if (ViewBag.Message != null)
-{
-    <div class="alert alert-warning">@ViewBag.Message</div>
+@{
+    var successMsg = TempData["SuccessMessage"] as string;
+    var errorMsg   = TempData["ErrorMessage"]   as string;
+    // Khai báo ở đây để dùng được trong cả left col (ẩn/hiện) và right col
+    var myGroup = ViewBag.MyGroup as PRN222_SWP_TOOL_MVC.Service.DTO.Response.GroupInfoResponseDTO;
 }
 
-@if (Model.GroupID == 0)
-{
-    <div class="card p-3 mb-3">
-        <h4>@Model.GroupName</h4>
-        <p>Bạn hiện chưa tham gia nhóm nào.</p>
+<style>
+    /* ===== ALERT TOAST ===== */
+    .group-alert {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 18px;
+        border-radius: 14px;
+        font-size: 0.92rem;
+        font-weight: 500;
+        margin-bottom: 24px;
+        animation: slideDown 0.35s ease;
+    }
 
-        <a class="btn btn-primary" asp-controller="Group" asp-action="Create" asp-route-classId="@Model.ClassID">
-            Create Group
-        </a>
-    </div>
+    .group-alert.success {
+        background: linear-gradient(135deg, #e8fff3, #f0fff7);
+        color: #15803d;
+        border: 1px solid #bbf7d0;
+    }
 
-    return;
-}
+    .group-alert.error {
+        background: linear-gradient(135deg, #fff1f2, #fff5f5);
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+    }
 
-<h4>Members</h4>
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>StudentID</th>
-            <th>FullName</th>
-            <th>Role</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var m in Model.Members)
+    /* ===== SECTION HEADER ===== */
+    .group-section-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    .group-section-title .icon-badge {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+    }
+
+    .icon-badge.blue { background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1d4ed8; }
+    .icon-badge.purple { background: linear-gradient(135deg, #ede9fe, #ddd6fe); color: #7c3aed; }
+    .icon-badge.green { background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #15803d; }
+    .icon-badge.orange { background: linear-gradient(135deg, #ffedd5, #fed7aa); color: #c2410c; }
+
+    /* ===== ACTION CARDS ===== */
+    .action-panel {
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 28px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        border: 1px solid #f1f5f9;
+        height: 100%;
+    }
+
+    /* ===== FORM INPUTS ===== */
+    .group-input {
+        border-radius: 12px !important;
+        border: 1.5px solid #e2e8f0 !important;
+        padding: 11px 16px !important;
+        font-size: 0.9rem !important;
+        color: #1e293b !important;
+        background: #f8fafc !important;
+        transition: all 0.2s ease !important;
+        width: 100%;
+    }
+
+    .group-input:focus {
+        border-color: #3b82f6 !important;
+        background: #ffffff !important;
+        box-shadow: 0 0 0 3px rgba(59,130,246,0.12) !important;
+        outline: none !important;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-create-group {
+        background: linear-gradient(135deg, #2563eb, #3b82f6);
+        color: #ffffff;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 22px;
+        font-weight: 600;
+        font-size: 0.92rem;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 6px;
+        transition: all 0.25s ease;
+        box-shadow: 0 4px 14px rgba(37,99,235,0.3);
+    }
+
+    .btn-create-group:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(37,99,235,0.4);
+        opacity: 0.95;
+        color: white;
+    }
+
+    .btn-join-group {
+        background: linear-gradient(135deg, #7c3aed, #a855f7);
+        color: #ffffff;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 22px;
+        font-weight: 600;
+        font-size: 0.92rem;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 6px;
+        transition: all 0.25s ease;
+        box-shadow: 0 4px 14px rgba(124,58,237,0.3);
+    }
+
+    .btn-join-group:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(124,58,237,0.4);
+        opacity: 0.95;
+        color: white;
+    }
+
+    /* ===== DIVIDER WITH TEXT ===== */
+    .or-divider {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        color: #94a3b8;
+        font-size: 0.82rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin: 8px 0;
+    }
+
+    .or-divider::before,
+    .or-divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: #e2e8f0;
+    }
+
+    /* ===== EMPTY STATE (chưa có nhóm) ===== */
+    .group-empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 48px 24px;
+        text-align: center;
+        color: #94a3b8;
+    }
+
+    .group-empty-state .empty-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin-bottom: 16px;
+    }
+
+    .group-empty-state h6 {
+        font-weight: 700;
+        color: #475569;
+        margin-bottom: 6px;
+    }
+
+    /* ===== GROUP CARD (nếu đã có nhóm) ===== */
+    .group-info-card {
+        background: linear-gradient(135deg, #eff6ff, #f0f9ff);
+        border: 1.5px solid #bfdbfe;
+        border-radius: 20px;
+        padding: 24px;
+    }
+
+    .group-name-badge {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: #1e40af;
+        margin-bottom: 4px;
+    }
+
+    .group-code-box {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: #1e40af;
+        color: #fff;
+        border-radius: 10px;
+        padding: 8px 14px;
+        font-size: 1rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        margin: 12px 0;
+    }
+
+    .group-code-box .copy-btn {
+        background: rgba(255,255,255,0.2);
+        border: none;
+        border-radius: 6px;
+        color: white;
+        padding: 3px 8px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .group-code-box .copy-btn:hover {
+        background: rgba(255,255,255,0.35);
+    }
+
+    /* ===== MEMBER LIST ===== */
+    .member-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 16px;
+    }
+
+    .member-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 14px;
+        background: #ffffff;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        transition: all 0.2s ease;
+    }
+
+    .member-item:hover {
+        box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        transform: translateX(3px);
+    }
+
+    .member-avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #3b82f6, #6366f1);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .member-avatar.leader {
+        background: linear-gradient(135deg, #f59e0b, #f97316);
+    }
+
+    .member-name {
+        flex: 1;
+        font-weight: 600;
+        color: #1e293b;
+        font-size: 0.9rem;
+    }
+
+    .member-role-badge {
+        font-size: 0.7rem;
+        padding: 3px 10px;
+        border-radius: 999px;
+        font-weight: 700;
+    }
+
+    .role-leader {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        color: #92400e;
+    }
+
+    .role-member {
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
+    /* ===== SLOT INDICATORS ===== */
+    .slot-indicators {
+        display: flex;
+        gap: 6px;
+        margin: 12px 0;
+    }
+
+    .slot-dot {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.65rem;
+        font-weight: 700;
+    }
+
+    .slot-dot.filled {
+        background: linear-gradient(135deg, #2563eb, #3b82f6);
+        color: white;
+    }
+
+    .slot-dot.empty {
+        background: #f1f5f9;
+        border: 2px dashed #cbd5e1;
+        color: #94a3b8;
+    }
+
+    /* ===== STATUS BADGE ===== */
+    .group-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 12px;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 700;
+    }
+
+    .status-open {
+        background: #dcfce7;
+        color: #15803d;
+    }
+
+    .status-locked {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+    /* ===== DARK MODE ===== */
+    body:not(.light-mode) .action-panel {
+        background: #1e293b;
+        border-color: #334155;
+    }
+
+    body:not(.light-mode) .group-section-title { color: #e2e8f0; }
+
+    body:not(.light-mode) .group-input {
+        background: #0f172a !important;
+        border-color: #334155 !important;
+        color: #e2e8f0 !important;
+    }
+
+    body:not(.light-mode) .group-input:focus {
+        background: #1e293b !important;
+        border-color: #3b82f6 !important;
+    }
+
+    body:not(.light-mode) .group-info-card {
+        background: linear-gradient(135deg, #1e3a5f, #1e3a8a20);
+        border-color: #1e40af;
+    }
+
+    body:not(.light-mode) .group-name-badge { color: #93c5fd; }
+
+    body:not(.light-mode) .member-item {
+        background: #0f172a;
+        border-color: #1e293b;
+    }
+
+    body:not(.light-mode) .member-name { color: #e2e8f0; }
+
+    body:not(.light-mode) .slot-dot.empty {
+        background: #1e293b;
+        border-color: #334155;
+    }
+
+    body:not(.light-mode) .icon-badge.blue { background: rgba(29,78,216,0.2); }
+    body:not(.light-mode) .icon-badge.purple { background: rgba(124,58,237,0.2); }
+    body:not(.light-mode) .icon-badge.green { background: rgba(21,128,61,0.2); }
+    body:not(.light-mode) .icon-badge.orange { background: rgba(194,65,12,0.2); }
+
+    body:not(.light-mode) .group-empty-state .empty-icon {
+        background: linear-gradient(135deg, #1e293b, #334155);
+    }
+
+    body:not(.light-mode) .group-empty-state h6 { color: #94a3b8; }
+
+    /* ===== ANIMATIONS ===== */
+    @@keyframes slideDown {
+        from { opacity: 0; transform: translateY(-10px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(12px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Animations disabled for action panels (requested)
+       Keeps keyframes available for other elements if needed */
+    .action-panel {
+        animation: none !important;
+    }
+</style>
+
+<div class="mt-2">
+
+    @* ===== TOAST ALERTS ===== *@
+    @if (!string.IsNullOrEmpty(successMsg))
+    {
+        <div class="group-alert success">
+            <i class="fa-solid fa-circle-check fa-lg"></i>
+            <span>@successMsg</span>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(errorMsg))
+    {
+        <div class="group-alert error">
+            <i class="fa-solid fa-triangle-exclamation fa-lg"></i>
+            <span>@errorMsg</span>
+        </div>
+    }
+
+    <div class="row g-4">
+
+        @* ===== LEFT COL: ẩn khi đã có nhóm ===== *@
+        @if (myGroup == null)
         {
-            <tr>
-                <td>@m.StudentID</td>
-                <td>@(string.IsNullOrWhiteSpace(m.FullName) ? "(no name)" : m.FullName)</td>
-                <td>@(m.IsLeader ? "Leader" : "Member")</td>
-            </tr>
-        }
-    </tbody>
-</table>
+        <div class="col-lg-5">
+
+            @* --- TẠO NHÓM --- *@
+            <div class="action-panel mb-4">
+                <div class="group-section-title">
+                    <div class="icon-badge blue">
+                        <i class="fa-solid fa-plus"></i>
+                    </div>
+                    Tạo nhóm mới
+                </div>
+                <p class="text-muted small mb-3">
+                    Tạo nhóm và nhận <strong>Mã mời</strong> để gửi cho các thành viên khác.
+                </p>
+
+                <form asp-controller="Student" asp-action="CreateGroup" method="post">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small text-secondary mb-1">Tên nhóm</label>
+                        <input type="text"
+                               name="groupName"
+                               class="group-input"
+                               placeholder="Ví dụ: Nhóm Alpha, Team SE101-G3..."
+                               required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small text-secondary mb-1">Chọn lớp học</label>
+                        <select name="classId" class="group-input form-select" required style="appearance:auto">
+                            <option value="" disabled selected>-- Chọn lớp của bạn --</option>
+                            @{
+                                var classList = ViewBag.Classes as List<PRN222_SWP_TOOL_MVC.Repository.Entities.Class>;
+                            }
+                            @if (classList != null && classList.Any())
+                            {
+                                foreach (var cls in classList)
+                                {
+                                    <option value="@cls.ClassID">@cls.ClassName (@cls.ClassCode)</option>
+                                }
+                            }
+                            else
+                            {
+                                <option disabled>Chưa có lớp học nào</option>
+                            }
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-create-group">
+                        <i class="fa-solid fa-rocket me-2"></i>
+                        Tạo nhóm ngay
+                    </button>
+                </form>
+            </div>
+
+            @* --- THAM GIA NHÓM --- *@
+            <div class="action-panel">
+                <div class="group-section-title">
+                    <div class="icon-badge purple">
+                        <i class="fa-solid fa-key"></i>
+                    </div>
+                    Tham gia nhóm
+                </div>
+                <p class="text-muted small mb-3">
+                    Nhập <strong>Mã mời</strong> (Invite Code) từ trưởng nhóm để gia nhập.
+                </p>
+
+                <form asp-controller="Student" asp-action="JoinGroup" method="post">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small text-secondary mb-1">Mã mời</label>
+                        <input type="text"
+                               name="inviteCode"
+                               class="group-input"
+                               placeholder="Nhập 8 ký tự mã mời (VD: AB3F9C1D)"
+                               maxlength="8"
+                               style="letter-spacing:3px; font-weight:700; font-size:1rem; text-transform:uppercase"
+                               required />
+                    </div>
+                    <button type="submit" class="btn-join-group">
+                        <i class="fa-solid fa-arrow-right-to-bracket me-2"></i>
+                        Tham gia nhóm
+                    </button>
+                </form>
+            </div>
+        </div>
+        } @* end @if myGroup == null *@
+
+        @* ===== RIGHT COL: NHÓM HIỆN TẠI ===== *@
+        <div class="@(myGroup != null ? "col-lg-12" : "col-lg-7")">
+            <div class="action-panel" style="height:auto; min-height:460px">
+                <div class="group-section-title">
+                    <div class="icon-badge green">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    Nhóm của tôi
+                </div>
+
+
+                @if (myGroup == null)
+                {
+                    @* ----- CHƯA CÓ NHÓM ----- *@
+                    <div class="group-empty-state">
+                        <div class="empty-icon">
+                            <i class="fa-solid fa-users-slash"></i>
+                        </div>
+                        <h6>Bạn chưa tham gia nhóm nào</h6>
+                        <p class="small mb-0">Hãy tạo nhóm mới hoặc nhập mã mời từ trưởng nhóm để bắt đầu.</p>
+                    </div>
+                }
+                else
+                {
+                    @* ----- ĐÃ CÓ NHÓM ----- *@
+                    <div class="group-info-card">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+                            <div>
+                                <div class="group-name-badge">@myGroup.GroupName</div>
+                                <div class="text-muted small">Lớp #@myGroup.ClassID</div>
+                            </div>
+                            @if (myGroup.IsLocked)
+                            {
+                                <span class="group-status status-locked">
+                                    <i class="fa-solid fa-lock"></i> Đã khóa (Đủ thành viên)
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="group-status status-open">
+                                    <i class="fa-solid fa-circle-dot"></i> Đang mở
+                                </span>
+                            }
+                        </div>
+
+                        <div>
+                            <div class="fw-semibold small text-secondary mb-1">Mã mời nhóm</div>
+                            <div class="group-code-box">
+                                <i class="fa-solid fa-key me-1"></i>
+                                @myGroup.InviteCode
+                                <button class="copy-btn" onclick="copyCode('@myGroup.InviteCode', this)">
+                                    <i class="fa-regular fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-2 mt-1 mb-3">
+                            <span class="small text-secondary fw-semibold">Slots:</span>
+                            <div class="slot-indicators">
+                                @*
+                                 // Duyệt ra qua số slot của group một lần 
+                                 // Kiểm tra số slot mà memeber thì fill thêm vào
+                                *@
+                                @for (int i = 0; i < myGroup.MaxMember; i++)
+                                {
+                                    // kiểm tra xem có bao nhiu thành viên tham gia
+                                    // Nếu chưa đủ
+                                    if (i < myGroup.MemberCount)
+                                    {
+
+                                        // Tiến thành fill vào    
+                                        var initials = myGroup.Members.Count > i
+                                            ? myGroup.Members[i].FullName.Substring(0, 1).ToUpper()
+                                            : "?";
+                                        <div class="slot-dot filled" title="@(myGroup.Members.Count > i ? myGroup.Members[i].FullName : "")">@initials</div>
+                                    }
+                                    else
+                                    {
+                                        <div class="slot-dot empty" title="Chưa có thành viên">·</div>
+                                    }
+                                }
+                            </div>
+                            <span class="small text-secondary">@myGroup.MemberCount/@myGroup.MaxMember thành viên</span>
+                        </div>
+
+                        <div class="member-list">
+                            @foreach (var member in myGroup.Members)
+                            {
+                                var initials = member.FullName?.Length > 0
+                                    ? member.FullName.Split(' ').Last().Substring(0, 1).ToUpper()
+                                    : "?";
+                                <div class="member-item">
+                                    <div class="member-avatar @(member.IsLeader ? "leader" : "")">@initials</div>
+                                    <div class="member-name">@member.FullName</div>
+                                    @if (member.IsLeader)
+                                    {
+                                        <span class="member-role-badge role-leader">👑 Trưởng nhóm</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="member-role-badge role-member">Thành viên</span>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Auto uppercase invite code input
+    const codeInput = document.querySelector('input[name="inviteCode"]');
+    if (codeInput) {
+        codeInput.addEventListener('input', function () {
+            this.value = this.value.toUpperCase();
+        });
+    }
+
+    // Copy invite code to clipboard
+    function copyCode(code, btn) {
+        navigator.clipboard.writeText(code).then(() => {
+            btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fa-regular fa-copy"></i>';
+            }, 2000);
+        });
+    }
+</script>

@@ -1,5 +1,56 @@
-﻿<div class="tab-btn d-flex justify-content-between mb-4">
-    <a class="btn tab-item flex-fill mx-1 active" href="#tab-group">Quản lý Nhóm</a>
-    <a class="btn tab-item flex-fill mx-1" href="#tab-topic">Chọn Đề tài</a>
-    <a class="btn tab-item flex-fill mx-1" href="#tab-qa">Hỏi & Đáp</a>
+@model PRN222_SWP_TOOL_MVC.Service.DTO.Request.StudentDashboardRequestDTO
+@{
+    var tab = Model?.CurrentTab ?? "group";
+}
+
+<!-- ===== STUDENT PAGE TAB NAVIGATION ===== -->
+<div class="spt-wrap">
+    <div class="spt-tabs">
+
+        <!-- Nhóm Tab -->
+        <a class="spt-tab @(tab == "group" ? "spt-tab--active spt-tab--group" : "")"
+           asp-controller="Student"
+           asp-action="Index"
+           asp-route-tab="group">
+            <span class="spt-tab__icon spt-icon--group">
+                <i class="bi bi-people-fill"></i>
+            </span>
+            <span class="spt-tab__label">Quản lý Nhóm</span>
+            @if (tab == "group") { <span class="spt-tab__bar"></span> }
+        </a>
+
+        <!-- Đề tài Tab -->
+        <a class="spt-tab @(tab == "topic" ? "spt-tab--active spt-tab--topic" : "")"
+           asp-controller="Student"
+           asp-action="Index"
+           asp-route-tab="topic">
+            <span class="spt-tab__icon spt-icon--topic">
+                <i class="bi bi-book-half"></i>
+            </span>
+            <span class="spt-tab__label">Chọn Đề tài</span>
+            @if (tab == "topic") { <span class="spt-tab__bar"></span> }
+        </a>
+
+        <!-- Q&A Tab -->
+        <a class="spt-tab @(tab == "qa" ? "spt-tab--active spt-tab--qa" : "")"
+           asp-controller="Student"
+           asp-action="Index"
+           asp-route-tab="qa">
+            <span class="spt-tab__icon spt-icon--qa">
+                <i class="bi bi-chat-dots-fill"></i>
+            </span>
+            <span class="spt-tab__label">Hỏi &amp; Đáp</span>
+            @if (tab == "qa") { <span class="spt-tab__bar"></span> }
+        </a>
+
+    </div>
+
+    <!-- Breadcrumb -->
+    <div class="spt-breadcrumb">
+        <i class="bi bi-house-door"></i>
+        <span class="spt-bc-sep"><i class="bi bi-chevron-right"></i></span>
+        @if (tab == "group") { <span>Quản lý Nhóm</span> }
+        else if (tab == "topic") { <span>Chọn Đề tài</span> }
+        else { <span>Hỏi &amp; Đáp</span> }
+    </div>
 </div>

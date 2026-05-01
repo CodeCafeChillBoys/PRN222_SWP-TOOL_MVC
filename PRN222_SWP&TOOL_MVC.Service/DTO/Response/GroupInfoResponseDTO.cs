@@ -12,7 +12,6 @@ namespace PRN222_SWP_TOOL_MVC.Service.DTO.Response
         public string GroupName { get; set; }
         public bool IsLocked { get; set; }
         public string Status { get; set; }
-
         public int ClassID { get; set; }
         public int MaxMember { get; set; }
         public string InviteCode { get; set; }

@@ -1,0 +1,287 @@
+@* ===== TEACHER: HỘP THƯ Q&A ===== *@
+<link rel="stylesheet" href="~/css/qa-teacher.css" />
+
+<div id="tab-qa-teacher">
+
+    @* ──────────────── VIEW: INBOX ──────────────── *@
+    <div id="tqa-inbox-view">
+
+        <div class="tqa-page-header">
+            <div>
+                <h2 class="tqa-title"><i class="bi bi-mailbox2"></i> Hộp thư hỗ trợ Q&amp;A</h2>
+                <p class="tqa-subtitle">Đề tài: <strong>Hệ thống quản lý thư viện</strong></p>
+            </div>
+            <button class="tqa-btn-faq" onclick="tqaOpenFAQ()">
+                <i class="bi bi-collection-fill"></i> Quản lý FAQ
+            </button>
+        </div>
+
+        @* Stats *@
+        <div class="tqa-stats-row">
+            <div class="tqa-stat-card">
+                <div class="tqa-stat-icon" style="background:rgba(56,189,248,.15);color:#38bdf8"><i class="bi bi-chat-square-text-fill"></i></div>
+                <div><div class="tqa-stat-num">15</div><div class="tqa-stat-lbl">Tổng câu hỏi</div></div>
+            </div>
+            <div class="tqa-stat-card">
+                <div class="tqa-stat-icon" style="background:rgba(239,68,68,.15);color:#f87171"><i class="bi bi-envelope-exclamation-fill"></i></div>
+                <div><div class="tqa-stat-num" style="color:#f87171">5</div><div class="tqa-stat-lbl">Chưa trả lời</div></div>
+            </div>
+            <div class="tqa-stat-card">
+                <div class="tqa-stat-icon" style="background:rgba(251,146,60,.15);color:#fb923c"><i class="bi bi-hourglass-split"></i></div>
+                <div><div class="tqa-stat-num" style="color:#fb923c">3</div><div class="tqa-stat-lbl">Đang xử lý</div></div>
+            </div>
+            <div class="tqa-stat-card">
+                <div class="tqa-stat-icon" style="background:rgba(74,222,128,.15);color:#4ade80"><i class="bi bi-check-circle-fill"></i></div>
+                <div><div class="tqa-stat-num" style="color:#4ade80">7</div><div class="tqa-stat-lbl">Đã trả lời</div></div>
+            </div>
+        </div>
+
+        @* Filters *@
+        <div class="tqa-filter-bar">
+            <select class="tqa-select"><option>Tất cả lớp</option><option>SE1851</option><option>SE1852</option></select>
+            <select class="tqa-select"><option>Tất cả nhóm</option><option>Nhóm 1</option><option>Nhóm 3</option><option>Nhóm 5</option></select>
+            <div class="tqa-pills">
+                <button class="tqa-pill tqa-pill--active" onclick="tqaSetPill(this)">Tất cả (15)</button>
+                <button class="tqa-pill" onclick="tqaSetPill(this)">Chưa trả lời (5)</button>
+                <button class="tqa-pill" onclick="tqaSetPill(this)">Đang xử lý (3)</button>
+                <button class="tqa-pill" onclick="tqaSetPill(this)">Đã trả lời (7)</button>
+            </div>
+        </div>
+
+        @* Inbox 2-column layout *@
+        <div class="tqa-inbox-layout">
+
+            @* Left: question list *@
+            <div class="tqa-inbox-list">
+
+                <div class="tqa-inbox-item tqa-inbox-item--unread tqa-inbox-item--active" onclick="tqaSelectItem(this,'tqa-reply-view')">
+                    <div class="tqa-inbox-meta">Nhóm 3 · SE1851 <span class="tqa-time">14 phút trước</span></div>
+                    <div class="tqa-inbox-qtitle">Cách implement JWT authentication trong...</div>
+                    <div class="tqa-inbox-tags">
+                        <span class="tqa-badge tqa-badge--red">Chưa trả lời</span>
+                        <span class="tqa-badge tqa-badge--purple"><i class="bi bi-robot"></i> AI sẵn sàng</span>
+                    </div>
+                </div>
+
+                <div class="tqa-inbox-item" onclick="tqaSelectItem(this,'tqa-reply-view')">
+                    <div class="tqa-inbox-meta">Nhóm 5 · SE1851 <span class="tqa-time">2 giờ trước</span></div>
+                    <div class="tqa-inbox-qtitle">Làm thế nào để thiết kế ERD cho module...</div>
+                    <div class="tqa-inbox-tags">
+                        <span class="tqa-badge tqa-badge--orange">Đang xử lý</span>
+                    </div>
+                </div>
+
+                <div class="tqa-inbox-item" onclick="tqaSelectItem(this,'tqa-reply-view')">
+                    <div class="tqa-inbox-meta">Nhóm 1 · SE1852 <span class="tqa-time">Hôm qua</span></div>
+                    <div class="tqa-inbox-qtitle">Có thể dùng MongoDB thay SQL Server không?</div>
+                    <div class="tqa-inbox-tags">
+                        <span class="tqa-badge tqa-badge--green">Đã trả lời</span>
+                        <span class="tqa-badge tqa-badge--blue">📢 Public</span>
+                    </div>
+                </div>
+
+                <div class="tqa-inbox-item" onclick="tqaSelectItem(this,'tqa-reply-view')">
+                    <div class="tqa-inbox-meta">Nhóm 2 · SE1851 <span class="tqa-time">Hôm qua</span></div>
+                    <div class="tqa-inbox-qtitle">Repository pattern có cần thiết không ạ?</div>
+                    <div class="tqa-inbox-tags">
+                        <span class="tqa-badge tqa-badge--red">Chưa trả lời</span>
+                        <span class="tqa-badge tqa-badge--purple"><i class="bi bi-robot"></i> AI sẵn sàng</span>
+                    </div>
+                </div>
+
+                <div class="tqa-inbox-item" onclick="tqaSelectItem(this,'tqa-reply-view')">
+                    <div class="tqa-inbox-meta">Nhóm 4 · SE1852 <span class="tqa-time">2 ngày trước</span></div>
+                    <div class="tqa-inbox-qtitle">Nên dùng Blazor hay Razor Pages ạ?</div>
+                    <div class="tqa-inbox-tags">
+                        <span class="tqa-badge tqa-badge--green">Đã trả lời</span>
+                    </div>
+                </div>
+
+            </div>
+
+            @* Right: preview *@
+            <div class="tqa-inbox-detail">
+                <div class="tqa-preview-card">
+                    <div class="tqa-preview-chips">
+                        <span class="tqa-chip tqa-chip--purple">Nhóm 3 · SE1851</span>
+                        <span class="tqa-chip tqa-chip--orange">HK1-2025</span>
+                        <span class="tqa-chip tqa-chip--blue">Authentication</span>
+                    </div>
+                    <h4 class="tqa-preview-title">Cách implement JWT authentication trong ASP.NET Core?</h4>
+                    <p class="tqa-preview-body">Em muốn hỏi về cách cấu hình JWT Bearer token trong ASP.NET Core 8. Em đã thêm package nhưng chưa biết cách setup middleware và validate token ạ.</p>
+                    <div class="tqa-preview-meta"><i class="bi bi-person-circle"></i> Nguyễn Thị B &nbsp;·&nbsp; <i class="bi bi-clock"></i> 01/05/2025 10:30</div>
+                </div>
+                <button class="tqa-btn-ai-reply" onclick="tqaOpenAI()">
+                    <i class="bi bi-robot"></i> Xem gợi ý AI &amp; Soạn câu trả lời
+                    <i class="bi bi-arrow-right-circle-fill" style="margin-left:auto"></i>
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    @* ──────────────── VIEW: AI REPLY PANEL ──────────────── *@
+    <div id="tqa-reply-view" style="display:none">
+
+        <div class="tqa-thread-header">
+            <button class="tqa-back-btn" onclick="tqaBack('tqa-inbox-view')">
+                <i class="bi bi-arrow-left"></i> Quay lại hộp thư
+            </button>
+            <span class="tqa-badge tqa-badge--red" style="font-size:13px;padding:5px 12px">🔴 Chưa trả lời</span>
+        </div>
+
+        <div class="tqa-preview-card" style="margin-bottom:20px">
+            <div class="tqa-preview-chips">
+                <span class="tqa-chip tqa-chip--purple">Nhóm 3 · SE1851</span>
+                <span class="tqa-chip tqa-chip--orange">HK1-2025</span>
+            </div>
+            <h4 class="tqa-preview-title">Cách implement JWT authentication trong ASP.NET Core?</h4>
+            <p class="tqa-preview-body">Em muốn hỏi về cách cấu hình JWT Bearer token trong ASP.NET Core 8. Em đã thêm package nhưng chưa biết cách setup middleware và validate token ạ.</p>
+            <div class="tqa-preview-meta"><i class="bi bi-person-circle"></i> Nguyễn Thị B &nbsp;·&nbsp; <i class="bi bi-clock"></i> 01/05/2025 10:30</div>
+        </div>
+
+        <div class="tqa-two-col">
+
+            @* LEFT: AI Suggestion *@
+            <div class="tqa-ai-panel">
+                <div class="tqa-ai-header">
+                    <i class="bi bi-robot" style="color:#a78bfa;font-size:18px"></i>
+                    <span>Gợi ý từ AI</span>
+                    <span class="tqa-badge tqa-badge--purple" style="margin-left:auto">87% tin cậy</span>
+                </div>
+                <div class="tqa-ai-source"><i class="bi bi-database-fill-check"></i> Dựa trên: 3 câu trả lời tương tự + Tài liệu đề tài</div>
+                <div class="tqa-ai-progress"><div class="tqa-ai-bar" style="width:87%"></div></div>
+                <div class="tqa-ai-content">
+                    Để implement JWT trong ASP.NET Core 8:<br><br>
+                    <strong>1. Cài NuGet:</strong><br>
+                    <code>Microsoft.AspNetCore.Authentication.JwtBearer</code><br><br>
+                    <strong>2. Cấu hình Program.cs:</strong><br>
+                    <code>builder.Services.AddAuthentication(JwtBearerDefaults...)</code><br><br>
+                    <strong>3.</strong> Tạo <code>JwtService</code> để generate &amp; validate token.<br>
+                    <strong>4.</strong> Thêm <code>[Authorize]</code> attribute lên controller.
+                </div>
+                <div class="tqa-ai-actions">
+                    <button class="tqa-btn-accept"><i class="bi bi-check-circle-fill"></i> Chấp nhận gợi ý</button>
+                    <button class="tqa-btn-edit"><i class="bi bi-pencil-fill"></i> Chỉnh sửa trước khi gửi</button>
+                </div>
+            </div>
+
+            @* RIGHT: Reply editor *@
+            <div class="tqa-reply-panel">
+                <div class="tqa-reply-header"><i class="bi bi-pencil-square"></i> Soạn câu trả lời</div>
+                <div class="tqa-reply-tags">
+                    <span class="tqa-chip tqa-chip--blue">JWT</span>
+                    <span class="tqa-chip tqa-chip--purple">ASP.NET Core</span>
+                    <span class="tqa-chip tqa-chip--teal">Authentication</span>
+                </div>
+                <textarea class="tqa-reply-area" rows="10" placeholder="Nhập nội dung câu trả lời..."></textarea>
+                <div class="tqa-kb-toggle">
+                    <label class="tqa-toggle-label">
+                        <input type="checkbox" checked> &nbsp;
+                        <span class="tqa-toggle-track"></span>
+                        &nbsp; Lưu vào Knowledge Base của AI
+                    </label>
+                </div>
+                <div class="tqa-reply-actions">
+                    <button class="tqa-btn-ghost"><i class="bi bi-save"></i> Lưu nháp</button>
+                    <button class="tqa-btn-direct">
+                        <i class="bi bi-chat-square-dots-fill"></i>
+                        Trả lời trực tiếp
+                        <small>Chỉ Nhóm 3 thấy</small>
+                    </button>
+                    <button class="tqa-btn-public">
+                        <i class="bi bi-megaphone-fill"></i>
+                        Đăng FAQ công khai
+                        <small>Tất cả nhóm thấy</small>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    @* ──────────────── VIEW: QUẢN LÝ FAQ ──────────────── *@
+    <div id="tqa-faq-view" style="display:none">
+
+        <div class="tqa-thread-header">
+            <button class="tqa-back-btn" onclick="tqaBack('tqa-inbox-view')">
+                <i class="bi bi-arrow-left"></i> Quay lại hộp thư
+            </button>
+            <button class="tqa-btn-public" style="font-size:13px;padding:8px 16px">
+                <i class="bi bi-plus-lg"></i> Thêm FAQ thủ công
+            </button>
+        </div>
+
+        <div class="tqa-page-header" style="margin-bottom:16px">
+            <div>
+                <h2 class="tqa-title"><i class="bi bi-collection-fill"></i> Quản lý FAQ Công khai</h2>
+                <p class="tqa-subtitle">Đề tài: Hệ thống quản lý thư viện · 31 câu hỏi đã đăng</p>
+            </div>
+        </div>
+
+        <div class="tqa-faq-search-wrap">
+            <i class="bi bi-search" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted)"></i>
+            <input type="text" class="tqa-faq-search" placeholder="Tìm kiếm trong FAQ...">
+        </div>
+
+        <div class="tqa-faq-list">
+
+            <div class="tqa-faq-item">
+                <div class="tqa-faq-q" onclick="this.parentElement.classList.toggle('tqa-faq-item--open')">
+                    <span>Cách implement JWT authentication trong ASP.NET Core?</span>
+                    <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+                        <span class="tqa-chip tqa-chip--teal" style="font-size:11px">Authentication</span>
+                        <span class="tqa-badge tqa-badge--purple" style="font-size:11px"><i class="bi bi-robot"></i> AI</span>
+                        <button class="tqa-btn-icon-sm tqa-btn-icon-sm--red" onclick="event.stopPropagation()" title="Ẩn khỏi FAQ"><i class="bi bi-eye-slash"></i></button>
+                        <i class="bi bi-chevron-down tqa-faq-arr"></i>
+                    </div>
+                </div>
+                <div class="tqa-faq-a">
+                    <p>Để implement JWT trong ASP.NET Core 8, bạn cần: 1. Cài NuGet <code>Microsoft.AspNetCore.Authentication.JwtBearer</code>. 2. Cấu hình trong Program.cs. 3. Tạo JwtService...</p>
+                    <div class="tqa-faq-meta">
+                        📢 Đăng bởi TS. Trần Minh Khoa · 01/05/2025 &nbsp;·&nbsp; 👍 24 nhóm thấy hữu ích
+                    </div>
+                </div>
+            </div>
+
+            <div class="tqa-faq-item">
+                <div class="tqa-faq-q" onclick="this.parentElement.classList.toggle('tqa-faq-item--open')">
+                    <span>Có thể dùng MongoDB thay SQL Server không?</span>
+                    <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+                        <span class="tqa-chip tqa-chip--blue" style="font-size:11px">Database</span>
+                        <button class="tqa-btn-icon-sm tqa-btn-icon-sm--red" onclick="event.stopPropagation()" title="Ẩn khỏi FAQ"><i class="bi bi-eye-slash"></i></button>
+                        <i class="bi bi-chevron-down tqa-faq-arr"></i>
+                    </div>
+                </div>
+                <div class="tqa-faq-a">
+                    <p>Hoàn toàn có thể, tuy nhiên với đề tài này yêu cầu relational data. Khuyến nghị dùng SQL Server hoặc PostgreSQL.</p>
+                    <div class="tqa-faq-meta">📢 Đăng · 28/04/2025 &nbsp;·&nbsp; 👍 18 nhóm thấy hữu ích</div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@* ──────────────── SCRIPT ──────────────── *@
+<script>
+function tqaOpenAI() { document.getElementById('tqa-inbox-view').style.display='none'; document.getElementById('tqa-reply-view').style.display='block'; }
+function tqaOpenFAQ() { document.getElementById('tqa-inbox-view').style.display='none'; document.getElementById('tqa-faq-view').style.display='block'; }
+function tqaBack(target) {
+    document.getElementById('tqa-reply-view').style.display='none';
+    document.getElementById('tqa-faq-view').style.display='none';
+    document.getElementById(target).style.display='block';
+}
+function tqaSelectItem(el, nextView) {
+    document.querySelectorAll('.tqa-inbox-item').forEach(i=>i.classList.remove('tqa-inbox-item--active'));
+    el.classList.add('tqa-inbox-item--active');
+}
+function tqaSetPill(el) {
+    document.querySelectorAll('.tqa-pill').forEach(p=>p.classList.remove('tqa-pill--active'));
+    el.classList.add('tqa-pill--active');
+}
+</script>

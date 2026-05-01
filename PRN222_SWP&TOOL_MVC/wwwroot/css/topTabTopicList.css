@@ -1,0 +1,193 @@
+/* ===== DEFAULT (DARK MODE) ===== */
+.topic-wrapper {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    margin-top: 25px;
+    color: #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+/* ===== HEADER ===== */
+.topic-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.topic-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.topic-icon {
+    font-size: 28px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    padding: 12px;
+    border-radius: 12px;
+    color: white;
+}
+
+.topic-title h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.semester {
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+/* ===== BADGES ===== */
+.topic-badges {
+    display: flex;
+    gap: 10px;
+}
+
+.badge-group {
+    background: rgba(14, 165, 233, 0.15);
+    color: #38bdf8;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.badge-ai {
+    background: linear-gradient(135deg, #ec4899, #8b5cf6);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* ===== INFO BOX ===== */
+.info-box {
+    padding: 18px;
+    border-radius: 14px;
+    margin-bottom: 15px;
+}
+
+.description-box {
+    background: rgba(0,0,0,0.2);
+}
+
+.requirement-box {
+    background: rgba(14, 165, 233, 0.1);
+}
+
+.info-box strong {
+    display: block;
+    margin-bottom: 6px;
+    color: #ffffff;
+}
+
+.info-box p {
+    margin: 0;
+    color: #cbd5e1;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.topic-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 12px;
+}
+
+.btn-edit {
+    padding: 8px 16px;
+    border-radius: 10px;
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+    .btn-edit:hover {
+        background: rgba(59, 130, 246, 0.25);
+    }
+
+.btn-delete {
+    padding: 8px 16px;
+    border-radius: 10px;
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+    .btn-delete:hover {
+        background: rgba(239, 68, 68, 0.25);
+    }
+
+
+/* =========================================
+   LIGHT MODE OVERRIDES
+   ========================================= */
+body.light-mode .topic-wrapper {
+    background: #ffffff;
+    border: 1px solid #eaeaea;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    color: #333;
+}
+
+body.light-mode .topic-title h2 {
+    color: #111827;
+}
+
+body.light-mode .semester {
+    color: #6b7280;
+}
+
+body.light-mode .badge-group {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+body.light-mode .description-box {
+    background: #f3f4f6;
+}
+
+body.light-mode .requirement-box {
+    background: #e0f2fe;
+}
+
+body.light-mode .info-box strong {
+    color: #1f2937;
+}
+
+body.light-mode .info-box p {
+    color: #374151;
+}
+
+body.light-mode .btn-edit {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+body.light-mode .btn-edit:hover {
+    background: #bfdbfe;
+}
+
+body.light-mode .btn-delete {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+body.light-mode .btn-delete:hover {
+    background: #fecaca;
+}
