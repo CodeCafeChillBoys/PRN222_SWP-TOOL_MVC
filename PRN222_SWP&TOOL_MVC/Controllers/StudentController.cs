@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PRN222_SWP_TOOL_MVC.Repository.Entities;
 using PRN222_SWP_TOOL_MVC.Service.DTO.Request;
@@ -15,7 +15,7 @@ public class StudentController : Controller
     public StudentController(IStudentGroupService studentGroupService, ITopicService topicService)
     {
         _studentGroupService = studentGroupService;
-        _topicService        = topicService;
+        _topicService = topicService;
     }
 
     public async Task<IActionResult> Index(string tab = "group")
@@ -30,16 +30,16 @@ public class StudentController : Controller
         ViewBag.Classes = await _studentGroupService.GetClassesBySemesterAsync(0);
 
         // ── Topics + trạng thái đã đăng ký ──────────────────────
-        var topics       = await _topicService.GetTopicsWithDetailsAsync();
-        int? selectedId  = myGroup != null
+        var topics = await _topicService.GetTopicsWithDetailsAsync();
+        int? selectedId = myGroup != null  // nhóm tồn tại
             ? await _topicService.GetRegisteredTopicIdAsync(myGroup.GroupID)
             : null;
 
         var model = new StudentDashboardRequestDTO
         {
-            CurrentTab      = tab,
-            Topics          = topics,
-            Questions       = new List<Question>(),
+            CurrentTab = tab,
+            Topics = topics,
+            Questions = new List<Question>(),
             SelectedTopicId = selectedId
         };
         return View(model);
@@ -50,7 +50,7 @@ public class StudentController : Controller
     public async Task<IActionResult> CreateGroup(int classId, string groupName)
     {
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-        var group  = await _studentGroupService.CreateGroupAsync(classId, userId, groupName);
+        var group = await _studentGroupService.CreateGroupAsync(classId, userId, groupName);
         TempData["SuccessMessage"] = $"Tạo nhóm \"{group.GroupName}\" thành công! Mã mời: {group.InviteCode}";
         return RedirectToAction("Index", new { tab = "group" });
     }
@@ -59,7 +59,7 @@ public class StudentController : Controller
     [HttpPost]
     public async Task<IActionResult> JoinGroup(string inviteCode)
     {
-        var userId  = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
         var success = await _studentGroupService.JoinGroupAsync(inviteCode, userId);
 
         if (success)
@@ -74,7 +74,7 @@ public class StudentController : Controller
     [HttpPost]
     public async Task<IActionResult> RegisterTopic(int topicId)
     {
-        var userId  = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
         var myGroup = await _studentGroupService.GetMyGroupAsync(userId);
 
         if (myGroup == null)

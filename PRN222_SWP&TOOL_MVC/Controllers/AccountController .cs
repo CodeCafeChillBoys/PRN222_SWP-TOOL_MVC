@@ -145,6 +145,13 @@ namespace PRN222_MVC.Controllers
             return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
 
+        [HttpGet]
+        public IActionResult AccessDenied(string returnUrl = null)
+        {
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
+        }
+
         public IActionResult Login()
         {
             return View();

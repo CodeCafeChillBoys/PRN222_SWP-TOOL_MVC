@@ -1,4 +1,4 @@
-@*
+﻿@*
     _GroupTab.cshtml
     - Tạo nhóm mới (Form tạo nhóm + chọn lớp)
     - Tham gia nhóm bằng Invite Code
@@ -348,53 +348,53 @@
     }
 
     /* ===== DARK MODE ===== */
-    body.dark .action-panel {
+    body:not(.light-mode) .action-panel {
         background: #1e293b;
         border-color: #334155;
     }
 
-    body.dark .group-section-title { color: #e2e8f0; }
+    body:not(.light-mode) .group-section-title { color: #e2e8f0; }
 
-    body.dark .group-input {
+    body:not(.light-mode) .group-input {
         background: #0f172a !important;
         border-color: #334155 !important;
         color: #e2e8f0 !important;
     }
 
-    body.dark .group-input:focus {
+    body:not(.light-mode) .group-input:focus {
         background: #1e293b !important;
         border-color: #3b82f6 !important;
     }
 
-    body.dark .group-info-card {
+    body:not(.light-mode) .group-info-card {
         background: linear-gradient(135deg, #1e3a5f, #1e3a8a20);
         border-color: #1e40af;
     }
 
-    body.dark .group-name-badge { color: #93c5fd; }
+    body:not(.light-mode) .group-name-badge { color: #93c5fd; }
 
-    body.dark .member-item {
+    body:not(.light-mode) .member-item {
         background: #0f172a;
         border-color: #1e293b;
     }
 
-    body.dark .member-name { color: #e2e8f0; }
+    body:not(.light-mode) .member-name { color: #e2e8f0; }
 
-    body.dark .slot-dot.empty {
+    body:not(.light-mode) .slot-dot.empty {
         background: #1e293b;
         border-color: #334155;
     }
 
-    body.dark .icon-badge.blue { background: rgba(29,78,216,0.2); }
-    body.dark .icon-badge.purple { background: rgba(124,58,237,0.2); }
-    body.dark .icon-badge.green { background: rgba(21,128,61,0.2); }
-    body.dark .icon-badge.orange { background: rgba(194,65,12,0.2); }
+    body:not(.light-mode) .icon-badge.blue { background: rgba(29,78,216,0.2); }
+    body:not(.light-mode) .icon-badge.purple { background: rgba(124,58,237,0.2); }
+    body:not(.light-mode) .icon-badge.green { background: rgba(21,128,61,0.2); }
+    body:not(.light-mode) .icon-badge.orange { background: rgba(194,65,12,0.2); }
 
-    body.dark .group-empty-state .empty-icon {
+    body:not(.light-mode) .group-empty-state .empty-icon {
         background: linear-gradient(135deg, #1e293b, #334155);
     }
 
-    body.dark .group-empty-state h6 { color: #94a3b8; }
+    body:not(.light-mode) .group-empty-state h6 { color: #94a3b8; }
 
     /* ===== ANIMATIONS ===== */
     @@keyframes slideDown {
@@ -407,11 +407,11 @@
         to   { opacity: 1; transform: translateY(0); }
     }
 
+    /* Animations disabled for action panels (requested)
+       Keeps keyframes available for other elements if needed */
     .action-panel {
-        animation: fadeIn 0.4s ease both;
+        animation: none !important;
     }
-
-    .action-panel:nth-child(2) { animation-delay: 0.08s; }
 </style>
 
 <div class="mt-2">
@@ -461,6 +461,7 @@
                                placeholder="Ví dụ: Nhóm Alpha, Team SE101-G3..."
                                required />
                     </div>
+
                     <div class="mb-3">
                         <label class="form-label fw-semibold small text-secondary mb-1">Chọn lớp học</label>
                         <select name="classId" class="group-input form-select" required style="appearance:auto">
@@ -579,10 +580,18 @@
                         <div class="d-flex align-items-center gap-2 mt-1 mb-3">
                             <span class="small text-secondary fw-semibold">Slots:</span>
                             <div class="slot-indicators">
+                                @*
+                                 // Duyệt ra qua số slot của group một lần 
+                                 // Kiểm tra số slot mà memeber thì fill thêm vào
+                                *@
                                 @for (int i = 0; i < myGroup.MaxMember; i++)
                                 {
+                                    // kiểm tra xem có bao nhiu thành viên tham gia
+                                    // Nếu chưa đủ
                                     if (i < myGroup.MemberCount)
                                     {
+
+                                        // Tiến thành fill vào    
                                         var initials = myGroup.Members.Count > i
                                             ? myGroup.Members[i].FullName.Substring(0, 1).ToUpper()
                                             : "?";

@@ -1,47 +1,355 @@
-﻿﻿<!-- TAB: HOI & DAP -->
+@* ===== STUDENT: TAB HỎI & ĐÁP ===== *@
+<link rel="stylesheet" href="~/css/qa-student.css" />
 
-<div id="tab-qa" class="tab-content d-none">
+<div id="tab-qa" class="tab-content">
 
+    @* ──────────────── VIEW: DANH SÁCH CÂU HỎI ──────────────── *@
+    <div id="qa-list-view">
 
-	<!-- HOI & DAP -->
-	<div class="card p-4 mb-5">
-		<div class="d-flex align-items-center gap-2 mb-1">
-			<i class="bi bi-send"></i>
-			<strong>Đặt câu hỏi cho giảng viên</strong>
-		</div>
-		<small class="text-muted">Bạn cần chọn đề tài trước khi đặt câu hỏi</small>
+        @* Header *@
+        <div class="qa-page-header">
+            <div>
+                <h2 class="qa-title"><i class="bi bi-chat-dots-fill"></i> Hỏi &amp; Đáp</h2>
+                <p class="qa-subtitle">
+                    <span class="qa-chip qa-chip--purple"><i class="bi bi-people-fill"></i> Nhóm 5</span>
+                    <span class="qa-chip qa-chip--blue"><i class="bi bi-building"></i> SE1851</span>
+                    <span class="qa-chip qa-chip--orange"><i class="bi bi-book-half"></i> Hệ thống quản lý thư viện</span>
+                    <span class="qa-chip qa-chip--teal"><i class="bi bi-person-badge"></i> GV: TS. Trần Minh Khoa</span>
+                </p>
+            </div>
+            <button class="qa-btn-send" onclick="qaOpenSend()">
+                <i class="bi bi-send-fill"></i> Gửi câu hỏi mới
+            </button>
+        </div>
 
+        @* Stats *@
+        <div class="qa-stats-row">
+            <div class="qa-stat-card">
+                <div class="qa-stat-icon" style="background:rgba(56,189,248,.15);color:#38bdf8"><i class="bi bi-chat-square-text"></i></div>
+                <div>
+                    <div class="qa-stat-num">12</div>
+                    <div class="qa-stat-lbl">Tổng câu hỏi</div>
+                </div>
+            </div>
+            <div class="qa-stat-card">
+                <div class="qa-stat-icon" style="background:rgba(251,146,60,.15);color:#fb923c"><i class="bi bi-hourglass-split"></i></div>
+                <div>
+                    <div class="qa-stat-num" style="color:#fb923c">3</div>
+                    <div class="qa-stat-lbl">Chờ trả lời</div>
+                </div>
+            </div>
+            <div class="qa-stat-card">
+                <div class="qa-stat-icon" style="background:rgba(74,222,128,.15);color:#4ade80"><i class="bi bi-check-circle-fill"></i></div>
+                <div>
+                    <div class="qa-stat-num" style="color:#4ade80">9</div>
+                    <div class="qa-stat-lbl">Đã trả lời</div>
+                </div>
+            </div>
+            <div class="qa-stat-card">
+                <div class="qa-stat-icon" style="background:rgba(168,85,247,.15);color:#c084fc"><i class="bi bi-megaphone-fill"></i></div>
+                <div>
+                    <div class="qa-stat-num" style="color:#c084fc">4</div>
+                    <div class="qa-stat-lbl">Đăng FAQ</div>
+                </div>
+            </div>
+        </div>
 
-		<div class="alert alert-light border mt-3">
-			<i class="bi bi-info-circle"></i>
-			Bạn cần tham gia nhóm và chọn đề tài trước khi có thể đặt câu hỏi.
-		</div>
+        @* Filter bar *@
+        <div class="qa-filter-bar">
+            <div class="qa-filter-pills" id="qaPills">
+                <button class="qa-pill qa-pill--active" onclick="qaSetPill(this,'all')">Tất cả (12)</button>
+                <button class="qa-pill" onclick="qaSetPill(this,'pending')">Chưa trả lời (3)</button>
+                <button class="qa-pill" onclick="qaSetPill(this,'processing')">Đang xử lý (2)</button>
+                <button class="qa-pill" onclick="qaSetPill(this,'answered')">Đã trả lời (7)</button>
+            </div>
+            <div class="qa-search-wrap">
+                <i class="bi bi-search qa-search-icon"></i>
+                <input type="text" class="qa-search" placeholder="Tìm câu hỏi...">
+            </div>
+        </div>
 
+        @* Question list *@
+        <div class="qa-list">
 
-<textarea class="form-control mb-3" rows="4" placeholder="Nhập câu hỏi của bạn..." disabled></textarea>
-		<button class="btn btn-secondary w-100" disabled>
-			<i class="bi bi-send"></i> Gửi câu hỏi
-		</button>
-	</div>
+            <div class="qa-item" onclick="qaOpenThread()">
+                <div class="qa-item-left">
+                    <span class="qa-status-dot qa-dot--green"></span>
+                </div>
+                <div class="qa-item-body">
+                    <div class="qa-item-title">Làm thế nào để thiết kế ERD cho module mượn sách?</div>
+                    <div class="qa-item-meta">
+                        <i class="bi bi-clock"></i> 30/04/2025 09:15
+                        &nbsp;·&nbsp;
+                        <i class="bi bi-chat-left-text"></i> 3 trao đổi
+                    </div>
+                </div>
+                <div class="qa-item-right">
+                    <span class="qa-badge qa-badge--green">✅ Đã trả lời</span>
+                    <span class="qa-badge qa-badge--blue">📢 Public</span>
+                    <i class="bi bi-chevron-right qa-item-arrow"></i>
+                </div>
+            </div>
 
+            <div class="qa-item" onclick="qaOpenThread()">
+                <div class="qa-item-left">
+                    <span class="qa-status-dot qa-dot--orange"></span>
+                </div>
+                <div class="qa-item-body">
+                    <div class="qa-item-title">Cách implement JWT authentication trong ASP.NET Core 8?</div>
+                    <div class="qa-item-meta">
+                        <i class="bi bi-clock"></i> 01/05/2025 10:30
+                        &nbsp;·&nbsp;
+                        <i class="bi bi-chat-left-text"></i> 1 trao đổi
+                    </div>
+                </div>
+                <div class="qa-item-right">
+                    <span class="qa-badge qa-badge--orange">⏳ Đang xử lý</span>
+                    <i class="bi bi-chevron-right qa-item-arrow"></i>
+                </div>
+            </div>
 
-	<h5 class="fw-bold mb-3">Lịch sử câu hỏi</h5>
-	<div class="card p-4 mb-4">
-		<div class="d-flex justify-content-between align-items-center mb-2">
-			<strong>Em có thể sử dụng framework nào để xây dựng ứng dụng?</strong>
-			<div>
-				<span class="badge bg-success">Đã trả lời</span>
-				<span class="badge bg-light text-dark">Công khai</span>
-			</div>
-		</div>
-		<small class="text-muted">Gửi lúc: 2025-01-14 10:30</small>
+            <div class="qa-item" onclick="qaOpenThread()">
+                <div class="qa-item-left">
+                    <span class="qa-status-dot qa-dot--red"></span>
+                </div>
+                <div class="qa-item-body">
+                    <div class="qa-item-title">Có thể dùng MongoDB thay SQL Server không ạ?</div>
+                    <div class="qa-item-meta">
+                        <i class="bi bi-clock"></i> 01/05/2025 14:00
+                        &nbsp;·&nbsp;
+                        <i class="bi bi-chat-left-text"></i> Chưa có phản hồi
+                    </div>
+                </div>
+                <div class="qa-item-right">
+                    <span class="qa-badge qa-badge--red">🔴 Chưa trả lời</span>
+                    <i class="bi bi-chevron-right qa-item-arrow"></i>
+                </div>
+            </div>
 
+        </div>
 
-		<div class="border-start border-4 border-primary bg-light p-3 mt-3">
-			<strong>Trả lời từ giảng viên:</strong>
-			<p class="mb-0">Bạn có thể sử dụng React hoặc Vue.js cho frontend. Backend nên dùng Node.js với Express hoặc NestJS.</p>
-		</div>
-	</div>
+        @* FAQ public link *@
+        <div class="qa-faq-banner" onclick="qaOpenFAQ()">
+            <div class="qa-faq-banner-left">
+                <div class="qa-faq-icon"><i class="bi bi-collection-fill"></i></div>
+                <div>
+                    <div class="qa-faq-title">📚 Câu hỏi thường gặp (FAQ)</div>
+                    <div class="qa-faq-sub">31 câu hỏi đã được giáo viên đăng công khai cho tất cả nhóm</div>
+                </div>
+            </div>
+            <i class="bi bi-arrow-right-circle-fill qa-faq-arrow"></i>
+        </div>
 
+    </div>
+
+    @* ──────────────── VIEW: CHI TIẾT THREAD ──────────────── *@
+    <div id="qa-thread-view" style="display:none">
+
+        <div class="qa-thread-header">
+            <button class="qa-back-btn" onclick="qaBack('qa-list-view')">
+                <i class="bi bi-arrow-left"></i> Quay lại
+            </button>
+            <span class="qa-badge qa-badge--green" style="font-size:13px">✅ Đã trả lời</span>
+        </div>
+
+        <div class="qa-thread-card">
+            <div class="qa-thread-chips">
+                <span class="qa-chip qa-chip--blue">HK1-2025</span>
+                <span class="qa-chip qa-chip--orange">Hệ thống quản lý thư viện</span>
+                <span class="qa-chip qa-chip--purple">Nhóm 5 · SE1851</span>
+            </div>
+            <h3 class="qa-thread-title">Làm thế nào để thiết kế ERD cho module mượn sách?</h3>
+            <p class="qa-thread-meta"><i class="bi bi-person-circle"></i> Nguyễn Văn A &nbsp;·&nbsp; <i class="bi bi-clock"></i> 30/04/2025 09:15</p>
+            <p class="qa-thread-body">Em đang gặp khó khăn trong việc xác định các entity và relationship cho module mượn trả sách. Cụ thể, em không biết nên đặt foreign key ở bảng nào và quan hệ giữa Phiếu mượn và Sách là 1-N hay N-N ạ?</p>
+        </div>
+
+        <h5 class="qa-section-title"><i class="bi bi-chat-square-dots"></i> Lịch sử trao đổi</h5>
+
+        <div class="qa-messages">
+
+            <div class="qa-msg qa-msg--student">
+                <div class="qa-msg-avatar qa-msg-avatar--student">A</div>
+                <div>
+                    <div class="qa-msg-meta">Nguyễn Văn A &nbsp;·&nbsp; 30/04 09:15</div>
+                    <div class="qa-msg-bubble qa-bubble--student">Thầy ơi, em cần giúp đỡ về ERD ạ. Phiếu mượn nên quan hệ thế nào với bảng Sách?</div>
+                </div>
+            </div>
+
+            <div class="qa-msg qa-msg--teacher">
+                <div class="qa-msg-avatar qa-msg-avatar--teacher">K</div>
+                <div>
+                    <div class="qa-msg-meta"><strong>TS. Trần Minh Khoa</strong> <span class="qa-badge qa-badge--teal" style="font-size:11px;padding:2px 8px">Giáo viên</span> &nbsp;·&nbsp; 30/04 14:22</div>
+                    <div class="qa-msg-bubble qa-bubble--teacher">
+                        Để thiết kế ERD cho module mượn sách, em cần xác định:<br>
+                        1. <strong>Entities:</strong> Sách, Bạn đọc, Phiếu mượn, Chi tiết phiếu mượn<br>
+                        2. Quan hệ Phiếu mượn ↔ Sách là <strong>N-N</strong> → cần bảng trung gian "Chi tiết phiếu mượn"<br>
+                        3. FK đặt ở bảng con (Chi tiết phiếu mượn)
+                        <div class="qa-ai-tag"><i class="bi bi-robot"></i> AI hỗ trợ soạn thảo</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="qa-msg qa-msg--student">
+                <div class="qa-msg-avatar qa-msg-avatar--student">A</div>
+                <div>
+                    <div class="qa-msg-meta">Nguyễn Văn A &nbsp;·&nbsp; 30/04 15:10</div>
+                    <div class="qa-msg-bubble qa-bubble--student">Em hiểu rồi ạ! Cảm ơn thầy nhiều!</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="qa-reply-box">
+            <textarea class="qa-reply-input" rows="3" placeholder="Nhập phản hồi thêm..."></textarea>
+            <button class="qa-btn-send" style="align-self:flex-end"><i class="bi bi-send-fill"></i> Gửi</button>
+        </div>
+
+    </div>
+
+    @* ──────────────── VIEW: FAQ CÔNG KHAI ──────────────── *@
+    <div id="qa-faq-view" style="display:none">
+
+        <div class="qa-thread-header">
+            <button class="qa-back-btn" onclick="qaBack('qa-list-view')">
+                <i class="bi bi-arrow-left"></i> Quay lại
+            </button>
+        </div>
+
+        <div class="qa-page-header" style="margin-bottom:16px">
+            <div>
+                <h2 class="qa-title"><i class="bi bi-collection-fill"></i> Câu hỏi thường gặp (FAQ)</h2>
+                <p class="qa-subtitle" style="color:var(--s-sub)">Hiển thị công khai cho tất cả nhóm cùng đề tài</p>
+            </div>
+        </div>
+
+        <div class="qa-faq-search-wrap">
+            <i class="bi bi-search qa-search-icon"></i>
+            <input type="text" class="qa-search" placeholder="Tìm kiếm trong FAQ..." style="width:100%">
+        </div>
+
+        <div class="qa-faq-cats">
+            <button class="qa-cat qa-cat--active">Tất cả</button>
+            <button class="qa-cat">Database</button>
+            <button class="qa-cat">Authentication</button>
+            <button class="qa-cat">Frontend</button>
+            <button class="qa-cat">API</button>
+        </div>
+
+        <div class="qa-faq-list">
+
+            <div class="qa-faq-item" onclick="this.classList.toggle('qa-faq-item--open')">
+                <div class="qa-faq-q">
+                    <span>Cách implement JWT authentication trong ASP.NET Core?</span>
+                    <i class="bi bi-chevron-down qa-faq-arrow"></i>
+                </div>
+                <div class="qa-faq-a">
+                    <p>Để implement JWT trong ASP.NET Core 8, bạn cần: 1. Cài NuGet <code>Microsoft.AspNetCore.Authentication.JwtBearer</code>. 2. Cấu hình trong <code>Program.cs</code>. 3. Tạo JwtService để generate &amp; validate token. 4. Thêm <code>[Authorize]</code> attribute.</p>
+                    <div class="qa-faq-meta">
+                        <span>📢 Công khai bởi TS. Trần Minh Khoa · 01/05/2025</span>
+                        <span class="qa-chip qa-chip--teal" style="font-size:11px">Authentication</span>
+                        <span class="qa-chip qa-chip--purple" style="font-size:11px"><i class="bi bi-robot"></i> AI hỗ trợ</span>
+                    </div>
+                    <div class="qa-faq-like">👍 24 nhóm thấy hữu ích</div>
+                </div>
+            </div>
+
+            <div class="qa-faq-item" onclick="this.classList.toggle('qa-faq-item--open')">
+                <div class="qa-faq-q">
+                    <span>Có thể dùng MongoDB thay SQL Server không?</span>
+                    <i class="bi bi-chevron-down qa-faq-arrow"></i>
+                </div>
+                <div class="qa-faq-a">
+                    <p>Hoàn toàn có thể, tuy nhiên với đề tài này yêu cầu relational data. MongoDB phù hợp hơn cho dữ liệu phi cấu trúc. Khuyến nghị dùng SQL Server hoặc PostgreSQL.</p>
+                    <div class="qa-faq-meta">
+                        <span>📢 Công khai · 28/04/2025</span>
+                        <span class="qa-chip qa-chip--blue" style="font-size:11px">Database</span>
+                    </div>
+                    <div class="qa-faq-like">👍 18 nhóm thấy hữu ích</div>
+                </div>
+            </div>
+
+            <div class="qa-faq-item" onclick="this.classList.toggle('qa-faq-item--open')">
+                <div class="qa-faq-q">
+                    <span>Làm thế nào để thiết kế ERD cho module mượn sách?</span>
+                    <i class="bi bi-chevron-down qa-faq-arrow"></i>
+                </div>
+                <div class="qa-faq-a">
+                    <p>Cần xác định entities: Sách, Bạn đọc, Phiếu mượn, Chi tiết phiếu mượn. Quan hệ Phiếu mượn ↔ Sách là N-N, cần bảng trung gian.</p>
+                    <div class="qa-faq-meta">
+                        <span>📢 Công khai · 30/04/2025</span>
+                        <span class="qa-chip qa-chip--blue" style="font-size:11px">Database</span>
+                    </div>
+                    <div class="qa-faq-like">👍 31 nhóm thấy hữu ích</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="qa-faq-note">
+            <i class="bi bi-info-circle"></i>
+            Chỉ nhóm của bạn mới xem được câu hỏi riêng tư. FAQ là kiến thức chung cho tất cả nhóm cùng đề tài.
+        </div>
+
+    </div>
 
 </div>
+
+@* ──────────────── MODAL: GỬI CÂU HỎI ──────────────── *@
+<div class="qa-modal-overlay" id="qaSendModal" style="display:none" onclick="if(event.target===this)qaCloseSend()">
+    <div class="qa-modal">
+        <div class="qa-modal-header">
+            <h4><i class="bi bi-send-fill"></i> Gửi câu hỏi mới</h4>
+            <button class="qa-modal-close" onclick="qaCloseSend()"><i class="bi bi-x-lg"></i></button>
+        </div>
+
+        <div class="qa-modal-chips">
+            <span class="qa-chip qa-chip--blue">HK1 – 2025</span>
+            <span class="qa-chip qa-chip--purple">SE1851</span>
+            <span class="qa-chip qa-chip--green">Nhóm 5</span>
+            <span class="qa-chip qa-chip--orange">Hệ thống quản lý thư viện</span>
+            <span class="qa-chip qa-chip--teal">GV: TS. Trần Minh Khoa</span>
+        </div>
+
+        <div class="qa-form-group">
+            <label class="qa-label">Tiêu đề câu hỏi <span style="color:#ef4444">*</span></label>
+            <input type="text" class="qa-input" placeholder="Nhập tiêu đề câu hỏi của bạn...">
+        </div>
+        <div class="qa-form-group">
+            <label class="qa-label">Nội dung chi tiết <span style="color:#ef4444">*</span></label>
+            <textarea class="qa-input qa-textarea" rows="5" placeholder="Mô tả chi tiết vấn đề bạn gặp phải..."></textarea>
+        </div>
+        <div class="qa-form-group">
+            <label class="qa-label">Đính kèm tệp</label>
+            <div class="qa-dropzone">
+                <i class="bi bi-cloud-upload" style="font-size:24px;margin-bottom:6px"></i><br>
+                Kéo thả file hoặc <u>nhấn để chọn</u><br>
+                <small style="color:var(--s-sub)">PDF, DOCX, PNG – tối đa 10MB</small>
+            </div>
+        </div>
+
+        <div class="qa-modal-footer">
+            <small style="color:#fb923c"><i class="bi bi-exclamation-triangle"></i> Câu hỏi sẽ gửi trực tiếp đến giáo viên phụ trách đề tài</small>
+            <div style="display:flex;gap:10px">
+                <button class="qa-btn-ghost" onclick="qaCloseSend()">Hủy</button>
+                <button class="qa-btn-send"><i class="bi bi-send-fill"></i> Gửi câu hỏi</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* ──────────────── SCRIPT ──────────────── *@
+<script>
+function qaOpenSend() { document.getElementById('qaSendModal').style.display='flex'; }
+function qaCloseSend() { document.getElementById('qaSendModal').style.display='none'; }
+function qaOpenThread() { document.getElementById('qa-list-view').style.display='none'; document.getElementById('qa-thread-view').style.display='block'; }
+function qaOpenFAQ() { document.getElementById('qa-list-view').style.display='none'; document.getElementById('qa-faq-view').style.display='block'; }
+function qaBack(target) {
+    document.getElementById('qa-thread-view').style.display='none';
+    document.getElementById('qa-faq-view').style.display='none';
+    document.getElementById(target).style.display='block';
+}
+function qaSetPill(el) {
+    document.querySelectorAll('.qa-pill').forEach(p=>p.classList.remove('qa-pill--active'));
+    el.classList.add('qa-pill--active');
+}
+</script>
